@@ -11,6 +11,7 @@ namespace api\pay\controller;
 use api\model\PayPaymentModel;
 use api\pay\service\OrderService;
 use api\pay\service\PayBeiweiService;
+use api\request\OrderRequest;
 use think\Db;
 use cmf\controller\RestUserBaseController;
 use think\Request;
@@ -93,26 +94,16 @@ class IndexController extends RestUserBaseController
         $user = $this->user;
 
         $data = $request->only(['type','mode','money']);
-
-        $result = $this->validate($data,'api\request\OrderRequest.edit');
-
-        if(true !== $result){
-            $this->error($result);
-        }
-        if(!$payBeiweiService->check_money($data['mode'],$data['money'])){
-            $this->error('充值金额不在范围内');
-        };
-        if($data['type'] == PayPaymentModel::TYPE_VIP){
-            $i = $paymentModel->check_pay_vip_money($data['money']);
-            if($i == 0 || $i > 1){
-                $this->error('vip充值金额不正确');
-            }
-        }
         if(!$this->pay_status){
             $data['mode'] = PayPaymentModel::PAY_MODE_WECHAT_H5;
         }
 
+        $result = $this->validate($data,OrderRequest::class);
 
+        if(!empty($result)){
+            $this->error($result);
+        }
+       
         $res = $orderService->order($user,$data);
         $result = $payBeiweiService->pay($request,$paymentModel,$res['sn'],$res,$data['mode']);
 
