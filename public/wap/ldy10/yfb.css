@@ -1,0 +1,31 @@
+*{margin:0;padding:0;font-size:0.6rem;color:#fff;font-family:"微软雅黑";}
+html,body{width:100%;}
+li{list-style:none;}
+a{text-decoration:none;}
+.fl{float:left;}
+.fr{float:right;}
+.of{overflow:hidden;}
+.top_menu{background-color:#292533;text-align:center;width:100%;position:fixed;top:0;}
+.top_menu img{width:0.8rem;vertical-align:middle;}
+.top_menu span{display:inline-block;line-height:2rem;width:19.1%;}
+.top{margin-top:2rem;height:2rem;line-height:2rem;background-color:#ee327e;font-weight:bold;text-align:center;}
+.top img{width:3.5rem;vertical-align:middle;margin-right:0.5rem;}
+.user_list{margin-bottom:6rem;}
+.more{padding-top:0.5rem;color:#333;text-align:center;line-height:1rem;border-top:0.6rem solid #eaeaea;}
+.user_info img{width:2.5rem;border-radius:0.3rem;}
+.user{padding:0.6rem;border-top:0.6rem solid #eaeaea;}
+.user .user_info p{margin:0 0.5rem 0;font-size:0.7rem;color:#333;}
+.user .user_info span{display:inline-block;margin-top:0.2rem;padding:0.1rem 0.3rem;color:#fff;font-size:0.5rem;line-height:0.8rem;background-color:#77cee5;border-radius:0.15rem;}
+.user .user_info .addcolor{background-color:#fcbe7d;}
+.btn{display:inline-block;padding:0.2rem 0.5rem;font-size:0.7rem;background-color:#ee327e;border-radius:0.2rem;}
+.user p{margin:0.4rem 0;font-size:0.7rem;color:#8d8b8b;}
+.user ul li img{width:5.55rem;}
+.user span img{margin-right:0.3rem;width:0.75rem;vertical-align:bottom;}
+.user span{display:inline-block;margin-top:0.2rem;color:339933;}
+.addmargin{margin:0 0.3rem;}
+.download{padding: 0.5rem;width:17.75rem;background-color:rgba(0,0,0,0.8);position:fixed;bottom:3rem;}
+.footer_menu{padding:0.5rem 0;width:100%;background-color:#292533;position:fixed;bottom:0;}
+.footer_menu li{float:left;width:25%;text-align:center;}
+.chat{position:relative;}
+.news{display:inline-block;width:0.8rem;height:0.8rem;border-radius:0.6rem;text-align:center;color:#fff;font-size:0.2rem;line-height:0.8rem;background-color:#ff0000;position:absolute;margin-top:-0.2rem;margin-left:-2.2rem;}
+.footer_menu img{width:1rem;}

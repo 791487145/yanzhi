@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>职业</title>
+		<link rel="stylesheet" href="icons/iconfont.css" />
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+				position: relative;
+				background: #f5f5f5;
+			}
+			
+			a {
+				text-decoration: none;
+				outline: none;
+				-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+			}
+			
+			.workcon {
+				/*padding-top: 44px;*/
+			}
+			
+			.interest-box {
+				width: 100%;
+			}
+			
+			.interest {
+				flex-wrap: wrap;
+				width: 100%;
+				display: flex;
+				justify-content: space-around;
+				padding: 0.1rem;
+			}
+			
+			.interest span {
+				margin: 0.2rem;
+				width: 2.8rem;
+				padding: 0.2rem 0.2rem;
+				box-sizing: border-box;
+				background: #fff;
+				color: #000;
+				border-radius: 0.3rem;
+				font-size: 0.4rem;
+				display: inline-block;
+				text-align: center;
+			}
+			
+			.interest .active {
+				background: #ffe02f;
+				color: #fff;
+			}
+			
+			.baocun {
+				width: 100%;
+				height: 1rem;
+				margin-top: 2rem;
+				text-align: center;
+			}
+			
+			.bcbutton {
+				width: 3.02rem;
+				height: 1rem;
+				background: #ffe02f;
+				border: 0;
+				font-size: 0.36rem;
+				outline: none;
+				color: #333;
+				margin: 0 auto;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="workcon">
+			<div class="interest-box">
+				<div class="interest">
+					<span>学生</span>
+					<span>私营业主</span>
+					<span>销售</span>
+					<span>工程师</span>
+					<span>公司职员</span>
+					<span>中层管理</span>
+					<span>警察</span>
+					<span>医生</span>
+					<span>演艺人员</span>
+					<span>模特</span>
+					<span>教师</span>
+					<span>设计师</span>
+					<span>投资顾问</span>
+					<span>自由职业</span>
+					<span>化妆师</span>
+				</div>
+			</div>
+			<div class="baocun">
+				<button class="bcbutton">保存</button>
+			</div>
+		</div>
+		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="alertMsg.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+//			$('header a').click(function(){
+//				window.history.back();
+//			})
+			
+			
+			//			获取token device
+			//			传值:window.location.href = 'RegOk.htm?email='+email+'&name='+username+''; 
+			function GetRequest() {
+				var url = location.search; //获取url中"?"符后的字串
+				var theRequest = new Object();
+				if(url.indexOf("?") != -1) {
+					var str = url.substr(1);
+					//					alert(str);
+					strs = str.split("&");
+					for(var i = 0; i < strs.length; i++) {
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+					}
+				}
+				return theRequest;
+			}
+
+			var request = new Object();
+			request = GetRequest();
+			//token device
+			var yztoken = request['token'];
+			var yzdevice = request['device'];
+			var yzid = request['uid'];
+//			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
+//			var yzdevice = 'android';
+			
+			var result = '';
+			function getinfo() {
+//				var getinfourl = 'http://yz.baiyoumi.cn/api/user/profile/getinfo';
+				var getinfourl = geturl(oneurl,'user/profile/getinfo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: 'POST',
+					url: getinfourl,
+					dataType: 'json',
+					data: {},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						result = data.data.job;
+						var Str = $('span')
+						for(var i = 0; i < Str.length; i++) {
+							if(Str[i].innerHTML == result) {
+								Str[i].setAttribute('class', 'active');
+							}
+						}
+						Str.on('click', function() {
+							$(this).addClass('active').siblings('span').removeClass('active')
+							$('.compile').css('color', '#fff')
+						});
+						var str = $('span')
+						$('.bcbutton').on('click', function() {
+							for(var i = 0; i < str.length; i++) {
+								if(str[i].className == 'active') {
+									var value = str[i].innerHTML;
+									console.log(value);
+								}
+							}
+//							var editinfourl = 'http://yz.baiyoumi.cn/api/user/profile/editInfo';
+							var editinfourl = geturl(oneurl,'user/profile/editInfo');
+							$.ajax({
+								headers: {
+									'YZ-Token': yztoken,
+									'YZ-Device-Type': yzdevice
+								},
+								type: 'POST',
+								url: editinfourl,
+								dataType: 'json',
+								data: {
+									'name': 'job',
+									'value': value
+								},
+								success: function(data) {
+									console.log(JSON.stringify(data));
+									if(data.code == 1) {
+										alertMsg(data.msg);
+//										window.location.href = 'editdata.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+										window.location.href = 'bianji.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+									}
+								},
+								error: function(data) {
+									console.log('修改个人信息出错了');
+								}
+							})
+						})
+					},
+					error: function(data) {
+						console.log('出错了');
+					}
+				})
+			}
+			getinfo();
+		</script>
+	</body>
+
+</html>

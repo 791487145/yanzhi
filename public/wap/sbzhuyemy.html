@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title>私播主页</title>
+		<link rel="stylesheet" type="text/css" href="icons/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="swiper-4.3.3.min.css" />
+		<link rel="stylesheet" type="text/css" href="icons/pingfang.css" />
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+				-khtml-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+			}
+			
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+				background: #f0eff4;
+			}
+			
+			a {
+				text-decoration: none;
+				outline: none;
+				-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+			}
+			
+			img[src=""],
+			img:not([src]) {
+				opacity: 0;
+			}
+			
+			.sbzy {
+				width: 100%;
+				height: 100%;
+				background: #f0eff4;
+			}
+			
+			.sibobg {
+				width: 100%;
+				height: 10rem;
+				/*background-size: cover;*/
+				position: relative;
+				/*background: url(img/default.png) no-repeat;*/
+				background-size: cover;
+			}
+			
+			#sb-head {
+				width: 100%;
+				height: 10rem;
+				object-fit: cover;
+				position: relative;
+				border: 0;
+			}
+			
+			.fanhui,
+			.diandian {
+				font-size: 24px;
+				color: #333;
+			}
+			
+			.fanhui {
+				left: 0.5rem;
+				color: #fff;
+			}
+			
+			.diandian {
+				position: absolute;
+				right: 0.5rem;
+				color: #fff;
+			}
+			
+			.sb-center {
+				position: absolute;
+				bottom: 0.28rem;
+				width: 100%;
+				padding-left: 0.5rem;
+			}
+			
+			.sbname {
+				vertical-align: middle;
+				margin-bottom: -0.1rem;
+			}
+			
+			#sbname {
+				float: left;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				max-width: 2.98rem;
+			}
+			
+			.zbname {
+				color: #fff;
+				font-size: 0.56rem;
+				vertical-align: middle;
+				font-family: PingFang Bold;
+				margin-right: 0.12rem;
+			}
+			
+			.zbsex {
+				vertical-align: middle;
+				width: 0.34rem;
+				height: 0.34rem;
+				width: 0.4rem;
+				height: 0.4rem;
+				margin-right: 0.15rem;
+			}
+			
+			.sbid {
+				color: #fff;
+				font-size: 0.4rem;
+			}
+			
+			.sbintro {
+				font-size: 0.31rem;
+				height: 0.44rem;
+				color: #e4e4e4;
+				margin-bottom: 0.04rem;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				/*display: -webkit-box;
+				-webkit-line-clamp: 1;
+				-webkit-box-orient: vertical;*/
+				white-space: nowrap;
+				margin-top: 0.16rem;
+				max-width: 5rem;
+			}
+			
+			.headline {
+				width: 5rem;
+				height: 1px;
+				background: #b2b2b2;
+				/*margin-top: 0.21rem;*/
+				margin-top: 0.15rem;
+			}
+			
+			.citydiv {
+				vertical-align: middle;
+				margin-top: 0.11rem;
+			}
+			
+			.citydiv img {
+				height: 0.31rem;
+				vertical-align: middle;
+			}
+			
+			.citydiv span {
+				font-size: 0.28rem;
+				color: #fff;
+				vertical-align: middle;
+				margin-left: 0.1rem;
+			}
+			
+			.headright {
+				position: absolute;
+				right: 0.64rem;
+				bottom: 0.32rem;
+				display: flex;
+				text-align: center;
+				color: #fff;
+			}
+			
+			.shuline {
+				width: 0.03rem;
+				height: 0.5rem;
+				background: #fff;
+				margin: 0.3rem 0.34rem 0;
+			}
+			
+			.jtlzhi,
+			.huabanzhi {
+				font-size: 0.34rem;
+				height: 0.4rem;
+			}
+			
+			.jtlzi,
+			.huabanzi {
+				font-size: 0.25rem;
+				/*-webkit-touch-callout:none;
+			    -webkit-user-select:none;
+			    -khtml-user-select:none;
+			    -moz-user-select:none;
+			    -ms-user-select:none;
+			    user-select:none;*/
+			}
+			
+			.sbzbzt {
+				color: salmon;
+				font-size: 0.4rem;
+			}
+			
+			.sb-bom {
+				position: absolute;
+				right: 0.5rem;
+				bottom: 0.5rem;
+			}
+			
+			.sb-bom img {
+				width: 2.6rem;
+				height: 0.76rem;
+			}
+			
+			.sb-xinxi {
+				width: 100%;
+				height: 3.4rem;
+				background: #fff;
+				display: flex;
+				position: relative;
+			}
+			
+			.sbxx1 {
+				margin-left: 0.4rem;
+			}
+			
+			.sb-name {
+				font-size: 0.6rem;
+				color: #373737;
+				margin-top: 0.4rem;
+			}
+			
+			.sb-age {
+				font-size: 0.43rem;
+				color: #696969;
+				margin-top: 0.2rem;
+				margin-bottom: 0.28rem;
+			}
+			
+			.sb-id {
+				font-size: 0.37rem;
+				color: #696969;
+			}
+			
+			.sb-intro {
+				font-size: 0.37rem;
+				color: #696969;
+				margin: 0.32rem 0 0.1rem 0;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+			
+			.spzf,
+			.spsc {
+				width: 2.9rem;
+				height: 2rem;
+				border: 2px solid #e7e7e7;
+				text-align: center;
+				border-radius: 0.31rem;
+				color: #8b8b8b;
+				position: absolute;
+				top: 14%;
+			}
+			
+			.spsc {
+				right: 0.4rem;
+			}
+			
+			.spzf {
+				right: 3.46rem;
+			}
+			
+			.spzfp1,
+			.spscp1 {
+				font-size: 0.4rem;
+				margin-top: 0.3rem;
+				margin-bottom: 0.4rem;
+			}
+			
+			.spzfp2,
+			.spscp2 {
+				font-size: 0.38rem;
+			}
+			
+			.sb-footer {
+				width: 100%;
+				height: 1.4rem;
+				display: flex;
+				position: fixed;
+				bottom: 0;
+			}
+			
+			.sb-talk {
+				width: 30%;
+				background: #000;
+				position: relative;
+			}
+			
+			.sb-talk img {
+				width: 0.93rem;
+				height: 0.93rem;
+				position: absolute;
+				top: 50%;
+				margin-top: -0.46rem;
+				left: 50%;
+				margin-left: -0.46rem;
+			}
+			
+			.sb-call {
+				width: 70%;
+				background: #fe3869;
+				text-align: center;
+				line-height: 1.4rem;
+			}
+			
+			.sb-call img {
+				width: 0.93rem;
+				height: 0.93rem;
+				vertical-align: middle;
+			}
+			
+			.sb-call span {
+				vertical-align: middle;
+				font-size: 0.4rem;
+				margin-left: 0.2rem;
+				color: #fff;
+			}
+			
+			.sbxc {
+				width: 100%;
+				height: auto;
+			}
+			
+			.sbpic {
+				float: left;
+				width: 32%;
+				height: 5.18rem;
+				margin: 0.66%;
+				background: #F5F5F5;
+				position: relative;
+				margin-bottom: 0.1rem;
+				vertical-align: middle;
+				line-height: 5.18rem;
+			}
+			
+			#bgimg {
+				display: none;
+			}
+			
+			.sbpic img {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.sbpic .cover {
+				object-fit: cover;
+			}
+			
+			.sbtedian {
+				width: 100%;
+				height: 4.2rem;
+				background: #fff;
+				margin-bottom: 0.4rem;
+			}
+			
+			.tedian {
+				width: 96%;
+				height: 1.4rem;
+				margin-left: 4%;
+				border-bottom: 1px solid #ccc;
+				display: flex;
+			}
+			
+			.tedian-title {
+				line-height: 1.4rem;
+				color: #6c6c6c;
+				font-size: 0.38rem;
+			}
+			
+			.tedian-biaoqian {
+				display: flex;
+			}
+			
+			.tedian-biaoqian span {
+				background: #fafafa;
+				height: 0.8rem;
+				font-size: 0.4rem;
+				border-radius: 0.15rem;
+				line-height: 0.8rem;
+				padding: 0 0.2rem;
+				margin: 0.3rem 0.1rem 0;
+			}
+			
+			.sbbq1 {
+				border: 1px solid #fc06a7;
+				color: #fc06a7;
+			}
+			
+			.sbbq2 {
+				border: 1px solid #0debff;
+				color: #0debff;
+			}
+			
+			.sbbq3 {
+				border: 1px solid #b817f8;
+				color: #b817f8;
+			}
+			
+			.sbshuo {
+				width: 96%;
+				margin-left: 4%;
+			}
+			
+			.sbshuo-title {
+				color: #6c6c6c;
+				margin: 0.4rem 0 0.6rem;
+				font-size: 0.38rem;
+			}
+			
+			.sbshuo-neirong {
+				color: #6c6c6c;
+				font-size: 0.38rem;
+				line-height: 1.5;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+			}
+			
+			.sbdeliwu {
+				width: 100%;
+				background: #fff;
+				padding-bottom: 2rem;
+			}
+			
+			.liwu-title {
+				width: 100%;
+				height: 1rem;
+				line-height: 1rem;
+				padding-left: 0.4rem;
+				color: #878787;
+				font-size: 0.4rem;
+			}
+			
+			.liwu-list {
+				width: 100%;
+				padding-left: 0.4rem;
+			}
+			
+			.liwugift {
+				display: inline-block;
+				width: 18%;
+				margin-top: 0.2rem;
+			}
+			
+			.contop {
+				width: 100%;
+				height: 1.18rem;
+				border-bottom: 1px solid #f3f4f5;
+				background: #fff;
+				z-index: 10;
+			}
+			
+			.contop a {
+				height: 100%;
+				float: left;
+				text-align: center;
+				line-height: 0.98rem;
+				color: #a9a9a9;
+				font-size: 0.43rem;
+				position: relative;
+				justify-content: center;
+				width: 33.3%;
+			}
+			
+			.contop a span {
+				padding-bottom: 0.2rem;
+				font-size: 0.34rem;
+				color: #b7b7b7;
+			}
+			
+			.sbcon {
+				position: relative;
+				margin-top: 0.25rem;
+			}
+			
+			.contop a.noborder {
+				border-right: 0;
+			}
+			
+			.contop a .topactive {
+				color: #000;
+				font-size: 0.37rem;
+				/*font-family: PingFang Medium;*/
+			}
+			
+			.conbom .bom {
+				width: 100%;
+				position: relative;
+				background: #fff;
+				height: auto;
+				overflow-y: scroll;
+			}
+			
+			.thbang {
+				width: 96%;
+				margin: 0.2rem 2% 0.2rem;
+				border: 1px solid #D8D8D8;
+				border-radius: 0.31rem;
+				background: #fff;
+			}
+			
+			li {
+				list-style: none;
+			}
+			
+			.tuhaoli {
+				width: 100%;
+				height: 1.4rem;
+				line-height: 1.4rem;
+				font-size: 0.43rem;
+				display: block;
+				clear: both;
+			}
+			
+			.thbang .tuhaoli:not(:last-child) {
+				border-bottom: 1px solid #D8D8D8;
+			}
+			
+			.thbangtishi,
+			.sbxctishi {
+				width: 100%;
+				height: 1rem;
+				line-height: 6rem;
+				text-align: center;
+				color: #333;
+				font-size: 0.43rem;
+				display: none;
+			}
+			
+			.thheadimg {
+				width: 1rem;
+				height: 1rem;
+				border-radius: 100%;
+				margin-left: 0.1rem;
+				border: 1px solid #D8D8D8;
+			}
+			
+			.tuhaoli img {
+				vertical-align: middle;
+			}
+			
+			.tuhaoli span {
+				vertical-align: middle;
+			}
+			
+			.thsex {
+				width: 0.34rem;
+				height: 0.34rem;
+				margin-left: 0.1rem;
+			}
+			
+			.thnumber {
+				display: inline-block;
+				margin-left: 0.2rem;
+				width: 0.8rem;
+				text-align: center;
+			}
+			
+			.thname {
+				margin-left: 0.1rem;
+			}
+			
+			.liright {
+				display: inline-block;
+			}
+			
+			.sbjia,
+			.sbxinxi {
+				width: 96%;
+				margin: 0 2%;
+				background: #fff;
+			}
+			
+			.sbxinxi {
+				margin-bottom: 0.2rem;
+			}
+			
+			.sbxinxi li,
+			.sbjia li {
+				height: 1.2rem;
+				border-bottom: 1px solid #F3F4F5;
+				clear: both;
+				line-height: 1.2rem;
+				font-size: 0.4rem;
+				padding-left: 0.2rem;
+			}
+			
+			.sbxinxi li.noborder,
+			.sbjia li.noborder {
+				border-bottom: 0;
+			}
+			
+			.firstspan {
+				color: #BBBBBB;
+			}
+			
+			.floatr {
+				float: right;
+				margin-right: 0.2rem;
+				vertical-align: middle;
+				font-size: 0.34rem;
+				color: #666;
+			}
+			
+			.ptbicon {
+				width: 0.4rem;
+				height: 0.65rem;
+				vertical-align: middle;
+				margin-right: 0.4rem;
+			}
+			
+			#sbgift {
+				vertical-align: middle;
+			}
+			
+			.nav {
+				width: 100%;
+				height: 64px;
+				background: rgba(255, 255, 255, 1);
+				text-align: center;
+				line-height: 80px;
+				display: none;
+				z-index: 10;
+			}
+			
+			.navactive {
+				border-bottom: 1px solid #f3f4f5;
+			}
+			
+			.smallhead {
+				width: 0.8rem;
+				height: 0.8rem;
+				border-radius: 100%;
+				vertical-align: middle;
+			}
+			
+			.topfanhui {
+				color: #bbb;
+				top: 0;
+				position: absolute;
+			}
+			
+			.topdiandian {
+				color: #bbb;
+			}
+			
+			.smallname {
+				font-size: 0.38rem;
+				color: #bbb;
+				vertical-align: middle;
+			}
+			
+			.tuhaocon {
+				width: 100%;
+				height: 1.71rem;
+				background: #fff;
+				position: relative;
+				line-height: 1.71rem;
+				display: flex;
+				clear: both;
+				padding-left: 0.4rem;
+				border-bottom: 1px solid #f3f4f5;
+			}
+			
+			.tuhaocon:after {
+				position: absolute;
+				right: 0.4rem;
+				top: 50%;
+				display: inline-block;
+				content: "";
+				width: 0.24rem;
+				height: 0.24rem;
+				border: solid #999;
+				border-width: 1px 1px 0 0;
+				-webkit-transform: translate(0, -50%) rotate(45deg);
+				transform: translate(0, -50%) rotate(45deg);
+			}
+			
+			.thdiv {
+				vertical-align: middle;
+			}
+			
+			.thdiv img {
+				vertical-align: middle;
+			}
+			
+			.thdiv span {
+				vertical-align: middle;
+				font-size: 0.34rem;
+				color: #999;
+			}
+			
+			.thicon {
+				width: 1rem;
+				height: 1rem;
+				margin-right: 0.34rem;
+			}
+			
+			.thuser {
+				display: inline-block;
+				position: absolute;
+				right: 0.9rem;
+				height: 100%;
+			}
+			
+			.thuser img {
+				width: 0.9rem;
+				height: 0.9rem;
+				border-radius: 100%;
+				margin-left: 0.2rem;
+				margin-top: 0.54rem;
+			}
+			
+			.adiv {
+				width: 1.8rem;
+				height: 1.8rem;
+				position: absolute;
+				top: 0.5rem;
+				left: 0;
+				text-align: center;
+				line-height: 1.4rem;
+			}
+			
+			.jubao {
+				width: 1.8rem;
+				height: 1.8rem;
+				position: absolute;
+				top: 0.5rem;
+				right: 0;
+				text-align: center;
+				line-height: 1.4rem;
+			}
+			
+			::-webkit-scrollbar {
+				display: none;
+				/*隐藏滚轮*/
+			}
+			
+			.sbzhuangtai {
+				width: 1.5rem;
+				height: 1.2rem;
+				width: 1.25rem;
+				height: 0.59rem;
+				width: 1.87rem;
+				height: 0.56rem;
+				position: absolute;
+				right: 0;
+				bottom: 0.6rem;
+			}
+			
+			.sbzhuangtai img {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.sbvideo {
+				width: 1.37rem;
+				height: 0.46rem;
+				vertical-align: middle;
+			}
+			
+			.zhezhao {
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.15);
+				position: absolute;
+				top: 0;
+			}
+			
+			.gzzi,
+			.fszi {
+				font-size: 0.32rem;
+			}
+			
+			.gzzhi {
+				margin: 0 0.2rem 0 0.1rem;
+				font-size: 0.32rem;
+			}
+			
+			.fszhi {
+				margin-left: 0.1rem;
+				font-size: 0.32rem;
+			}
+			
+			.xincon {
+				width: 100%;
+			}
+			
+			.xinjiadiv {
+				width: 100%;
+				display: flex;
+				background: #fff;
+				position: relative;
+			}
+			
+			.xinjia1div {
+				display: -webkit-flex;
+				align-items: center;
+				padding: 0.4rem 0;
+			}
+			
+			.xinjia2div,
+			.xinjia3div {
+				line-height: 1.4rem;
+				height: 1.4rem;
+			}
+			
+			.xjtitle {
+				font-size: 0.37rem;
+				color: #6A6A6A;
+				margin-left: 0.4rem;
+				margin-right: 0.62rem;
+			}
+			
+			.right1 span {
+				width: 2.12rem;
+				height: 0.75rem;
+				color: #fff;
+				font-size: 0.34rem;
+				border-radius: 0.4rem;
+				margin-right: 0.3rem;
+				display: inline-block;
+				text-align: center;
+				line-height: 0.75rem;
+			}
+			
+			.right2 {
+				position: absolute;
+				right: 0.6rem;
+			}
+			
+			.right2 img {
+				width: 0.7rem;
+				height: 0.7rem;
+				margin-top: 0.4rem;
+				margin-left: 0.2rem;
+			}
+			
+			.right3 {
+				display: flex;
+				position: absolute;
+				right: 0.6rem;
+			}
+			
+			.shipindiv,
+			.yuyindiv {
+				vertical-align: middle;
+				color: #888;
+			}
+			
+			.shipindiv span,
+			.yuyindiv span {
+				vertical-align: middle;
+			}
+			
+			.right3 img {
+				vertical-align: middle;
+			}
+			
+			.right3 span {
+				font-size: 0.38rem;
+			}
+			
+			.zbvideo {
+				width: 49%;
+				/*height: 4rem;*/
+				height: 7rem;
+				display: inline-block;
+				position: relative;
+				margin: 0 0.5%;
+			}
+			
+			.zbvideo video {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.lianxicon {
+				width: 100%;
+				background: #fff;
+				margin-top: 0.78rem;
+				padding-bottom: 0.78rem;
+			}
+			
+			.lianxili {
+				width: 100%;
+				display: flex;
+				position: relative;
+				margin: 0.93rem 0;
+			}
+			
+			.lianxi-type {
+				font-size: 0.4rem;
+				color: #6A6A6A;
+				margin-left: 0.8rem;
+			}
+			
+			.lianxi-button {
+				color: #333;
+				font-size: 0.38rem;
+				width: 2.4rem;
+				height: 0.8rem;
+				text-align: center;
+				line-height: 0.8rem;
+				position: absolute;
+				right: 0.5rem;
+				top: 50%;
+				margin-top: -0.4rem;
+				background: #ffd100;
+				border-radius: 0.5rem;
+			}
+			
+			.sbzl li {
+				display: inline-block;
+				color: #ADADAD;
+				font-size: 0.4rem;
+				margin-top: 0.4rem;
+				vertical-align: middle;
+			}
+			
+			.sbzl li span {
+				float: left;
+			}
+			
+			.lileft {
+				margin-left: 0.8rem;
+				width: 5rem;
+			}
+			
+			.sbzl1 {
+				margin-top: 0.2rem;
+			}
+			
+			.lianxi-weixin {
+				background: url(img/lianxi-weixin.png) no-repeat;
+				background-size: 2.34rem 0.81rem;
+			}
+			
+			.lianxi-qq {
+				background: url(img/lianxi-qq.png) no-repeat;
+				background-size: 2.34rem 0.81rem;
+			}
+			
+			.lianxi-tel {
+				background: url(img/lianxi-tel.png) no-repeat;
+				background-size: 2.34rem 0.81rem;
+			}
+			
+			.bomline {
+				position: absolute;
+				width: 0.38rem;
+				height: 0.09rem;
+				background: #ffdd00;
+				left: 50%;
+				margin-left: -0.19rem;
+				display: none;
+				top: 0.9rem;
+				border-radius: 0.6rem;
+			}
+			
+			.lineactive {
+				display: block;
+			}
+			
+			.blur {
+				filter: url(blur.svg#blur);
+				/* FireFox, Chrome, Opera */
+				-webkit-filter: blur(4px);
+				/* Chrome, Opera */
+				-moz-filter: blur(4px);
+				-ms-filter: blur(4px);
+				filter: blur(4px);
+				filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=10, MakeShadow=false);
+				/* IE6~IE9 */
+			}
+			
+			.zbyxdiv {
+				width: 100%;
+				height: 1.84rem;
+				background: #fff;
+				margin-bottom: 0.15rem;
+				display: flex;
+				position: relative;
+			}
+			
+			.yxleft {
+				display: flex;
+				/*padding: 0.5rem 0 0 0.37rem;*/
+				padding-left: 0.37rem;
+				justify-content: center;
+				align-items: center;
+			}
+			
+			.yx1imgdiv {
+				width: 1.09rem;
+				height: 1.09rem;
+			}
+			
+			.yx1imgdiv img {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.yx2imgdiv {
+				width: 1.87rem;
+				height: 0.46rem;
+				/*margin: 0.3rem 0 0 0.3rem;*/
+				margin-left: 0.3rem;
+			}
+			
+			.yx2imgdiv img {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.yxright {
+				position: absolute;
+				right: 0.4rem;
+				max-width: 4.7rem;
+				padding-top: 0.43rem;
+				/*background: orange;*/
+			}
+			
+			.yxright div {
+				padding: 0 0.25rem;
+				/*background: orange;*/
+				color: #fff;
+				margin: 0 0.15rem 0.12rem 0;
+				display: inline-block;
+				font-size: 0.34rem;
+			}
+			
+			.zlli {
+				width: 90%;
+				height: 1.06rem;
+				line-height: 1.06rem;
+				border-bottom: 1px solid #f3f4f5;
+				margin: 0 5%;
+			}
+			
+			.zlli.noborder {
+				border-bottom: 0;
+			}
+			
+			.lititle {
+				font-size: 0.34rem;
+				color: #666;
+			}
+			
+			.pjdiv {
+				padding-bottom: 0.2rem;
+			}
+			
+			.pjtitle {
+				width: 100%;
+				height: 1.34rem;
+				border-top: 1px solid #F3F4F4;
+				border-bottom: 1px solid #F3F4F4;
+				line-height: 1.34rem;
+			}
+			
+			.pjimg {
+				width: 0.62rem;
+				height: 0.62rem;
+				vertical-align: middle;
+				margin-left: 0.7rem;
+			}
+			
+			.pjzi {
+				vertical-align: middle;
+				color: #000;
+				font-size: 0.31rem;
+				margin-left: 0.2rem;
+			}
+			
+			.pjli {
+				width: 95%;
+				height: 1.06rem;
+				border-bottom: 1px solid #F3F4F5;
+				display: flex;
+				margin-left: 5%;
+				position: relative;
+			}
+			
+			.pjlileft {
+				vertical-align: middle;
+				line-height: 1.06rem;
+			}
+			
+			.pjrenimg {
+				width: 0.75rem;
+				height: 0.75rem;
+				border-radius: 100%;
+				vertical-align: middle;
+			}
+			
+			.pjrenname {
+				vertical-align: middle;
+				font-size: 0.34rem;
+				color: #999;
+				margin-left: 0.31rem;
+			}
+			
+			.pjliright {
+				position: absolute;
+				right: 0.5rem;
+			}
+			
+			.pjliright span {
+				padding: 0 0.25rem;
+				background: rgb(237, 178, 220);
+				color: #fff;
+				font-size: 0.31rem;
+				display: inline-block;
+				margin-top: 0.25rem;
+				margin-left: 0.1rem;
+			}
+			
+			.headback {
+				width: 0.68rem;
+				height: 0.68rem;
+			}
+			
+			.rightblack {
+				width: 0.68rem;
+				height: 0.68rem;
+			}
+			
+			.videocover {
+				/*background: url(img/01.jpg);*/
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-size: cover;
+				z-index: 100;
+			}
+			
+			.videoseenum {
+				position: absolute;
+				right: 0.3rem;
+				bottom: 0.2rem;
+				color: #fff;
+				z-index: 101;
+			}
+			
+			.videoxinxi {
+				position: absolute;
+				left: 0.2rem;
+				/*bottom: 0.1rem;*/
+				bottom: 0.2rem;
+				z-index: 101;
+			}
+			
+			.sptitle {
+				color: #fff;
+				margin-bottom: 0.15rem;
+				font-size: 0.37rem;
+			}
+			
+			.sphead {
+				width: 0.5rem;
+				height: 0.5rem;
+				border-radius: 100%;
+				vertical-align: middle;
+				margin-right: 0.1rem;
+			}
+			
+			.spname {
+				color: #fff;
+				vertical-align: middle;
+			}
+			
+			.suoimg {
+				position: absolute;
+				top: 0.3rem;
+				right: 0.3rem;
+				z-index: 101;
+				width: 0.5rem;
+				height: 0.5rem;
+				/*width: 93p;*/
+			}
+			
+			.videozhezhao {
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.1);
+				position: absolute;
+				top: 0;
+				z-index: 101;
+			}
+		</style>
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<div class="sbzy">
+			<div class="nav" id="nav">
+				<a href="javascript:void(0)" class="iconfont icontubiao fanhui topfanhui">&#xe603;</a>
+				<img src="img/default.png" alt="" class="smallhead" id="smallhead" />
+				<span class="smallname" id="smallname"></span>
+				<a href="javascript:void(0)" class="iconfont icontubiao diandian topdiandian">&#xe6e5;</a>
+			</div>
+			<div class="sibobg" id="sibobg">
+				<img src="img/default.png" id="sb-head" />
+				<div class="zhezhao">
+					<div class="adiv">
+						<a href="javascript:void(0)" class="iconfont icontubiao fanhui">
+							<img src="img/headback.png" alt="" class="headback" />
+						</a>
+					</div>
+					<div class="jubao">
+						<a href="javascript:void(0)" class="iconfont icontubiao diandian">
+							<img src="img/rightblack.png" alt="" class="rightblack" />
+						</a>
+					</div>
+					<div class="sb-center">
+						<div class="sbname">
+							<span class="zbname" id="sb-name"></span>
+							<img src="" alt="" class="zbsex" id="sbsex" />
+							<img src="" alt="" id="video_online" class="sbvideo" />
+						</div>
+						<div class="sbintro" id="sb-intro"></div>
+						<div class="headline"></div>
+						<div class="citydiv">
+							<img src="img/location.png" alt="" />
+							<span id="cityzb"></span>
+						</div>
+						<div class="headright" id="nozhubo">
+							<div class="jtl">
+								<div class="jtlzhi" id="connect_per"></div>
+								<div class="jtlzi">接通率</div>
+							</div>
+							<div class="shuline"></div>
+							<div class="huaban">
+								<div class="huabanzhi" id="sbcoin"></div>
+								<div class="huabanzi">趣币/分钟</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<!--主播印象-->
+			<div class="zbyxdiv">
+				<div class="yxleft">
+					<div class="yx1imgdiv">
+						<img src="img/yxtu.png" alt="" />
+					</div>
+					<div class="yx2imgdiv">
+						<img src="img/yxzi.png" alt="" />
+					</div>
+				</div>
+				<div class="yxright" id="zbyx">
+					<!--<div style="background: rgb(237,178,220);">惹火撩人</div>
+					<div style="background: rgb(195,178,237);">辣妹</div>
+					<div style="background: rgb(178,220,237);">勾魂</div>-->
+				</div>
+			</div>
+
+			<!--新选项卡-->
+			<div class="sbcon">
+				<div class="contop">
+					<a href="###">
+						<span class="topactive">资料</span>
+						<div class="bomline lineactive"></div>
+					</a>
+					<a href="###" id="pics">
+						<span>相册</span>
+						<div class="bomline"></div>
+					</a>
+					<a href="###">
+						<span>视频</span>
+						<div class="bomline"></div>
+					</a>
+				</div>
+				<div class="conbom swiper-container">
+					<div class="swiper-wrapper">
+						<div id="tab1" class="bom swiper-slide">
+							<!--土豪榜-->
+							<div class="tuhaocon" id="tuhaocon">
+								<div class="thdiv">
+									<img class="thicon" src="img/iconth.png" alt="" />
+									<span>主播守护榜</span>
+								</div>
+								<div class="thuser" id="thuser"></div>
+							</div>
+							<!--资料列表-->
+							<div class="zllist">
+								<li class="zlli">
+									<span class="lititle">年龄</span>
+									<span class="floatr" id="zbbirthday"></span>
+								</li>
+								<li class="zlli">
+									<span class="lititle" id="shencaititle">身材</span>
+									<span class="floatr" id="zbshencai"></span>
+								</li>
+								<li class="zlli" id="zbweightli">
+									<span class="lititle">体重</span>
+									<span class="floatr" id="zbweight"></span>
+								</li>
+								<li class="zlli">
+									<span class="lititle">职业</span>
+									<span class="floatr" id="zbworker"></span>
+								</li>
+								<li class="zlli">
+									<span class="lititle">居住地</span>
+									<span class="floatr" id="zbcity"></span>
+								</li>
+								<li class="zlli">
+									<span class="lititle">擅长话题</span>
+									<span class="floatr" id="zbtopic"></span>
+								</li>
+								<li class="zlli noborder">
+									<span class="lititle">性格</span>
+									<span class="floatr" id="xinggezb"></span>
+								</li>
+							</div>
+							<div class="pjdiv">
+								<div class="pjtitle">
+									<img src="img/pjimg.png" alt="" class="pjimg" />
+									<span class="pjzi">用户评价</span>
+								</div>
+								<div class="pjlist" id="pjlist"></div>
+							</div>
+						</div>
+						<div class="sbxc bom swiper-slide picsbom">
+							<div id="sbxc"></div>
+							<div class="sbxctishi" id="sbxctishi">相册暂时还没有照片</div>
+						</div>
+						<div class="sbxc bom swiper-slide picsbom">
+							<div class="videos" id="videos"></div>
+							<div class="sbxctishi" id="sbsptishi">暂无上传的视频</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="idangerous.swiper.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="jquery.lazyload.js" type="text/javascript" charset="utf-8"></script>
+		<script src="jquery.lazyload.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			function GetRequest() {
+				var url = location.search; //获取url中"?"符后的字串
+				var theRequest = new Object();
+				if(url.indexOf("?") != -1) {
+					var str = url.substr(1);
+					strs = str.split("&");
+					for(var i = 0; i < strs.length; i++) {
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+					}
+				}
+				return theRequest;
+			}
+
+			var request = new Object();
+			request = GetRequest();
+			//token device
+			var yztoken = request['token'];
+			var yzdevice = request['device'];
+			var yzid = request['uid'];
+//			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
+//			var yzdevice = 'android';
+//			var yztoken = '3de74cfd5e58e66f5817e2e520d2b43d269aa52ae521011e19a6f32a4cb57ca7';
+//			var yzdevice = 'iphone';
+//			var yztoken = 'bf3293de175dc3fb8d4dff91b4d9c54800c83805bf309fb3ebedae139adc9a2a';
+//			var yzdevice = 'iphone';
+//			var yzid = 5327;
+//			var yzid = 2143;
+//			1940-2144年龄是时间戳
+			// 获取导航栏到屏幕顶部的距离
+			var oTop = $(".contop").offset().top;
+			//获取导航栏的高度，此高度用于保证内容的平滑过渡
+			var martop = $('.contop').outerHeight();
+			//获取头部到屏幕顶部的距离 
+			var headtop = $('.sibobg').offset().top;
+			var headheight = $('.sibobg').outerHeight();
+			var sTop = 0;
+			// 监听页面的滚动
+			$(window).scroll(function() {
+				$('.nav').css({
+					"display": "block",
+					"position": "fixed",
+					"top": "0"
+				});
+				var h = document.documentElement.scrollTop || document.body.scrollTop;
+				var headerTop = document.getElementById("nav");
+				headerTop.style.background = "rgba(255,255,255,0.4" + h * 2.5 + ")";
+				// 获取页面向上滚动的距离
+				sTop = $(this).scrollTop() + 64;
+				//				console.log(sTop);
+				if(sTop >= headheight) {
+					$('.nav').css('background', 'rgba(255,255,255,1)')
+				}
+				// 当导航栏到达屏幕顶端
+				if(sTop >= oTop) {
+					$('.nav').addClass('navactive');
+				} else {
+					$('.nav').removeClass('navactive');
+				}
+				if(Number(sTop - 64) <= headtop) {
+					$('.nav').css({
+						"display": "none"
+					});
+				}
+			});
+
+			$(".adiv").on("click", function() {
+				window.location.href = 'phone://pop';
+			})
+			$('.topfanhui').on('click', function() {
+				window.location.href = 'phone://pop';
+			})
+
+			var sbname; //私播姓名
+			var sbid = ''; //私播id
+			var sbhead; //私播用户头像
+			var sbcoin = ''; //私播单价 平台币/分钟
+			var sbsex = ''; //性别显示图片
+			var sbcharacter = ''; //性格
+			var sbuser = ''; //是否是主播用户
+			var video_online = ''; //主播在线状态
+			var sb_sex = ''; //性别显示男女
+			var sb_isvip = ''; //是否是vip用户
+			var sbfigure = ''; //身材
+			var sbyxhtml = '';
+			var zbxingge = ''; //性格
+			function getxinxi() {
+				var zhuyeurl = geturl(oneurl, 'broadcast/public/getinfo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: zhuyeurl,
+					async: false,
+					dataType: "json",
+					data: {
+						"id": yzid
+					},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						sbname = result.data.nickname;
+						sbid = result.data.id;
+						sbage = result.data.birthday;
+						sbintro = result.data.signature;
+						sbhead = result.data.avatar + '?' + parseInt(Math.random() * 100 + 1);
+						//						document.getElementById('sb-head').src = sbhead;
+						document.getElementById('sb-head').src = preloadimg(sbhead, imgload);
+						document.getElementById('smallhead').src = sbhead;
+						sbcoin = result.data.anchor_coin;
+						sbcharacter = result.data.character;
+						sbuser = result.data.is_anchor;
+						if(sbuser == 0) {
+							document.getElementById('nozhubo').style.display = 'none';
+							document.getElementById('video_online').style.display = 'none';
+						}
+
+						sbsex = result.data.sex;
+						if(sbsex == 1) {
+							sbsex = 'img/man.png';
+						} else if(sbsex == 2) {
+							sbsex = 'img/woman.png';
+						}
+
+						video_online = result.data.video_online;
+						if(video_online == 0) {
+							videoonlinesrc = 'img/lixian.png';
+						} else if(video_online == 1) {
+							videoonlinesrc = 'img/kongxian.png';
+						} else {
+							videoonlinesrc = 'img/manglu.png';
+						}
+						document.getElementById('video_online').src = videoonlinesrc;
+						document.getElementById('sb-name').innerHTML = sbname;
+						document.getElementById('smallname').innerHTML = sbname;
+						document.getElementById('zbbirthday').innerHTML = result.data.age + '岁';
+						document.getElementById('zbcity').innerHTML = result.data.city;
+						document.getElementById('cityzb').innerHTML = result.data.city;
+						document.getElementById('sb-intro').innerHTML = sbintro;
+						document.getElementById('sbcoin').innerHTML = sbcoin;
+						document.getElementById('sbsex').src = sbsex;
+						document.getElementById('connect_per').innerHTML = result.data.connect_per + '%';
+						//						console.log(result.data.comment);
+						var zbyxtags = result.data.comment;
+						for(var i = 0; i < zbyxtags.length; i++) {
+							if(zbyxtags.length == 1) {
+								sbyxhtml = '<div style="background: rgb(237,178,220);">' + zbyxtags[0] + '</div>';
+							} else if(zbyxtags.length == 2) {
+								sbyxhtml = '<div style="background: rgb(237,178,220);">' + zbyxtags[0] + '</div>' +
+									'<div style="background: rgb(195,178,237);">' + zbyxtags[1] + '</div>';
+							} else {
+								sbyxhtml = '<div style="background: rgb(237,178,220);">' + zbyxtags[0] + '</div>' +
+									'<div style="background: rgb(195,178,237);">' + zbyxtags[1] + '</div>' +
+									'<div style="background: rgb(178,220,237);">' + zbyxtags[2] + '</div>';
+							}
+						}
+						document.getElementById('zbyx').innerHTML = sbyxhtml;
+						sbfigure = result.data.figure;
+						var figurezhi = sbfigure.indexOf("cm") != -1;
+						if(figurezhi == true) {
+							var sbfigurenew = sbfigure.split(',');
+							for(var i = 0; i < sbfigurenew.length; i++) {
+								document.getElementById('zbshencai').innerHTML = sbfigurenew[0];
+								document.getElementById('zbweight').innerHTML = sbfigurenew[1];
+							}
+							document.getElementById('shencaititle').innerHTML = '身高';
+						} else {
+							document.getElementById('zbshencai').innerHTML = result.data.figure;
+							//document.getElementById('zbweightli').style.display = 'none';
+						}
+						//document.getElementById('zbshencai').innerHTML = result.data.figure;
+						document.getElementById('zbworker').innerHTML = result.data.job;
+						document.getElementById('zbtopic').innerHTML = result.data.topic;
+						document.getElementById('xinggezb').innerHTML = result.data.character;
+					},
+					error: function() {
+						console.log('获取私播用户信息出错了');
+					}
+				});
+				var chuaninfo = {'name':sbname,'headimg':sbhead};
+				return chuaninfo;
+			}
+			getxinxi();
+
+			function preloadimg(url, callback) {
+				var img = new Image();
+				//				console.log(img);
+				img.src = url;
+				//				console.log(img.src);
+				if(img.complete == true) {
+					callback.call(img);
+					return;
+					//					console.log('complete')
+				}
+				if(img.onerror == true) {
+					//					console.log('error');
+				}
+				img.onload = function() {
+					//img.onload = null;
+					callback.call(img);
+					//					console.log('onload');
+				}
+				return img.src;
+			}
+
+			function imgload() {
+				//console.log('111');
+			}
+			var plhtml = '';
+			var plbiaoqian = '';
+			var sbplspan = '';
+			var plpage = 1;
+			//获取评论
+			function getpinglun() {
+				var plurl = geturl(oneurl, 'broadcast/public/comment');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: plurl,
+					dataType: "json",
+					data: {
+						"id": yzid
+					},
+					success: function(result) {
+						//						console.log(JSON.stringify(result));
+						if(result.data.length != 0) {
+							for(var i = 0; i < result.data.length; i++) {
+								plbiaoqian = result.data[i].content;
+								var sbpl = plbiaoqian.split(",");
+								for(var j = 0; j < sbpl.length; j++) {
+									if(sbpl.length == 1) {
+										sbplspan = '<span class="tag" style="background: rgb(237,178,220);">' + sbpl[0] + '</span>';
+									} else if(sbpl.length == 2) {
+										sbplspan = '<span class="tag" style="background: rgb(237,178,220);">' + sbpl[0] + '</span>' +
+											'<span class="tag" style="background: rgb(195,178,237);">' + sbpl[1] + '</span>';
+									} else {
+										sbplspan = '<span class="tag" style="background: rgb(237,178,220);">' + sbpl[0] + '</span>' +
+											'<span class="tag" style="background: rgb(195,178,237);">' + sbpl[1] + '</span>' +
+											'<span class="tag" style="background: rgb(178,220,237);">' + sbpl[2] + '</span>';
+									}
+								}
+								plhtml += '<li class="pjli">' +
+									'<div class="pjlileft">' +
+									'<img src="' + result.data[i]['avatar'] + '" alt="" class="pjrenimg"/>' +
+									'<span class="pjrenname">' + result.data[i]['nickname'] + '</span>' +
+									'</div>' +
+									'<div class="pjliright">' + sbplspan +
+									'</div>' +
+									'</li>';
+							}
+						}
+						document.getElementById('pjlist').innerHTML = plhtml;
+					},
+					error: function() {
+						console.log('获取评论失败');
+					}
+				});
+			}
+			getpinglun();
+
+			var sbpichtml = '';
+			var isvip = ''; //是否是VIP可见
+			var sburl = '';
+			var sz0 = [];
+			var sz1 = [];
+			var iii = 0;
+			var videos0 = [];
+			var videos1 = [];
+
+			function getxiangce() {
+				var xcurl = geturl(oneurl, 'broadcast/public/photo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: xcurl,
+					dataType: "json",
+					data: {
+						"id": yzid
+					},
+					success: function(result) {
+						//console.log(JSON.stringify(result));
+						//console.log(JSON.stringify(result.data.length));
+						if(result.data.length == 0) {
+							document.getElementById('sbxctishi').style.display = 'block';
+						} else {
+							result.data.sort(function(a, b) {
+								return a.is_vip - b.is_vip
+							})
+							//得到url循环显示到页面
+							for(var i = 0; i < result.data.length; i++) {
+								if(result.data[i].is_vip == 0) {
+									sz0.push(i);
+									sbpichtml += '<div class="sbpic">' +
+										'<a href="###" class="picsa"><img src=' + result.data[i]['url'] + ' alt="" data-preview-src="" data-preview-group="2" class="cover"/></a>' +
+										'</div>';
+								}
+								if(result.data[i].is_vip == 1) {
+									sz1.push(i);
+									sbpichtml += '<div class="sbpic">' +
+										'<a href="###" class="picsa"><img src=' + result.data[i]['url'] + ' alt="" data-preview-src="" data-preview-group="2" class="cover blur"/></a>' +
+										'</div>';
+								}
+							}
+							document.getElementById('sbxc').innerHTML = sbpichtml;
+							var picindex = '';
+							$('.sbpic').click(function() {
+								picindex = $(this).index();
+								if(picindex < sz0.length) {
+									window.location.href = 'swiper.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&sburl=' + picindex;
+								} else {
+									window.location.href = 'phone://ForVIP';
+								}
+							})
+						}
+					},
+					error: function() {
+						console.log('获取私播相册失败');
+					}
+				});
+			}
+			getxiangce();
+
+			var tabsSwiper = new Swiper('.swiper-container', {
+				autoHeight: true,
+				onSlideChangeStart: function() {
+					$(".contop .topactive").removeClass('topactive');
+					$(".contop .lineactive").removeClass('lineactive');
+					$(".contop a").eq(tabsSwiper.activeIndex).children().addClass('topactive');
+					$(".contop a").eq(tabsSwiper.activeIndex).children('.bomline').addClass('lineactive');
+				}
+			});
+
+			$(".contop a").on('touchstart mousedown', function(e) {
+				e.preventDefault();
+				$(".contop .topactive").removeClass('topactive');
+				$(".contop .lineactive").removeClass('lineactive');
+				$(this).children().addClass('topactive');
+				$(this).children('.bomline').addClass('lineactive');
+				tabsSwiper.swipeTo($(this).index());
+			});
+
+			$(".contop a").click(function(e) {
+				e.preventDefault();
+			});
+
+			$('#tuhaocon').click(function() {
+				window.location.href = 'richlist.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice;
+			})
+			var thuser = ''; //土豪前三个头像
+			function getrichlist() {
+				var richlisturl = geturl(oneurl, 'broadcast/public/rich');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: richlisturl,
+					dataType: "json",
+					data: {
+						"id": yzid
+					},
+					success: function(result) {
+						//						console.log(JSON.stringify(result));
+						if(result.msg.length == 1) {
+							thuser += '<img src="' + result.msg[0].avatar + '" alt="" />';
+							document.getElementById('thuser').innerHTML = thuser;
+						} else if(result.msg.length == 2) {
+							thuser += '<img src="' + result.msg[0].avatar + '" alt="" />' +
+								'<img src="' + result.msg[1].avatar + '" alt="" />';
+							document.getElementById('thuser').innerHTML = thuser;
+						} else if(result.msg.length == 2) {
+							thuser += '<img src="' + result.msg[0].avatar + '" alt="" />' +
+								'<img src="' + result.msg[1].avatar + '" alt="" />' +
+								'<img src="' + result.msg[2].avatar + '" alt="" />';
+							document.getElementById('thuser').innerHTML = thuser;
+						}
+					},
+					error: function() {
+						console.log('获取土豪榜列表失败');
+					}
+				});
+			}
+			getrichlist();
+
+			$('.diandian').click(function() {
+				if(sbuser == 1) {
+					sbuser = 1
+				} else if(sbuser == 0) {
+					sbuser = 2
+				}
+				console.log(sbuser);
+				window.location.href = 'jubao.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&sbuser=' + sbuser;
+			})
+
+			var videohtml = '';
+			var videoindex = '';
+			var videourl = '';
+			var shouinfo = getxinxi();
+			var vzbname = shouinfo['name'];
+			var vzbhead = shouinfo['headimg'];
+			//获取视频
+			function getvideo() {
+				var videolisturl = geturl(oneurl, 'broadcast/public/video');
+				//				var videolisturl = 'video.json';
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: videolisturl,
+					dataType: "json",
+					data: {
+						"id": yzid
+					},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						if(result.data.length == 0) {
+							document.getElementById('sbsptishi').style.display = 'block';
+						} else {
+							result.data.sort(function(a, b) {
+								return a.is_vip - b.is_vip
+							})
+							//得到url循环显示到页面
+							for(var i = 0; i < result.data.length; i++) {
+								if(result.data[i].is_vip == 1) {
+									videos1.push(i);
+									videohtml += '<div class="zbvideo">' +
+										'<div class="videocover" style="background-image: url(img/zhanwei.png);"></div>' +
+										'<div class="videozhezhao"></div>' +
+										'<div class="videoxinxi">' +
+//										'<p class="sptitle">可爱吗</p>' +
+										'<div class="spuserxinxi">' +
+										'<img src="'+vzbhead+'" alt="" class="sphead" />' +
+										'<span class="spname">'+vzbname+'</span>' +
+										'</div>' +
+										'</div>' +
+										'<div class="videoseenum">'+result.data[i]['views']+'观看</div>' +
+										'<img src="img/vipsuo.png" alt="" class="suoimg" />' +
+										'<video src="' + result.data[i]['url'] + '" class="videoli"></video>' +
+										'</div>';
+								} else if(result.data[i].is_vip == 0) {
+									videos0.push(i);
+									videohtml += '<div class="zbvideo">' +
+										'<div class="videocover" style="background-image: url('+result.data[i]['pic']+');"></div>' +
+										'<div class="videozhezhao"></div>' +
+										'<div class="videoxinxi">' +
+//										'<p class="sptitle">可爱吗</p>' +
+										'<div class="spuserxinxi">' +
+										'<img src="'+vzbhead+'" alt="" class="sphead" />' +
+										'<span class="spname">'+vzbname+'</span>' +
+										'</div>' +
+										'</div>' +
+										'<div class="videoseenum">'+result.data[i]['views']+'观看</div>' +
+										'<video src="' + result.data[i]['url'] + '" class="videoli"></video>' +
+										'</div>';
+								}
+							}
+							document.getElementById('videos').innerHTML = videohtml;
+
+							$('.zbvideo').click(function() {
+								videoindex = $(this).index();
+								videourl = $(this).children(0).attr('src');
+								//								window.location.href = 'updownhua.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&sbindex=' + videoindex;
+								//								window.location.href = 'updownhuanew.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&sbindex=' + videoindex;
+								if(videoindex < videos0.length) {
+									window.location.href = 'updownhua.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&sbindex=' + videoindex;
+								} else {
+									window.location.href = 'phone://ForVIP';
+									//									alert('vip不能看');
+									//									window.location.href = 'http://www.baidu.com';
+								}
+							})
+						}
+					},
+					error: function() {
+						console.log('获取视频列表失败');
+					}
+				});
+			}
+			getvideo();
+		</script>
+	</body>
+
+</html>

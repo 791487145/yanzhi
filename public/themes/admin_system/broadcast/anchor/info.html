@@ -1,0 +1,121 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('broadcast/anchor/index')}">主播管理</a></li>
+        <li class="active"><a>主播信息</a></li>
+    </ul>
+    <form id="form1" method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('broadcast/anchor/exam')}">
+        <div class="col-md-9">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">姓名</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" readonly="readonly" value="{$user['truename']}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">身份证号码</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" readonly="readonly" value="{$user['idnum']}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">昵称</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" readonly="readonly" value="{$user['user_nickname']}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">所属工会</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" readonly="readonly" value="{$anchor['guide_id'] == 0 ? '无' : $guide['name']}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">相册</label>
+                <div class="col-md-6 col-sm-10">
+                    <foreach name="photo" item="vo">
+                        <img width="49%" src="/upload/{$vo['url']}"/>
+                    </foreach>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">审核记录</label>
+                <div class="col-md-6 col-sm-10">
+                    <foreach name="exam" item="vo">
+                        <php>
+                            $anchorStatuses=[lang('ANCHOR_STATUS_WAIT'),lang('ANCHOR_STATUS_SUCC'),lang('ANCHOR_STATUS_FAIL')];
+                            if($vo != ""){
+                                $tmp = explode(",",$vo);
+                                $tmp[2] = isset($tmp[2]) ? ( '，' . $tmp[2] ) : '';
+                        </php>
+                        【{:date('Y-m-d H:i:s',$tmp[0])}】{$anchorStatuses[$tmp[1]]}{$tmp[2]}<br>
+                        <php>
+                            }
+                        </php>
+                    </foreach>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <table class="table table-bordered">
+                <tr><th><b>头像</b></th></tr>
+                <tr>
+                    <td>
+                        <div style="text-align: center;">
+                            <img src="{:url('user/public/avatar',array('id'=>$user['id']))}" width="135"
+                                 style="cursor: pointer"/>
+                        </div>
+                    </td>
+                </tr>
+                <tr> <th><b>申请时间</b></th></tr>
+                <tr>
+                    <td>
+                        <input class="form-control" type="text" readonly="readonly" value="{:date('Y-m-d H:i:s',$anchor['add_time'])}">
+                    </td>
+                </tr>
+                <tr> <th><b>审核时间</b></th></tr>
+                <tr>
+                    <td>
+                        <php>
+                            $auditTime = "-";
+                            if ($anchor['audit_time'] > 0)$auditTime = date('Y-m-d H:i:s',$anchor['audit_time']);
+                        </php>
+                        <input class="form-control" type="text" readonly="readonly" value="{$auditTime}">
+                    </td>
+                </tr>
+                <tr> <th><b>审核</b></th></tr>
+                <tr>
+                    <td>
+                        <php>
+                            $anchorStatuses=[lang('ANCHOR_STATUS_WAIT'),lang('ANCHOR_STATUS_SUCC'),lang('ANCHOR_STATUS_FAIL')];
+                            $selectStatuse = ['','',''];
+                            $selectStatuse[$anchor['status']] = 'selected';
+                        </php>
+                        <select class="form-control" name="status" id="status-select">
+                            <option value="0" {$selectStatuse[0]}>{$anchorStatuses[0]}</option>
+                            <option value="1" {$selectStatuse[1]}>{$anchorStatuses[1]}</option>
+                            <option value="2" {$selectStatuse[2]}>{$anchorStatuses[2]}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input class="form-control" type="text" id="explain" name="explain" value="" placeholder="未通过说明">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="hidden" name="id" value="{$anchor['id']}">
+                        <button type="submit" class="btn btn-primary js-ajax-submit">提交</button>
+                        <a class="btn btn-default" href="{:url('broadcast/anchor/info',['next'=>1,'id'=>$user['id']])}">下一个</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

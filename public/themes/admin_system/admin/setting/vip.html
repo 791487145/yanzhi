@@ -1,0 +1,33 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:url('setting/app')}">APP设置</a></li>
+			<li><a href="{:url('setting/money')}">提成设置</a></li>
+			<li class="active"><a>VIP设置</a></li>
+			<li><a href="{:url('setting/broadcast')}">直播设置</a></li>
+			<li><a href="{:url('appmenu/index')}">菜单设置</a></li>
+		</ul>
+		<form method="post" class="form-horizontal js-ajax-form margin-top-20" role="form" action="{:url('setting/vipPost')}">
+			<foreach name="list.list" key="key" item="vo">
+				<div class="form-group">
+					<label for="input-money{$key + 1}" class="col-sm-2 control-label">方式{$key + 1}：</label>
+					<div class="col-md-6 col-sm-10">
+						<input type="text" style="float: left; width: 100px;" class="form-control" id="input-money{$key + 1}" name="money[]" value="{$vo.money}">
+						<label style="float: left; width: 100px; text-align: left;" class="control-label">元购买</label>
+						<input type="text" style="float: left; width: 100px;" class="form-control" id="input-days{$key + 1}" name="days[]" value="{$vo.days}">
+						<label style="float: left; width: 100px; text-align: left;" class="control-label">天VIP</label>
+					</div>
+				</div>
+			</foreach>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary js-ajax-submit">{:lang('SAVE')}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+	</head>
+
+	<body>
+		<script type="text/javascript">
+			window.onload = function() {
+				var images = new Array();
+				function preload() {
+					for(var i = 0; i < preload.arguments.length; i++) {
+						images[i] = new Image();
+						images[i].src = preload.arguments[i];
+					}
+				}
+				preload(
+					"http://yz.papaqv.cn/wap/img/default.png",
+					"http://yz.papaqv.cn/wap/img/headback.png",
+					"http://yz.papaqv.cn/wap/img/iconth.png",
+					"http://yz.papaqv.cn/wap/img/kongxian.png",
+					"http://yz.papaqv.cn/wap/img/lixian.png",
+					"http://yz.papaqv.cn/wap/img/location.png",
+					"http://yz.papaqv.cn/wap/img/man.png",
+					"http://yz.papaqv.cn/wap/img/manglu.png",
+					"http://yz.papaqv.cn/wap/img/pjimg.png",
+					"http://yz.papaqv.cn/wap/img/rightblack.png",
+					"http://yz.papaqv.cn/wap/img/woman.png",
+					"http://yz.papaqv.cn/wap/img/yxtu.png",
+					"http://yz.papaqv.cn/wap/img/yxzi.png"
+				)
+			}
+		</script>
+	</body>
+
+</html>

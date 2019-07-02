@@ -1,0 +1,46 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a>主播等级管理</a></li>
+    </ul>
+    <form method="post" class="js-ajax-form margin-top-20">
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>等级名称</th>
+                <th>直播平台提成</th>
+                <th>私播平台提成</th>
+                <th>等级积分</th>
+                <th>{:lang('STATUS')}</th>
+                <th><a href="javascript:parent.openIframeLayer('{:url('broadcast/level/add')}','添加等级',{area: ['600px', '650px']});">添加</a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <php>
+                $colorStatus = ['red','green'];
+                $arrStatus = ['已停用','使用中'];
+            </php>
+            <foreach name="list" item="vo">
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td><img height="25" src="{$vo['icon']}"/> {$vo.name}</td>
+                    <td>{$vo.live_reward}%</td>
+                    <td>{$vo.single_reward}%</td>
+                    <td>{$vo.point}</td>
+                    <td style="color: {$colorStatus[$vo['status']]}">{$arrStatus[$vo['status']]}</td>
+                    <td>
+                        <a href="javascript:parent.openIframeLayer('{:url('broadcast/level/edit',array('id'=>$vo['id']))}','{$vo.name} 编辑',{area: ['600px', '650px']});">{:lang('EDIT')}</a>
+                        <a class="js-ajax-delete" href="{:url('broadcast/level/delete',array('id'=>$vo['id']))}">删除</a>
+                    </td>
+                </tr>
+            </foreach>
+            </tbody>
+        </table>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

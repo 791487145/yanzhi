@@ -1,0 +1,12 @@
+var down_ai_zjy=['http://yfb.fubeh.com'];
+var down_yfb=['http://ite.epyji.com'];
+var down_aiai=['http://ite.awqbq.com'];
+var down_yf_ios=['http://ite.ytzvt.com'];
+var down_ios=['http://aiai.wangyishop.com'];
+var down_gzh=['http://syxhjm.com'];
+var down_zjy_ai=['http://yfb.lrenwu.com'];
+var down_zjy_yf=['http://ite.ssudl.com'];
+var down_zjy_ios=['http://ite.akvqz.com'];
+var down_gr=['http://aiai.4000070922.com'];
+var down_zjy_gzh=['http://yfb.symtzp.com'];
+var down_apk=['http://dl.zztxwm.com'];

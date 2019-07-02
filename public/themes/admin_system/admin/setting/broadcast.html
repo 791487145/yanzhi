@@ -1,0 +1,57 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:url('setting/app')}">APP设置</a></li>
+			<li><a href="{:url('setting/money')}">提成设置</a></li>
+			<li><a href="{:url('setting/vip')}">VIP设置</a></li>
+			<li class="active"><a>直播设置</a></li>
+			<li><a href="{:url('appmenu/index')}">菜单设置</a></li>
+		</ul>
+		<form method="post" class="form-horizontal js-ajax-form margin-top-20" role="form" action="{:url('setting/broadcastPost')}">
+			<div class="form-group">
+				<label for="input-chatserver" class="col-sm-2 control-label">聊天服务器地址</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-chatserver" name="chatserver" value="{$chatserver|default=''}">
+					<p class="help-block">聊天服务器地址，socket长连接服务器地址</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-barrage_fee" class="col-sm-2 control-label">弹幕单价</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-barrage_fee" name="barrage_fee" value="{$barrage_fee|default=10}">
+					<p class="help-block">直播间发送一次弹幕的价格，单位：平台币，默认10平台币</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-userlist_time" class="col-sm-2 control-label">观众刷新频率</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-userlist_time" name="userlist_time" value="{$userlist_time|default=60}">
+					<p class="help-block">直播间内观众列表的刷新频率，单位：秒，默认60秒</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-shut_time" class="col-sm-2 control-label">禁言时间</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-shut_time" name="shut_time" value="{$shut_time|default=60}">
+					<p class="help-block">观众被禁言一次的时间，单位：秒，默认60秒</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-kick_time" class="col-sm-2 control-label">踢人时间</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-kick_time" name="kick_time" value="{$kick_time|default=300}">
+					<p class="help-block">观众被提出房间后禁止进入的时间，单位：秒，默认300秒</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary js-ajax-submit">{:lang('SAVE')}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

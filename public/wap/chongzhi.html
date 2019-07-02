@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title>充值记录</title>
+		<link rel="stylesheet" type="text/css" href="icons/iconfont.css" />
+		<style type="text/css">
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+				position: relative;
+			}
+			
+			a {
+				text-decoration: none;
+				outline:none;
+				-webkit-tap-highlight-color: rgba(0,0,0,0);
+			}
+			
+			li {
+				list-style: none;
+				width: 90%;
+				margin: 0 5%;
+				border-bottom: 1px solid #ccc;
+				display: block;
+				display: flex;
+				height: 2.12rem;
+				position: relative;
+			}
+			
+			.leftp1 {
+				color: #333;
+				font-size: 0.43rem;
+				margin: 0.5rem 0 0.2rem 0;
+			}
+			
+			.leftp2 {
+				color: #b5b5b5;
+				font-size: 0.37rem;
+			}
+			
+			.liright {
+				position: absolute;
+				right: 0;
+			}
+			
+			.rightp1 {
+				color: #fd5836;
+				font-size: 0.5rem;
+				margin: 0.5rem 0 0.2rem 0;
+			}
+			
+			.rightp2 {
+				color: #B5B5B5;
+				font-size: 0.37rem;
+				text-align: center;
+			}
+			
+			.czjl {
+				width: 100%;
+				text-align: center;
+				font-size: 0.43rem;
+				position: absolute;
+				height: 1rem;
+				line-height: 1rem;
+				top: 50%;
+				margin-top: -0.5rem;
+				display: none;
+			}
+			.liubai{
+				width: 100%;
+				height: 0.2rem;
+				background: #f5f5f5;
+			}
+		</style>
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<div class="liubai"></div>
+		<div class="xflist" id="czlist">
+			<!--<li>
+				<div class="lileft">
+					<p class="leftp1">购买会员</p>
+					<p class="leftp2">2018-09-24 13:39:08</p>
+				</div>
+				<div class="liright">
+					<p class="rightp1">-39.0</p>
+					<p class="rightp2">支付宝</p>
+				</div>
+			</li>
+			<li>
+				<div class="lileft">
+					<p class="leftp1">购买会员</p>
+					<p class="leftp2">2018-09-24 13:39:08</p>
+				</div>
+				<div class="liright">
+					<p class="rightp1">-39.0</p>
+					<p class="rightp2">支付宝</p>
+				</div>
+			</li>
+			<li>
+				<div class="lileft">
+					<p class="leftp1">购买会员</p>
+					<p class="leftp2">2018-09-24 13:39:08</p>
+				</div>
+				<div class="liright">
+					<p class="rightp1">-39.0</p>
+					<p class="rightp2">支付宝</p>
+				</div>
+			</li>-->
+			<div class="czjl" id="czjl">暂无充值记录</div>
+		</div>
+
+		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			//			获取token device
+			//			传值:window.location.href = 'RegOk.htm?email='+email+'&name='+username+''; 
+			function GetRequest() {
+				var url = location.search; //获取url中"?"符后的字串
+				var theRequest = new Object();
+				if(url.indexOf("?") != -1) {
+					var str = url.substr(1);
+					//					alert(str);
+					strs = str.split("&");
+					for(var i = 0; i < strs.length; i++) {
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+					}
+				}
+				return theRequest;
+			}
+
+			var request = new Object();
+			request = GetRequest();
+			//token device
+			var yztoken = request['token'];
+			var yzdevice = request['device'];
+			var yzid = request['uid'];
+			
+
+			var czjlhtml = '';
+			var cztime = '';
+
+			function getchongzhi() {
+//				var chongzhiurl = 'http://yz.baiyoumi.cn/api/pay/index/payList';
+				var chongzhiurl = geturl(oneurl,'pay/index/payList');
+//				var chongzhiurl = 'json.json';
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: chongzhiurl,
+					dataType: "json",
+					data: {
+						"id": yzid
+					},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						if(result.msg == '暂无数据') {
+							document.getElementById('czjl').style.display = 'block';
+						} else {
+							for(var i = 0; i < result.data.length; i++) {
+								//充值类型
+								var cztype = result.data[i]['type'];
+								if(cztype == 2) {
+									cztype = 'VIP充值';
+								} else if(cztype == 1) {
+									cztype = '余额充值';
+								}
+								//支付方式
+								var mode = result.data[i]['mode'];
+								if(mode == 2) {
+									mode = '微信支付';
+								} else if(mode == 1) {
+									mode = '支付宝支付';
+								}
+								//时间戳
+								cztime = result.data[i]['time'];
+								//获取时间
+								var date = new Date(cztime * 1000);
+								Y = date.getFullYear() + '-';
+								M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+								D = change(date.getDate()) + ' ';
+								h = change(date.getHours()) + ':';
+								m = change(date.getMinutes()) + ':';
+								s = change(date.getSeconds());
+
+								function change(t) {
+									if(t < 10) {
+										return "0" + t;
+									} else {
+										return t;
+									}
+								}
+								czjlhtml += '<li>' +
+									'<div class="lileft">' +
+									'<p class="leftp1">' + cztype + '</p>' +
+									'<p class="leftp2">' + Y + M + D + h + m + s + '</p>' +
+									'</div>' +
+									'<div class="liright">' +
+									'<p class="rightp1">' + result.data[i]['money'] + '元</p>' +
+									'<p class="rightp2">' + mode + '</p>' +
+									'</div>' +
+									'</li>';
+							}
+							document.getElementById('czlist').innerHTML = czjlhtml;
+						}
+					},
+					error: function(result) {
+						console.log('获取充值记录出错');
+						console.log(JSON.stringify(result));
+					}
+				});
+			}
+			getchongzhi();
+		</script>
+	</body>
+
+</html>

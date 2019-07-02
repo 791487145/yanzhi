@@ -1,0 +1,184 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('user/virtual/index')}">虚拟用户管理</a></li>
+        <li><a href="{:url('user/virtual/add')}">添加虚拟用户</a></li>
+        <li class="active"><a>评论管理</a></li>
+    </ul>
+    <form method="post" class="well form-inline margin-top-20" >
+    <php>
+        $contents = ['风情万种','完美身材','性感女妖','人美歌甜','期待再聊','丰满诱人','知性大方','萌妹子','秀色可餐','佛系少女','气质熟女','惹火撩人','辣妹子','勾魂'];
+    </php>
+    <foreach name="contents" key="k" item="c">
+        <neq name="k" value="0">|</neq>
+        <a href="javascript:;" class="a_content">{$c}</a>
+    </foreach>
+    </form>
+    <form method="post" class="js-ajax-form margin-top-20">
+    <table class="table table-hover table-bordered">
+        <thead>
+        <tr>
+            <th>用户ID</th>
+            <th>用户昵称</th>
+            <th>内容</th>
+            <th>评论时间</th>
+            <th>状态</th>
+            <th>{:lang('ACTIONS')}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <php>
+            $status = ['待审核','已通过','已拒绝'];
+        </php>
+        <foreach name="list" item="vo">
+            <tr>
+                <td width="100px"><input type="text" class="form-control" id="user_id_{$vo.id}" value="{$vo.user_id}"></td>
+                <td width="200px"><img width="25" height="25" src="{:url('user/public/avatar',array('id'=>$vo['user_id']))}"/>{$vo['nickname']?$vo['nickname']:lang('NOT_FILLED')}</td>
+                <td><input type="text" class="form-control content" id="content_{$vo.id}" value="{$vo.content}"></td>
+                <td width="200px"><input class="form-control js-bootstrap-datetime" id="add_time_{$vo.id}" type="text" value="{:date('Y-m-d H:i:s',$vo['add_time'])}"></td>
+                <td width="120px">
+                    <select class="form-control" id="status_{$vo.id}">
+                        <foreach name="status" key="k" item="t">
+                            <php>
+                                $selected = "";
+                                if($vo['status'] == $k)$selected = 'selected="selected"';
+                            </php>
+                            <option value="{$k}" {$selected}>{$t}</option>
+                        </foreach>
+                    </select>
+                </td>
+                <td>
+                    <a href="{:url('user/virtual/commentSave')}" class="ja-save-btn" data-id="{$vo['id']}">保存</a>
+                    <a href="{:url('user/virtual/commentDel',array('id'=>$vo['id']))}" class="js-ajax-delete">删除</a>
+                </td>
+            </tr>
+        </foreach>
+        <tr>
+            <td width="100px"><input type="text" class="form-control" id="user_id_0" value=""></td>
+            <td width="100px">-</td>
+            <td><input type="text" class="form-control content" id="content_0" value=""></td>
+            <td width="200px"><input class="form-control js-bootstrap-datetime" id="add_time_0" type="text" value="{:date('Y-m-d H:i:s',time())}"></td>
+            <td width="120px">
+                <select class="form-control" id="status_0">
+                    <foreach name="status" key="k" item="t">
+                        <php>
+                            $selected = "";
+                            if(1 == $k)$selected = 'selected="selected"';
+                        </php>
+                        <option value="{$k}" {$selected}>{$t}</option>
+                    </foreach>
+                </select>
+            </td>
+            <td>
+                <a href="{:url('user/virtual/commentSave')}" class="ja-save-btn" data-id="0">添加</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+<script>
+    var editId = 0;
+    $('.content').on('click',function (e) {
+        editId = this.id;
+    });
+    $('.a_content').on('click',function (e) {
+        if (editId == 0){
+            art.dialog({
+                content: "请选择内容文本框",
+                icon: 'warning',
+                ok: function () {
+                    this.title("操作错误");
+                    return true;
+                }
+            });
+        }
+        var obj = $("#"+editId);
+        var h = obj.val();
+        if (h != '') h = h + ',';
+        h = h + this.innerText;
+        obj.val(h);
+    });
+    $('.ja-save-btn').on('click', function (e) {
+        e.preventDefault();
+        var $_this  = this,
+                $this   = $($_this),
+                href    = $this.data('href'),
+                refresh = $this.data('refresh'),
+                msg     = $this.data('msg'),
+                id     = $this.data('id');
+        href        = href ? href : $this.attr('href');
+        if (!msg) {
+            msg = "确定保存吗？";
+        }
+
+        art.dialog({
+            title: false,
+            icon: 'question',
+            content: msg,
+            follow: $_this,
+            close: function () {
+                $_this.focus(); //关闭时让触发弹窗的元素获取焦点
+                return true;
+            },
+            ok: function () {
+                var fdata = new FormData();
+                fdata.append('anchor_id', {$uid});
+                fdata.append('id', id);
+                fdata.append('user_id', $("#user_id_"+id).val());
+                fdata.append('content', $("#content_"+id).val());
+                fdata.append('add_time', $("#add_time_"+id).val());
+                fdata.append('status', $("#status_"+id).val());
+                $.ajax({
+                    url: href,
+                    type: 'post',
+                    data:fdata,
+                    processData:false,
+                    contentType:false,
+                    success: function (data) {
+                        if (data.code == 1) {
+                            noty({
+                                text: data.msg,
+                                type: 'success',
+                                layout: 'topCenter',
+                                modal: true,
+                                timeout: 800,
+                                callback: {
+                                    afterClose: function () {
+                                        if (refresh == undefined || refresh) {
+                                            if (data.url) {
+                                                //返回带跳转地址
+                                                window.location.href = data.url;
+                                            } else {
+                                                //刷新当前页
+                                                reloadPage(window);
+                                            }
+                                        }
+                                    }
+                                }
+                            }).show();
+
+                        } else if (data.code == 0) {
+                            //art.dialog.alert(data.info);
+                            art.dialog({
+                                content: data.msg,
+                                icon: 'warning',
+                                ok: function () {
+                                    this.title(data.msg);
+                                    return true;
+                                }
+                            });
+                        }
+                    }
+                })
+            },
+            cancelVal: '关闭',
+            cancel: true
+        });
+    });
+</script>
+</body>
+</html>

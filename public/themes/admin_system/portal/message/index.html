@@ -1,0 +1,54 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a>系统消息</a></li>
+        <li><a href="{:url('message/add')}">添加消息</a></li>
+    </ul>
+    <form class="well form-inline margin-top-20" method="post" action="{:url('message/index')}">
+        关键字:
+        <input type="text" class="form-control" name="keyword" style="width: 200px;"
+               value="{$keyword|default=''}" placeholder="请输入关键字...">
+        <input type="submit" class="btn btn-primary" value="搜索"/>
+        <a class="btn btn-danger" href="{:url('message/index')}">清空</a>
+    </form>
+    <form class="js-ajax-form" action="" method="post">
+        <table class="table table-hover table-bordered table-list">
+            <thead>
+            <tr>
+                <th width="50">ID</th>
+                <th>标题</th>
+                <th>内容</th>
+                <th>添加时间</th>
+                <th>推送时间</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <php>
+                $status = ['隐藏','显示'];
+                $color = ['gray','green'];
+            </php>
+            <foreach name="list" item="vo">
+                <tr>
+                    <td><b>{$vo.id}</b></td>
+                    <td>{$vo.title}</td>
+                    <td>{$vo.content}</td>
+                    <td>{:date('Y-m-d H:i',$vo['addtime'])}</td>
+                    <td>{:date('Y-m-d H:i',$vo['pubtime'])}</td>
+                    <td style="color: {$color[$vo['status']]}">{$status[$vo['status']]}</td>
+                    <td>
+                        <a href="{:url('message/publish',array('id'=>$vo['id']))}"class="js-ajax-dialog-btn" data-msg="确定推送吗？">推送</a>
+                        <a href="{:url('message/edit',array('id'=>$vo['id']))}">{:lang('EDIT')}</a>
+                        <a href="{:url('message/delete',array('id'=>$vo['id']))}" class="js-ajax-delete">{:lang('DELETE')}</a>
+                    </td>
+                </tr>
+            </foreach>
+        </table>
+        <ul class="pagination">{$page|default=''}</ul>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

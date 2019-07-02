@@ -1,0 +1,252 @@
+<include file="public@header" />
+<style type="text/css">
+    .pic-list li {
+        margin-bottom: 5px;
+    }
+    .pic-list li a {
+        margin-left: 5px;
+    }
+</style>
+<script type="text/html" id="photos-item-tpl">
+    <li id="saved-image{id}">
+        <input type="checkbox" id="vip-{id}" name="is_vip[]" value="{id}">VIP
+        <input id="photo-{id}" type="hidden" name="photo_urls[]" value="{filepath}">
+        <input id="{id}" type="hidden" name="photo_ids[]" value="{id}">
+        <img id="photo-{id}-preview" src="{url}" style="height:100px;width: 100px;"
+             onclick="imagePreviewDialog(this.src);">
+        <a href="javascript:uploadOneImage('图片上传','#photo-{id}');">更换</a>
+        <a href="javascript:(function(){$('#saved-image{id}').remove();})();">删除</a>
+    </li>
+</script>
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('user/virtual/index')}">虚拟用户管理</a></li>
+        <li><a href="{:url('user/virtual/add')}">添加虚拟用户</a></li>
+        <li class="active"><a>编辑虚拟用户</a></li>
+    </ul>
+    <form method="post" class="form-horizontal margin-top-20" action="{:url('user/virtual/editPost')}">
+        <input type="hidden" name="u[id]" value="{$user.id}">
+        <div class="col-md-9">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">推荐位</label>
+                <div class="col-md-6 col-sm-10">
+                    <foreach name="recomType" key="k" item="v">
+                        <php>
+                            $checked = "";
+                            if(is_array($recom) && in_array($k,$recom)) $checked = " checked";
+                        </php>
+                        <label class="control-label" style="font-weight: normal; margin-left: 2px;"><input type="checkbox" name="r[]" value="{$k}"{$checked}>{$v}</label>
+                        <eq name="k" value="1">：<input class="input-order" type="text" value="{$more.long|default=''}" name="m[long]">M</eq>
+                    </foreach>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">推荐等级</label>
+                <div class="col-md-6 col-sm-10">
+                    <php>
+                        $vipTypeCheck = [1=>'',2=>''];
+                        $vipTypeCheck[$more['vip_type']] = ' checked="checked"';
+                    </php>
+                    <label class="control-label" style="font-weight: normal; margin-left: 2px;"><input type="radio" name="m[vip_type]" value="1"{$vipTypeCheck[1]}>普通</label>
+                    <label class="control-label" style="font-weight: normal; margin-left: 2px;"><input type="radio" name="m[vip_type]" style="margin-left: 20px;" value="2"{$vipTypeCheck[2]}>高级</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-user_nickname" class="col-sm-2 control-label">地址</label>
+                <div class="col-md-6 col-sm-10">
+                    <select class="form-control" id="input-province" name="u[province]" style="width: 200px; display: inline;">
+                        <option value="0">请选择</option>
+                        <foreach name="province" item="v">
+                            <php>$selected = "";if($v == $user['province'])$selected = " selected";</php>
+                            <option value="{$v}"{$selected}>{$v}</option>
+                        </foreach>
+                    </select>
+                    <select class="form-control" id="input-city" name="u[city]" style="width: 200px; display: inline;">
+                        <option value="0">请选择</option>
+                        <foreach name="city" item="v">
+                            <php>$selected = "";if($v == $user['city'])$selected = " selected";</php>
+                            <option value="{$v}"{$selected}>{$v}</option>
+                        </foreach>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-user_nickname" class="col-sm-2 control-label">昵称</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-user_nickname" name="u[user_nickname]" value="{$user.user_nickname}">
+                </div>
+            </div>
+            <div class="form-group">
+                <php>
+                    $sexCheck = [1=>'',2=>''];
+                    $sexCheck[$user['sex']] = ' checked="checked"';
+                </php>
+                <label class="col-sm-2 control-label">性别</label>
+                <div class="col-md-6 col-sm-10">
+                    <label class="control-label" style="font-weight: normal; margin-left: 2px;"><input type="radio" name="u[sex]" value="1"{$sexCheck[1]}>男</label>
+                    <label class="control-label" style="font-weight: normal; margin-left: 2px;"><input type="radio" name="u[sex]" style="margin-left: 20px;" value="2"{$sexCheck[2]}>女</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-birthday" class="col-sm-2 control-label">生日</label>
+                <div class="col-md-6 col-sm-10">
+                    <input class="form-control js-bootstrap-date" id="input-birthday" type="text" name="u[birthday]" value="{:date('Y-m-d',$user['birthday'])}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-signature" class="col-sm-2 control-label">个性签名</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-signature" name="u[signature]" value="{$user.signature}">
+                </div>
+            </div>
+
+            <div class="form-group" style="background-color: #ecf0f1; height: 1px"></div>
+            <div class="form-group">
+                <label for="input-figure" class="col-sm-2 control-label">身材</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-figure" name="m[figure]" value="{$more.figure|default=''}">
+                    <p id="cli-figure">
+                        <a href="javascript:;">性感</a> |
+                        <a href="javascript:;">妩媚</a> |
+                        <a href="javascript:;">苗条</a> |
+                        <a href="javascript:;">匀称</a> |
+                        <a href="javascript:;">偏胖</a> |
+                        <a href="javascript:;">肥胖</a>
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-job" class="col-sm-2 control-label">职业</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-job" name="m[job]" value="{$more.job|default=''}">
+                    <p id="cli-job">
+                        <a href="javascript:;">学生</a> |
+                        <a href="javascript:;">打工</a> |
+                        <a href="javascript:;">私营业主</a> |
+                        <a href="javascript:;">销售</a> |
+                        <a href="javascript:;">工程师</a> |
+                        <a href="javascript:;">公司职员</a> |
+                        <a href="javascript:;">中层管理</a> |
+                        <a href="javascript:;">警察</a> |
+                        <a href="javascript:;">医生</a> |
+                        <a href="javascript:;">演艺人员</a> |
+                        <a href="javascript:;">模特</a> |
+                        <a href="javascript:;">教师</a> |
+                        <a href="javascript:;">设计师</a> |
+                        <a href="javascript:;">投资顾问</a> |
+                        <a href="javascript:;">互联网从业者</a> |
+                        <a href="javascript:;">风险投资人</a> |
+                        <a href="javascript:;">自由职业</a> |
+                        <a href="javascript:;">化妆师</a>
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-topic" class="col-sm-2 control-label">擅长话题</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-topic" name="m[topic]" value="{$more.topic|default=''}">
+                    <p id="cli-topic">
+                        <a href="javascript:;">情感</a> |
+                        <a href="javascript:;">成人</a> |
+                        <a href="javascript:;">私密</a> |
+                        <a href="javascript:;">两性</a> |
+                        <a href="javascript:;">开放</a> |
+                        <a href="javascript:;">理想</a>
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-character" class="col-sm-2 control-label">性格</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-character" name="m[character]" value="{$more.character|default=''}">
+                    <p id="cli-character">
+                        <a href="javascript:;">开放</a> |
+                        <a href="javascript:;">温柔</a> |
+                        <a href="javascript:;">可爱</a> |
+                        <a href="javascript:;">热情</a> |
+                        <a href="javascript:;">内敛</a> |
+                        <a href="javascript:;">善良</a>
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('SAVE')}</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <table class="table table-bordered">
+                <tr><th><b>头像</b></th></tr>
+                <tr>
+                    <td>
+                        <div style="text-align: center;">
+                            <input type="hidden" name="u[avatar]" id="thumbnail" value="{$user.avatar}">
+                            <a href="javascript:uploadOneImage('图片上传','#thumbnail');">
+                                <img src="{$user.avatar}"
+                                     id="thumbnail-preview"
+                                     width="135" height="135" style="cursor: pointer"/>
+                            </a>
+                            <input type="button" class="btn btn-sm btn-cancel-thumbnail" value="取消图片">
+                        </div>
+                    </td>
+                </tr>
+                <tr><th><b>主播信息</b></th></tr>
+                <tr><td><input type="text" class="form-control" id="input-level" name="c[level]" value="{$anchor.level}" placeholder="主播等级"></td></tr>
+                <tr><td><input type="text" class="form-control" id="input-single_coin" name="c[single_coin]" value="{$anchor.single_coin}" placeholder="私播单价"></td></tr>
+            </table>
+        </div>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+<script>
+    $("#cli-figure a").click(function(){
+        $("#input-figure").val($(this).html());
+    });
+    $("#cli-job a").click(function(){
+        $("#input-job").val($(this).html());
+    });
+    $("#cli-topic a").click(function(){
+        var tmp = $("#input-topic").val();
+        if (tmp != '')tmp = tmp + ",";
+        tmp = tmp + $(this).html();
+        $("#input-topic").val(tmp);
+    });
+    $("#cli-character a").click(function(){
+        var tmp = $("#input-character").val();
+        if (tmp != '')tmp = tmp + ",";
+        tmp = tmp + $(this).html();
+        $("#input-character").val(tmp);
+    });
+    $('.btn-cancel-thumbnail').click(function () {
+        $('#thumbnail-preview').attr('src', '__TMPL__/public/assets/images/default-thumbnail.png');
+        $('#thumbnail').val('');
+    });
+    $("#input-province").change(function(){
+        var province=$(this).val();
+        $.ajax({
+            url:"/user/virtual/getCitys",
+            data:"p="+province,
+            dataType:"json",
+            success:function(data){
+                var option=$("<option></option>");
+                $(option).val("0");
+                $(option).html("请选择");
+                $("#input-city").html(option);
+
+                var citys = JSON.parse( data.data );
+                for(var i in citys){
+                    var option=$("<option></option>");
+                    $(option).val(citys[i]);
+                    $(option).html(citys[i]);
+                    $("#input-city").append(option);
+                }
+            }
+
+        });
+    });
+</script>
+</body>
+</html>

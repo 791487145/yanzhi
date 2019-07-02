@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>申请提现</title>
+		<link rel="stylesheet" type="text/css" href="icons/iconfont.css" />
+		<style type="text/css">
+			* {
+				padding: 0;
+				margin: 0;
+			}
+			
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+			}
+			
+			a {
+				text-decoration: none;
+				outline: none;
+				-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+			}
+			
+			header {
+				width: 100%;
+				height: 44px;
+				line-height: 44px;
+				background: #fff;
+				position: fixed;
+				z-index: 10;
+				right: 0;
+				left: 0;
+				padding-right: 10px;
+				padding-left: 10px;
+				border-bottom: 0;
+				border-bottom: 1px solid #D8D8D8;
+			}
+			
+			.xflist {
+				padding-top: 44px;
+			}
+			
+			.icontubiao {
+				font-size: 20px;
+				color: #000;
+				display: inline-block;
+			}
+			
+			.headtitle {
+				display: inline-block;
+				font-size: 17px;
+				font-weight: 500;
+				line-height: 44px;
+				position: absolute;
+				padding: 0;
+				text-align: center;
+				white-space: nowrap;
+				color: #000;
+				right: 40px;
+				left: 40px;
+				overflow: hidden;
+				width: auto;
+				margin: 0;
+				text-overflow: ellipsis;
+			}
+			
+			.tixian {
+				width: 90%;
+				margin: 0 5%;
+			}
+			
+			.jineinput {
+				width: 50%;
+				height: 0.8rem;
+				margin: 0.4rem 0 0.2rem;
+				outline: none;
+				font-size: 0.38rem;
+			}
+			
+			.tixian p {
+				font-size: 0.4rem;
+				margin-bottom: 0.1rem;
+			}
+			
+			.txbutton {
+				padding: 0.2rem;
+				background: #ffe02f;
+				border: 0;
+				outline: none;
+				margin-top: 0.3rem;
+				border-radius: 0.31rem;
+			}
+			
+			.txjl {
+				padding: 0.2rem;
+				background: #ffe02f;
+				border: 0;
+				outline: none;
+				margin-top: 0.3rem;
+				border-radius: 0.31rem;
+				margin-left: 0.2rem;
+			}
+			
+			.ptbicon {
+				width: 0.42rem;
+				height: 0.42rem;
+				vertical-align: middle;
+				margin-left: 0.12rem;
+			}
+			
+			.txp1 {
+				vertical-align: middle;
+			}
+			
+			.txp1 span {
+				vertical-align: middle;
+				font-size: 0.4rem;
+			}
+		</style>
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<div class="tixian">
+			<input type="text" name="" id="" value="" placeholder="提取数量" class="jineinput" />
+			<p class="txp1">
+				<span>提现比例：10</span>
+				<img src="img/jinbi.png" alt="" class="ptbicon" />
+				<span> = 1元（人民币）</span>
+			</p>
+			<p class="txp2">提取金额仅限整数，最低100元</p>
+			<p class="txp3">每月可以申请一次提现</p>
+			<button class="txbutton" id="txbutton">申请提现</button>
+			<button class="txjl">提现记录</button>
+		</div>
+
+		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="alertMsg.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			//			获取token device
+			//			传值:window.location.href = 'RegOk.htm?email='+email+'&name='+username+''; 
+			function GetRequest() {
+				var url = location.search; //获取url中"?"符后的字串
+				var theRequest = new Object();
+				if(url.indexOf("?") != -1) {
+					var str = url.substr(1);
+					strs = str.split("&");
+					for(var i = 0; i < strs.length; i++) {
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+					}
+				}
+				return theRequest;
+			}
+
+			var request = new Object();
+			request = GetRequest();
+			//token device
+			var yztoken = request['token'];
+			var yzdevice = request['device'];
+			var yzid = request['uid'];
+			//			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
+			//			var yzdevice = 'android';
+			//			var yzid = 8;
+
+			var coinnum = ''; //填写的平台币数量 
+			$('#txbutton').click(function() {
+//				var sqtxurl = 'http://yz.baiyoumi.cn/api/pay/index/extraction';
+				var sqtxurl = geturl(oneurl,'pay/index/extraction');
+				coinnum = parseInt($('.jineinput').val());
+				if(coinnum == '') {
+					alertMsg('请输入你要提现的数量');
+				} else if(!/^\d+$/.test(coinnum)) {
+					alertMsg('请输入数字');
+				} else {
+					console.log(coinnum);
+					console.log(typeof(coinnum));
+					$.ajax({
+						headers: {
+							'YZ-Token': yztoken,
+							'YZ-Device-Type': yzdevice
+						},
+						type: "post",
+						url: sqtxurl,
+						dataType: "json",
+						data: {
+							"coin": coinnum
+						},
+						success: function(result) {
+							console.log('申请成功');
+							console.log(JSON.stringify(result));
+							alertMsg(result.msg);
+						},
+						error: function() {
+							console.log('申请提现失败');
+						}
+					})
+					//					console.log(coinnum);
+				}
+			})
+			$('.txjl').click(function() {
+				window.location.href = 'txjilu.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice;
+			})
+		</script>
+	</body>
+
+</html>

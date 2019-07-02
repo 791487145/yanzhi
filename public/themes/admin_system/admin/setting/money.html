@@ -1,0 +1,67 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:url('setting/app')}">APP设置</a></li>
+			<li class="active"><a>提成设置</a></li>
+			<li><a href="{:url('setting/vip')}">VIP设置</a></li>
+			<li><a href="{:url('setting/broadcast')}">直播设置</a></li>
+			<li><a href="{:url('appmenu/index')}">菜单设置</a></li>
+		</ul>
+		<form method="post" class="form-horizontal js-ajax-form margin-top-20" role="form" action="{:url('setting/moneyPost')}">
+			<div class="form-group">
+				<label for="input-poundage" class="col-sm-2 control-label">提现手续费</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-poundage" name="poundage" value="{$poundage|default=1}">
+					<p class="help-block">百分比手续费，如：填写1，当用户申请提现100元时，到账99元</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-spread_user_vip" class="col-sm-2 control-label">用户推广VIP-平台提成</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-spread_user_vip" name="spread_user_vip" value="{$spread_user_vip|default=90}">
+					<p class="help-block">百分比提成，如：填写90，当用户A推广用户B注册并充值VIP使用100元时，用户A可获得10元提成</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-spread_user_cost" class="col-sm-2 control-label">用户推广消费-平台提成</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-spread_user_cost" name="spread_user_cost" value="{$spread_user_cost|default=95}">
+					<p class="help-block">百分比提成，如：填写95，当用户A推广用户B注册并消费100元时，用户A可获得5元提成</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-spread_channel_vip" class="col-sm-2 control-label">渠道推广VIP-平台提成</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-spread_channel_vip" name="spread_channel_vip" value="{$spread_channel_vip|default=40}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-spread_channel_cost" class="col-sm-2 control-label">渠道推广消费-平台提成</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-spread_channel_cost" name="spread_channel_cost" value="{$spread_channel_cost|default=70}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-live_reward" class="col-sm-2 control-label">工会主播礼物-平台提成</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-live_reward" name="live_reward" value="{$live_reward|default=70}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-single_reward" class="col-sm-2 control-label">工会私播消费-平台提成</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-single_reward" name="single_reward" value="{$single_reward|default=50}">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary js-ajax-submit">{:lang('SAVE')}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

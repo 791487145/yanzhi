@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>编辑基本信息</title>
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="cropper.min.css" />
+		<link rel="stylesheet" type="text/css" href="datePicker.css" />
+		<link rel="stylesheet" type="text/css" href="mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="mui.picker.all.css" />
+		<style type="text/css">
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+				/*background: #e4e4e4;*/
+				background: #fff;
+			}
+			
+			.jibencon {
+				width: 100%;
+				height: 100%;
+				position: relative;
+			}
+			
+			.bjtop {
+				width: 100%;
+				height: 4.1rem;
+				background: #fff;
+				/*margin-bottom: 0.2rem;*/
+				text-align: center;
+				padding-top: 0.4rem;
+			}
+			
+			.bjtopt {
+				position: relative;
+				width: 2.4rem;
+				height: 2.4rem;
+				margin: 0 auto;
+			}
+			
+			.bjhead {
+				width: 2.4rem;
+				height: 2.4rem;
+				border-radius: 50%;
+				position: relative;
+			}
+			
+			.bjhuan {
+				width: 0.6rem;
+				height: 0.6rem;
+				position: absolute;
+				right: 0;
+				bottom: 0.2rem;
+				background: url(img/huanhead.png) no-repeat;
+				background-size: 0.6rem 0.6rem;
+			}
+			
+			.huan {
+				width: 2.2rem;
+				position: absolute;
+				bottom: 0;
+				left: 0.1rem;
+				background: rgba(0, 0, 0, .3);
+				color: #fff;
+				text-align: center;
+				line-height: 0.7rem;
+				font-size: 0.3rem;
+				background: url(img/huan500.png);
+				background-size: 2.2rem 1.2rem;
+				background-repeat: repeat-y;
+			}
+			
+			.bjhuan .formimg {
+				width: 0.5rem;
+				height: 0.36rem;
+				position: absolute;
+				top: 0;
+				opacity: 0;
+				filter: alpha(opacity=0);
+			}
+			
+			.bjhuan .formimg input {
+				width: 100%;
+				height: 100%;
+				border-radius: 100%;
+				outline: none;
+			}
+			
+			.holdcenter {
+				background-color: #000;
+				height: 100%;
+				width: 100%;
+				position: absolute;
+				text-align: center;
+				top: 0;
+				z-index: 11;
+				display: none;
+			}
+			
+			.holdcenter img {
+				max-width: 100%;
+				max-height: 100%;
+			}
+			.cropper-canvas img {
+				max-height: 100%;
+				max-width: 100%;
+			}
+			
+			.cropper-view-box img {
+				max-width: 100%;
+				max-height: 100%;
+			}
+			.cover {
+				object-fit: cover;
+			}
+			
+			#quxiao,
+			#xuanzhuan,
+			#queren {
+				font-size: 20px;
+				color: #fff;
+			}
+			
+			.divbut {
+				width: 100%;
+				text-align: center;
+				position: fixed;
+				z-index: 20;
+				bottom: 0px;
+				background-color: #000000;
+				height: 7.5%;
+				line-height: 50px;
+				display: none;
+			}
+			
+			.divbut>div:first-child {
+				float: left;
+				width: 20%;
+			}
+			
+			.divbut>div:last-child {
+				float: right;
+				width: 20%;
+			}
+			
+			.bjtopb {
+				font-size: 0.36rem;
+				color: #333;
+				font-family: "微软雅黑";
+				margin-top: 0.3rem;
+			}
+			
+			.divli {
+				background: #fff;
+				width: 100%;
+				height: 1.4rem;
+				line-height: 1.4rem;
+				clear: both;
+			}
+			
+			.edittitle {
+				color: #0e0e0e;
+				font-size: 0.4rem;
+				width: 25%;
+				padding-left: 0.46rem;
+				display: inline-block;
+			}
+			
+			.namediv {
+				float: right;
+				margin-right: 0.73rem;
+			}
+			
+			.myname {
+				font-size: 0.43rem;
+				color: #333;
+			}
+			
+			.poli {
+				position: relative;
+			}
+			
+			.poli:after {
+				position: absolute;
+				right: 0.4rem;
+				top: 50%;
+				display: inline-block;
+				content: "";
+				width: 0.24rem;
+				height: 0.24rem;
+				border: solid #999;
+				border-width: 1px 1px 0 0;
+				-webkit-transform: translate(0, -50%) rotate(45deg);
+				transform: translate(0, -50%) rotate(45deg);
+			}
+			
+			.namecover {
+				width: 100%;
+				height: 100%;
+				background: #000;
+				opacity: 0.7;
+				position: absolute;
+				top: 0;
+				left: 0;
+				display: none;
+				z-index: 20;
+			}
+			
+			.namecon {
+				width: 70%;
+				background: #fafafa;
+				position: absolute;
+				top: 35%;
+				left: 50%;
+				margin-left: -35%;
+				border-radius: 0.31rem;
+				padding-top: 0.6rem;
+				display: none;
+				z-index: 20;
+			}
+			
+			.rztop {
+				width: 100%;
+				text-align: center;
+				color: #000;
+				height: 2.8rem;
+				border-bottom: 1px solid #D8D8D8;
+			}
+			
+			.namebom {
+				width: 100%;
+				height: 1.1rem;
+				border-top: 1px solid #d7d7d7;
+			}
+			
+			.nametitle {
+				font-size: 0.46rem;
+				margin-bottom: 0.5rem;
+				text-align: center;
+			}
+			
+			.namep {
+				width: 100%;
+				text-align: center;
+				margin-bottom: 0.4rem;
+			}
+			
+			#namegai {
+				width: 80%;
+				height: 0.8rem;
+				outline: none;
+			}
+			
+			.namebom button {
+				background: none;
+				width: 49%;
+				height: 100%;
+				border: 0;
+				font-size: 0.43rem;
+				outline: none;
+			}
+			
+			button.rzleft,
+			button.coinleft {
+				border-right: 1px solid #c5c5c5;
+				color: #ffe02f;
+			}
+			
+			button.rzright,
+			button.coinright {
+				color: #ffe02f;
+			}
+			
+			.kongbai {
+				width: 100%;
+				height: 0.2rem;
+				background: #F5F5F5;
+			}
+			
+			
+			.mui-picker{
+				background-color: #fff;
+			}
+			.mui-poppicker{
+				background-color: #fff;
+			}
+			.mui-poppicker-header .mui-btn {
+			    font-size: 18px;
+			    padding: 5px 10px;
+			    color: #333;
+			    border: 0;
+			}
+			.mui-btn-blue, .mui-btn-primary, input[type=submit]{
+				background: #fff;
+			}
+			.mui-pciker-rule-ft{
+				border: 0;
+			}
+			.mui-pciker-list li{
+				font-size: 20px;
+				color: #333;
+			}
+			.margindiv{
+				width: 100%;
+				height: 0.2rem;
+				background: #e4e4e4;
+			}
+		</style>
+	</head>
+
+	<body>
+		
+		<div class="jibencon">
+			<div class="kongbai"></div>
+			<div class="jibendiv">
+				<div class="bjtop">
+					<div class="bjtopt">
+						<img src="" alt="" class="bjhead" id="show" />
+						<div class="bjhuan">
+							<div class="formimg">
+								<input type="file" id="file" class="filepath" onchange="changepic(this)" accept="image/*">
+							</div>
+						</div>
+					</div>
+					<div class="bjtopb">头像</div>
+				</div>
+				<div class="margindiv"></div>
+				<div class="holdcenter">
+					<img id="image" src="" class="cover">
+				</div>
+				<div class="divbut">
+					<div>
+						<p id="quxiao">取消</p>
+					</div>
+					<div>
+						<p id="queren">确认</p>
+					</div>
+				</div>
+				<div class="namecover"></div>
+				<div class="namecon">
+					<div class="nametop">
+						<p class="nametitle">修改昵称</p>
+						<p class="namep">
+							<input type="text" class="namegai" id="namegai" />
+						</p>
+					</div>
+					<div class="namebom">
+						<button class="rzleft">取消</button>
+						<button class="rzright">确认</button>
+					</div>
+				</div>
+				<!--昵称-->
+				<div class="divli editname poli" id="editname">
+					<div class="edittitle">昵称</div>
+					<div class="namediv">
+						<span class="myname" id="myname"></span>
+					</div>
+				</div>
+				<!--年龄-->
+				<div class="divli editname poli" id="age">
+					<div class="edittitle">年龄</div>
+					<div class="namediv">
+						<span class="myname" id="birthday"></span>
+					</div>
+				</div>
+				<!--身材-->
+				<div class="divli poli" id="editshencai">
+					<div class="edittitle">身材</div>
+					<div class="namediv">
+						<span class="myname" id="shencai"></span>
+					</div>
+				</div>
+				<!--身高-->
+				<!--<div class="divli poli" id="editheight">
+					<div class="edittitle">身高</div>
+					<div class="namediv">
+						<span class="myname" id="height"></span>
+					</div>
+				</div>-->
+				<!--体重-->
+				<div class="divli poli" id="editweight">
+					<div class="edittitle">体重</div>
+					<div class="namediv">
+						<span class="myname" id="weight"></span>
+					</div>
+				</div>
+				<!--职业-->
+				<div class="divli editwork poli" id="editwork">
+					<div class="edittitle">职业</div>
+					<div class="namediv">
+						<span class="myname" id="work"></span>
+					</div>
+				</div>
+				<!--居住地-->
+				<div class="divli editwork poli" id="editcity">
+					<div class="edittitle">居住地</div>
+					<div class="namediv">
+						<span class="myname" id="city"></span>
+					</div>
+				</div>
+				<!--个性特征-->
+				<div class="divli poli" id="editxingge">
+					<div class="edittitle">个性特征</div>
+					<div class="namediv">
+						<span class="myname" id="character"></span>
+					</div>
+				</div>
+				<!--擅长话题-->
+				<div class="divli poli" id="edithuati">
+					<div class="edittitle">擅长话题</div>
+					<div class="namediv">
+						<span class="myname" id="huati"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="cropper.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="alertMsg.js" type="text/javascript" charset="utf-8"></script>
+		<script src="datePicker.js" type="text/javascript" charset="utf-8"></script>
+		<script src="mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="mui.picker.all.js" type="text/javascript" charset="utf-8"></script>
+		<script src="city.data.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			function GetRequest() {
+				var url = location.search; //获取url中"?"符后的字串
+				var theRequest = new Object();
+				if(url.indexOf("?") != -1) {//indexOf()检索字符串在url中首次出现的位置，如果没有该字符串则返回-1，区别大小写
+					var str = url.substr(1);//substr()从字符串抽取从start下标开始的指定数目的字符
+					strs = str.split("&");//split()把一个字符串分割成字符串数组
+					for(var i = 0; i < strs.length; i++) {
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+					}
+				}
+				return theRequest;
+			}
+
+			var request = new Object();
+			request = GetRequest();
+			//token device
+			var yztoken = request['token'];
+			var yzdevice = request['device'];
+			var yzid = request['uid'];
+			//			var yztoken = '3de74cfd5e58e66f5817e2e520d2b43d269aa52ae521011e19a6f32a4cb57ca7';
+			//			var yzdevice = 'iphone';
+//			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
+//			var yzdevice = 'android';
+//			var yzid = 8;
+
+			//			获取个人信息
+			var myname = document.getElementById('myname');
+
+			function getinfo() {
+				var getinfourl = geturl(oneurl, 'user/profile/getinfo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: 'POST',
+					url: getinfourl,
+					dataType: 'json',
+					data: {},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						var shtime = parseInt(Math.random() * 100 + 1);
+						document.getElementById('show').src = data.data.avatar + '?' + shtime;
+						console.log(document.getElementById('show').src);
+						myname.innerHTML = data.data.nickname;
+						document.getElementById('namegai').value = data.data.nickname;
+						var birthday = data.data.birthday;
+						document.getElementById('birthday').innerHTML = birthday;
+//						var editheight = data.data.height;
+//						if(editheight == ''){
+//							editheight = '未填写';
+//						}
+						document.getElementById('shencai').innerHTML = data.data.figure;
+//						document.getElementById('height').innerHTML = data.data.height;
+						document.getElementById('weight').innerHTML = data.data.weight;
+						document.getElementById('work').innerHTML = data.data.job;
+						document.getElementById('huati').innerHTML = data.data.topic;
+						var editcity = data.data.domicile;
+						if(editcity == ''){
+							editcity = '未填写';
+						}
+						document.getElementById('city').innerHTML = editcity;
+						document.getElementById('character').innerHTML = data.data.character;
+					},
+					error: function(data) {
+						console.log('出错了');
+					}
+				})
+			}
+			getinfo();
+
+			function changepic() {
+				var fileimg = document.getElementById('file').files[0]; //获取file对象
+				//判断file类型是否为图片
+				if(!fileimg) {
+					return
+				}
+				//判断图片格式
+				var imgtype = fileimg.type.substring(fileimg.type.lastIndexOf("/") + 1).toLowerCase();
+				if(imgtype != "jpg" && imgtype != 'jpeg' && imgtype != 'png') {
+					console.log(imgtype);
+					console.log('图片格式不对');
+				}
+
+				//设置限制图像的大小为2M
+				var maximgsize = 1024 * 1024 * 2;
+				//				if(fileimg.size > maximgsize) {
+				//					alert('文件大小不超过2M');
+				//					return
+				//				}
+				var reader = new FileReader(); //声明一个FileReader实例
+				reader.readAsDataURL(fileimg); //调用redsAsDataURL方法读取选中的文件
+				//console.log(JSON.stringify(fileimg));
+				reader.onload = function(e) { //利用onload事件中获取到成功读取的选中的图像文件，并以插入一个img方式来显示读取的图像文件
+					document.querySelector('.holdcenter').style.display = 'block';
+					document.querySelector('.divbut').style.display = 'block';
+					var $image;
+					$image = $('.holdcenter > img');
+					$('.holdcenter > img').attr('src', this.result);
+					$('.cropper-canvas > img').attr('src', this.result);
+					$('.cropper-view-box > img').attr('src', this.result);
+					$image.cropper({
+						aspectRatio: 1 / 1,
+						minContainerWidth: 200,
+						minContainerHeight: 200,
+						minCropBoxWidth: 200,
+						minCropBoxHeight: 200,
+						minCanvasWidth: 400,
+						minCanvasHeight: 400,
+						cropBoxResizable: true,
+						background: false,
+						modal: true,
+						crop: function(e) {}
+					})
+					var queren = $('#queren');
+					queren.click(function() {
+						var resImg = $image.cropper('getCroppedCanvas', {
+							width: 300,
+							height: 300
+						});
+						document.querySelector('.holdcenter').style.display = 'none';
+						document.querySelector('.divbut').style.display = 'none';
+						var headurl = geturl(oneurl, 'user/upload/img');
+						var fd = new FormData();
+						fd.append("act", "head");
+						fd.append("file", dataURLtoFile(resImg.toDataURL(), "head.jpg")); //加入文件对象
+						$.ajax({
+							headers: {
+								'YZ-Token': yztoken,
+								'YZ-Device-Type': yzdevice
+							},
+							url: headurl,
+							type: 'POST',
+							datatype: 'json',
+							data: fd,
+							cache: false,
+							traditional: true,
+							contentType: false,
+							processData: false,
+							success: function(result) {
+								console.log(JSON.stringify(result));
+								if(result.code == 1) {
+									document.getElementById('show').src = 'http://' + yuming + result.data.url;
+								}
+							},
+							error: function(data) {
+								console.log(data.responseText);
+							}
+						})
+					})
+					var quxiao = $('#quxiao');
+					quxiao.click(function() {
+						document.querySelector('.holdcenter').style.display = 'none';
+						document.querySelector('.divbut').style.display = 'none';
+					})
+				};
+			}
+
+			//将base64转换为文件
+			function dataURLtoFile(dataurl, filename) {
+				var arr = dataurl.split(','),
+					mime = arr[0].match(/:(.*?);/)[1],
+					bstr = atob(arr[1]),
+					n = bstr.length,
+					u8arr = new Uint8Array(n);
+				while(n--) {
+					u8arr[n] = bstr.charCodeAt(n);
+				}
+				return new File([u8arr], filename, {
+					type: mime
+				});
+			}
+
+			$('#editname').click(function(){
+				window.location.href = 'editname.html?uid='+ yzid + '&token=' + yztoken + '&device='+ yzdevice;
+			})
+
+			//身材js
+			$('#editshencai').click(function() {
+				window.location.href = 'shencai.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice;
+			})
+
+			//职业js
+			$('#editwork').click(function() {
+				window.location.href = 'worker.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice;
+			})
+
+			//个性特征js
+			$('#editxingge').click(function() {
+				window.location.href = 'xingge.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice;
+			})
+			
+//			擅长话题js
+			$('#edithuati').click(function() {
+				window.location.href = 'huati.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice;
+			})
+
+			//修改信息的接口
+			function editinfo(type, value) {
+				var editinfourl = geturl(oneurl, 'user/profile/editInfo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: 'POST',
+					url: editinfourl,
+					dataType: 'json',
+					data: {
+						'name': type,
+						'value': value
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						alertMsg(data.msg);
+					},
+					error: function(data) {
+						console.log('修改个人信息出错了');
+					}
+				})
+			}
+
+			var agePicker = new mui.PopPicker();
+			agePicker.setData([{
+				text: '保密'
+			},{
+				text: '18'
+			},{
+				text: '19'
+			},{
+				text: '20'
+			},{
+				text: '21'
+			},{
+				text: '22'
+			},{
+				text: '23'
+			},{
+				text: '24'
+			},{
+				text: '25'
+			},{
+				text: '26'
+			},{
+				text: '27'
+			},{
+				text: '28'
+			},{
+				text: '29'
+			},{
+				text: '30'
+			},{
+				text: '31'
+			},{
+				text: '32'
+			},{
+				text: '33'
+			},{
+				text: '34'
+			},{
+				text: '35'
+			},{
+				text: '36'
+			},{
+				text: '37'
+			},{
+				text: '38'
+			},{
+				text: '39'
+			},{
+				text: '40'
+			},{
+				text: '41'
+			},{
+				text: '42'
+			},{
+				text: '43'
+			},{
+				text: '44'
+			},{
+				text: '45'
+			},{
+				text: '46'
+			},{
+				text: '47'
+			},{
+				text: '48'
+			},{
+				text: '49'
+			},{
+				text: '50'
+			}]);
+			var ageClick = document.getElementById('age');
+			var ageResult = document.getElementById('birthday');
+			ageClick.addEventListener('click', function(event) {
+				agePicker.show(function(items) {
+					ageResult.innerText = items[0].text;
+					var age = ageResult.innerHTML;
+					editinfo('birthday', age);
+				})
+			}, false);
+			
+//			var heightPicker = new mui.PopPicker();
+//			heightPicker.setData([{
+//				text: '保密'
+//			},{
+//				text: '150CM'
+//			}, {
+//				text: '151CM'
+//			}, {
+//				text: '152CM'
+//			}, {
+//				text: '153CM'
+//			}, {
+//				text: '154CM'
+//			}, {
+//				text: '155CM'
+//			}, {
+//				text: '156CM'
+//			}, {
+//				text: '157CM'
+//			}, {
+//				text: '158CM'
+//			}, {
+//				text: '159CM'
+//			}, {
+//				text: '160CM'
+//			}, {
+//				text: '161CM'
+//			}, {
+//				text: '162CM'
+//			}, {
+//				text: '163CM'
+//			}, {
+//				text: '164CM'
+//			}, {
+//				text: '165CM'
+//			}, {
+//				text: '166CM'
+//			}, {
+//				text: '167CM'
+//			}, {
+//				text: '168CM'
+//			}, {
+//				text: '169CM'
+//			}, {
+//				text: '170CM'
+//			}, {
+//				text: '171CM'
+//			}, {
+//				text: '172CM'
+//			}, {
+//				text: '173CM'
+//			}, {
+//				text: '174CM'
+//			}, {
+//				text: '175CM'
+//			}, {
+//				text: '176CM'
+//			}, {
+//				text: '177CM'
+//			}, {
+//				text: '178CM'
+//			}, {
+//				text: '179CM'
+//			}, {
+//				text: '180CM'
+//			}, {
+//				text: '181CM'
+//			}, {
+//				text: '182CM'
+//			}, {
+//				text: '183CM'
+//			}, {
+//				text: '184CM'
+//			}, {
+//				text: '185CM'
+//			}, {
+//				text: '186CM'
+//			}, {
+//				text: '187CM'
+//			}, {
+//				text: '188CM'
+//			}, {
+//				text: '189CM'
+//			}, {
+//				text: '190CM'
+//			}, {
+//				text: '191CM'
+//			}, {
+//				text: '192CM'
+//			}, {
+//				text: '193CM'
+//			}, {
+//				text: '194CM'
+//			}, {
+//				text: '195CM'
+//			}, {
+//				text: '196CM'
+//			}, {
+//				text: '197CM'
+//			}, {
+//				text: '198CM'
+//			}, {
+//				text: '200CM'
+//			}]);
+//			var heightClick = document.getElementById('editheight');
+//			var heightResult = document.getElementById('height');
+//			heightClick.addEventListener('click', function(event) {
+//				heightPicker.show(function(items) {
+//					heightResult.innerText = items[0].text;
+//					var height = heightResult.innerHTML;
+//					editinfo('height', height);
+//				})
+//			}, false);
+			
+			var weightPicker = new mui.PopPicker();
+			weightPicker.setData([{
+				text: '保密'
+			},{
+				text: '40kg'
+			},{
+				text: '41kg'
+			},{
+				text: '42kg'
+			},{
+				text: '43kg'
+			},{
+				text: '44kg'
+			},{
+				text: '45kg'
+			},{
+				text: '46kg'
+			},{
+				text: '47kg'
+			},{
+				text: '48kg'
+			},{
+				text: '49kg'
+			},{
+				text: '50kg'
+			},{
+				text: '51kg'
+			},{
+				text: '52kg'
+			},{
+				text: '53kg'
+			},{
+				text: '54kg'
+			},{
+				text: '55kg'
+			},{
+				text: '56kg'
+			},{
+				text: '57kg'
+			},{
+				text: '58kg'
+			},{
+				text: '59kg'
+			},{
+				text: '60kg'
+			},{
+				text: '61kg'
+			},{
+				text: '62kg'
+			},{
+				text: '63kg'
+			},{
+				text: '64kg'
+			},{
+				text: '65kg'
+			},{
+				text: '66kg'
+			},{
+				text: '67kg'
+			},{
+				text: '68kg'
+			},{
+				text: '69kg'
+			},{
+				text: '70kg'
+			}]);
+			var weightClick = document.getElementById('editweight');
+			var weightResult = document.getElementById('weight');
+			weightClick.addEventListener('click', function(event) {
+				weightPicker.show(function(items) {
+					weightResult.innerText = items[0].text;
+					var weight = weightResult.innerHTML;
+					editinfo('weight', weight);
+				})
+			}, false);
+			
+			// 城市联动————2级联示例
+			var cityPicker = new mui.PopPicker({
+				layer: 2
+			});
+			cityPicker.setData(cityData);
+			var cityResult = document.getElementById('city');
+			document.getElementById("editcity").addEventListener('click', function(event) {
+				cityPicker.show(function(items) {
+					cityResult.innerText = items[1].text;
+					var Position = cityResult.innerText;
+					editinfo('domicile', Position);
+				});
+			}, false);
+		</script>
+	</body>
+
+</html>

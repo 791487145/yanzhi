@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>性格</title>
+		<link rel="stylesheet" href="icons/iconfont.css" />
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+				position: relative;
+				background: #fff;
+			}
+			
+			a {
+				text-decoration: none;
+				outline: none;
+				-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+			}
+			
+			.workcon {
+				/*padding-top: 44px;*/
+			}
+			
+			.interest-box {
+				width: 100%;
+			}
+			
+			.interest {
+				flex-wrap: wrap;
+				width: 100%;
+				display: flex;
+				justify-content: space-around;
+				padding: 0.1rem;
+			}
+			
+			.interest .active {
+				background: #ffe02f;
+				color: #fff;
+			}
+			
+			.tuijian {
+				width: 100%;
+				height: 1.2rem;
+				line-height: 1.2rem;
+				/*background: green;*/
+				padding-left: 0.4rem;
+				font-size: 0.38rem;
+			}
+			#divName {
+				height: 1.5rem;
+				width: 100%;
+				background: #fff;
+			}
+			
+			#divName label {
+				display: inline-block;
+				margin: 0.2rem 0.15rem;
+				background: #ffe02f;
+				width: 2.4rem;
+				padding: 0.15rem 0.15rem;
+				text-align: center;
+				border-radius: 0.3rem;
+				font-size: 0.4rem;
+				color: #333;
+			}
+			
+			.in {
+				margin: 0.2rem;
+				width: 2.8rem;
+				padding: 0.2rem 0.2rem;
+				box-sizing: border-box;
+				background: #ccc;
+				color: #000;
+				border-radius: 0.3rem;
+				font-size: 0.4rem;
+				display: inline-block;
+				text-align: center;
+			}
+			.out {
+				background: #eef2f5;
+			}
+			.title{
+				width: 100%;
+				height: 1rem;
+				font-size: 0.4rem;
+				background: #fff;
+				padding: 0.4rem 0 0 0.4rem;
+			}
+			.baocun{
+				width: 100%;
+				height: 1rem;
+				margin-top: 3rem;
+				text-align: center;
+			}
+			.bcbutton{
+				width: 3.02rem;
+				height: 1rem;
+				background: #ffe02f;
+				border: 0;
+				font-size: 0.36rem;
+				outline: none;
+				color: #333;
+				margin: 0 auto;
+			}
+			.kongbai{
+				width: 100%;
+				height: 0.2rem;
+				background: #F5F5F5;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="kongbai"></div>
+		<div class="workcon">
+			<div class="title">已添加标签</div>
+			<div id="divName">
+				
+			</div>
+			<div class="interest-box">
+				<div class="tuijian">推荐标签</div>
+				<div class="interest">
+					<span class="in" name="成熟稳重">成熟稳重</span>
+					<span class="in" name="温柔体贴">温柔体贴</span>
+					<span class="in" name="外向开朗">外向开朗</span>
+					<span class="in" name="内向害羞">内向害羞</span>
+					<span class="in" name="聪明伶俐">聪明伶俐</span>
+					<span class="in" name="善解人意">善解人意</span>
+					<span class="in" name="风趣幽默">风趣幽默</span>
+					<span class="in" name="活泼可爱">活泼可爱</span>
+					<span class="in" name="幼稚调皮">幼稚调皮</span>
+					<span class="in" name="思想开放">思想开放</span>
+					<span class="in" name="积极进取">积极进取</span>
+					<span class="in" name="多愁善感">多愁善感</span>
+				</div>
+			</div>
+			<div class="baocun">
+				<button class="bcbutton">保存</button>
+			</div>
+		</div>
+		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="alertMsg.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			
+			//			获取token device
+			//			传值:window.location.href = 'RegOk.htm?email='+email+'&name='+username+''; 
+			function GetRequest() {
+				var url = location.search; //获取url中"?"符后的字串
+				var theRequest = new Object();
+				if(url.indexOf("?") != -1) {
+					var str = url.substr(1);
+					//					alert(str);
+					strs = str.split("&");
+					for(var i = 0; i < strs.length; i++) {
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+					}
+				}
+				return theRequest;
+			}
+
+			var request = new Object();
+			request = GetRequest();
+			//token device
+			var yztoken = request['token'];
+			var yzdevice = request['device'];
+			var yzid = request['uid'];
+			
+			
+			
+			// 为 class = divImgIn 的控件绑定 click 事件
+		$(".in").click(function() {
+			if($('.out').length<3){
+				// 使用 toggleClass ，如果 class 中没有 divImgOut 则附加上，有则减掉
+				$(this).toggleClass("out");				
+			}else if($(this).hasClass('out')){				
+				$(this).removeClass('out');
+			}else{
+				alertMsg('最多选择三个标签')
+			}
+			// 获得当前的 class ，要么是 divImgIn ，要么是 divImgIn divImgOut
+			var classname = $(this).attr("class");
+			// 获得点击的房子的 name 属性
+			var divname = $(this).attr("name");
+			// 这个逻辑判断根据你的需求写
+			if(classname != "in") {
+				// 这句是加上一个label
+				$("#divName").append($("<label class='resultout' name='" + divname + "'>" + divname + "</label>"));
+			} else {
+				// 这句是删除 label 中 name = name 的
+				$("#divName").find("label[name='" + divname + "']").remove();
+			}
+//			console.log($('.out').length);
+		})
+		var outresult = '';
+		$('.bcbutton').click(function(){
+			$('label').each(function(){
+				outresult+=$(this).text()+',';
+			})
+			var reresult = outresult.substring(0,outresult.length -1)
+			console.log(reresult);
+//			var editinfourl = 'http://yz.baiyoumi.cn/api/user/profile/editInfo';
+			var editinfourl = geturl(oneurl,'user/profile/editInfo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: 'POST',
+					url: editinfourl,
+					dataType: 'json',
+					data: {
+						'name': 'character',
+						'value': reresult
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data));						
+						if(data.code == 1){
+							alertMsg(data.msg);
+//							window.history.back();
+//							window.location.href = 'editdata.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+							window.location.href = 'bianji.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+						}
+					},
+					error: function(data) {
+						console.log('修改个人信息出错了');
+					}
+				})
+		})
+		</script>
+	</body>
+
+</html>

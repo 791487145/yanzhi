@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>手机指南</title>
+		<style type="text/css">
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.teldiv {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				justify-content: space-between;
+				flex-wrap: wrap;
+			}
+			
+			.telli {
+				width: 50%;
+				height: 6rem;
+				border: 1px solid #f5f5f5;
+				overflow: hidden;
+			}
+			
+			.telli img {
+				width: 100%;
+				height: 100%;
+			}
+		</style>
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<div class="telcon">
+			<div class="teldiv">
+				<div class="telli" data-id="xiaomi">
+					<img src="img/xiaomi.png" alt="" />
+				</div>
+				<div class="telli" data-id="vivo">
+					<img src="img/vivo.png" alt="" />
+				</div>
+				<div class="telli" data-id="oppo">
+					<img src="img/oppo.png" alt="" />
+				</div>
+				<div class="telli" data-id="meizu">
+					<img src="img/meizu.png" alt="" />
+				</div>
+				<div class="telli" data-id="huawei">
+					<img src="img/huawei.png" alt="" />
+				</div>
+				<div class="telli" data-id="pingguo">
+					<img src="img/pingguo.png" alt="" />
+				</div>
+				<div class="telli" data-id="meitu">
+					<img src="img/meitu.png" alt="" />
+				</div>
+			</div>
+		</div>
+
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var teltype = '';
+			$('.telli').click(function(){
+				teltype = $(this).attr('data-id');
+				window.location.href = 'teltype.html?type='+teltype;
+			})
+		</script>
+	</body>
+
+</html>

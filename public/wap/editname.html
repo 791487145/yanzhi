@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>修改昵称</title>
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+			
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+				position: relative;
+				background: #f5f5f5;
+			}
+			
+			.namecon {
+				padding-top: 0.2rem;
+			}
+			
+			.gainamediv {
+				position: relative;
+				width: 100%;
+			}
+			
+			.nameinput {
+				width: 100%;
+				height: 2rem;
+				font-size: 0.38rem;
+				padding: 0.44rem;
+				background: #fff;
+				outline: none;
+				border: 0;
+				line-height: 1.5;
+			}
+			
+			.zishu {
+				position: absolute;
+				right: 0.55rem;
+				bottom: 0.2rem;
+				font-size: 0.31rem;
+			}
+			
+			.baocun {
+				width: 100%;
+				height: 1.2rem;
+				margin-top: 0.93rem;
+				text-align: center;
+			}
+			
+			.bcbutton {
+				width: 9rem;
+				height: 1.2rem;
+				background: #ffe02f;
+				border: 0;
+				outline: none;
+				color: #333;
+				margin: 0 auto;
+				font-size: 0.36rem;
+				background: url(img/queding.png) no-repeat;
+				background-size: cover;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="namecon">
+			<div class="gainamediv">
+				<textarea maxlength="10" id="nameinput" class="nameinput"></textarea>
+				<div class="zishu">
+					<span id="nownum"></span>
+					<span>/</span>
+					<span>10</span>
+				</div>
+			</div>
+			<div class="baocun">
+				<button class="bcbutton"></button>
+			</div>
+		</div>
+
+		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="alertMsg.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			//			获取token device
+			//			传值:window.location.href = 'RegOk.htm?email='+email+'&name='+username+''; 
+			function GetRequest() {
+				var url = location.search; //获取url中"?"符后的字串
+				var theRequest = new Object();
+				if(url.indexOf("?") != -1) {
+					var str = url.substr(1);
+					//					alert(str);
+					strs = str.split("&");
+					for(var i = 0; i < strs.length; i++) {
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+					}
+				}
+				return theRequest;
+			}
+
+			var request = new Object();
+			request = GetRequest();
+			//token device
+			var yztoken = request['token'];
+			var yzdevice = request['device'];
+			var yzid = request['uid'];
+			//			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
+			//			var yzdevice = 'android';
+
+			function getinfo() {
+				//				var getinfourl = 'http://yz.baiyoumi.cn/api/user/profile/getinfo';
+				var getinfourl = geturl(oneurl, 'user/profile/getinfo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: 'POST',
+					url: getinfourl,
+					dataType: 'json',
+					data: {
+
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						document.getElementById('nameinput').value = data.data.nickname;
+					},
+					error: function(data) {
+						console.log('出错了');
+					}
+				})
+			}
+			getinfo();
+
+			$('.nameinput').on('input', function() {
+				var textlength = $(".nameinput")[0].value.length;
+				$('#nownum').text(textlength);
+			})
+			$('.bcbutton').click(function() {
+				var textinput = $('.nameinput')[0].value;
+				console.log(textinput);
+				//				var editinfourl = 'http://yz.baiyoumi.cn/api/user/profile/editInfo';
+				var editinfourl = geturl(oneurl, 'user/profile/editInfo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: 'POST',
+					url: editinfourl,
+					dataType: 'json',
+					data: {
+						'name': 'nickname',
+						'value': textinput
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						if(data.code == 1) {
+							alertMsg(data.msg);
+							//							window.history.back();
+							//							window.location.href = 'editdata.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+							window.location.href = 'bianji.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice;
+						}
+					},
+					error: function() {
+						console.log('修改昵称出错了');
+					}
+				})
+			})
+		</script>
+	</body>
+
+</html>

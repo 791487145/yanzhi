@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>守护榜</title>
+		<link rel="stylesheet" href="icons/pingfang.css" />
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			*{
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			html,body{
+				width: 100%;
+				height: 100%;
+			}
+			.shouhucon{
+				width: 100%;
+				height: auto;
+				background: #F5F5F5;
+			}
+			.shtop{
+				width: 100%;
+				height: 6.06rem;
+				background: url(img/pmtopbg.png) no-repeat;
+				background-size: contain;
+				position: relative;
+			}
+			.mypaiming{
+				width: 100%;
+				text-align: center;
+			}
+			.pmtitle{
+				padding-top: 0.5rem;
+				font-size: 0.5rem;
+				color: rgb(51,51,51);
+				margin-bottom: 0.33rem;
+			}
+			.myimgdiv{
+				width: 1.09rem;
+				height: 1.09rem;
+				border-radius: 100%;
+				margin: 0 auto;
+			}
+			.myimgdiv img{
+				width: 100%;
+				height: 100%;
+				border-radius: 100%;
+			}
+			.myname{
+				position: absolute;
+				bottom: 1.52rem;
+				left: 0.7rem;
+				font-size: 0.37rem;
+				color: rgb(0,0,0);
+				display: flex;
+			}
+			.mypmname{
+				margin-left: 0.2rem;
+				max-width: 3rem;
+				overflow: hidden;
+				white-space: nowrap;
+			}
+			.mygxdiv{
+				position: absolute;
+				right: 1.8rem;
+				bottom: 1.5rem;
+				text-align: center;
+			}
+			.gxtitle,.gxqubi{
+				color: rgb(0,0,0);
+				font-size: 0.37rem;
+			}
+			.gxnum{
+				font-size: 0.5rem;
+			    color: rgb(0,0,0);
+			    margin: 0 0.2rem;
+			}
+			li {
+				list-style: none;
+			}
+			.shbom{
+				width: 100%;
+				height: auto;
+				background: #fff;
+				padding: 0 0.3rem 0 0.62rem;
+				position: relative;
+				min-height: 10rem;
+			}
+			.tuhaoli {
+				width: 100%;
+			    height: 1.65rem;
+			    line-height: 1.65rem;
+			    font-size: 0.43rem;
+			    display: flex;
+			    position: relative;
+			    border-radius: 0.15rem;
+			    border-bottom: 1px solid #f3f4f5;
+			}
+			
+			.thbang .tuhaoli:not(:last-child) {
+				border-bottom: 1px solid #F3F4F5;
+			}
+			
+			.thnumber {
+				width: 20%;
+				height: 1.65rem;
+				line-height: 1.65rem;
+				font-size: 0.56rem;
+				font-family: PingFang Bold;
+				text-align: center;
+				vertical-align: middle;
+				color: #000;
+			}
+			
+			.imgdiv {
+				width: 50%;
+				height: 1.65rem;
+				line-height: 1.65rem;
+				vertical-align: middle;
+				display: flex;
+			}
+			
+			.imgimg {
+				height: 100%;
+				line-height: 1.65rem;
+				text-align: center;
+				margin-left: 0.09rem;
+			}
+			
+			.thheadimg {
+				width: 0.93rem;
+				height: 0.93rem;
+				border-radius: 100%;
+				vertical-align: middle;
+			}
+			
+			.thname {
+				width: 50%;
+				font-size: 0.43rem;
+				vertical-align: middle;
+				color: #000;
+				margin-left: 0.5rem;
+				overflow: hidden;
+			}
+			
+			.thxf {
+				width: 52%;
+				font-size: 0.37rem;
+				right: 0.2rem;
+				text-align: right;
+				padding-right: 0.4rem;
+				color: rgb(0,0,0);
+			}
+			.thnum{
+				color: rgb(241,184,28);
+				margin: 0 0.2rem;
+				font-size: 0.4rem;
+			}
+			
+			.oneimg {
+				width: 0.96rem;
+				height: 1.03rem;
+				vertical-align: middle;
+			}
+
+			.topbom {
+				width: 100%;
+				height: 100%;
+				overflow-y: scroll;
+			}
+			
+			.tishi {
+				font-size: 0.4rem;
+				position: absolute;
+				top: 50%;
+				left: 35%;
+				display: none;
+			}
+			.jxnl{
+				width: 100%;
+				height: 1.37rem;
+				line-height: 1.37rem;
+				text-align: center;
+				background: rgb(241,184,28);
+				color: rgb(51,51,51);
+				font-size: 0.5rem;
+				position: fixed;
+				bottom: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="shouhucon">
+			<div class="shtop">
+				<div class="mypaiming">
+					<div class="pmtitle">我的排名</div>
+					<div class="myimgdiv">
+						<img src="img/01.jpg" alt="" class="mypmimg"/>
+					</div>
+				</div>
+				<div class="myname">
+					<div class="wodepm">未上榜</div>
+					<div class="mypmname">不知道的事</div>
+				</div>
+				<div class="mygxdiv">
+					<span class="gxtitle">贡献</span>
+					<span class="gxnum">0</span>
+					<span class="gxqubi">趣币</span>
+				</div>
+			</div>
+			<div class="shbom">
+				<div class="tishi" id="thtishi">暂时没有人送礼</div>
+				<div class="topdiv" id="thtop">
+					
+				</div>
+				<div class="bomdiv" id="thbang">
+					<!--<li class="tuhaoli">
+						<div class="thnumber">400</div>
+						<div class="imgdiv">
+							<div class="imgimg">
+								<img src="img/01.jpg" alt="" class="thheadimg cover" />
+							</div>
+							<div class="thname">土</div>
+						</div>
+						<div class="thxf">
+							<span class="thgx">贡献</span>
+							<span class="thnum">12345</span>
+							<span class="thqubi">趣币</span>
+						</div>
+					</li>-->
+				</div>
+			</div>
+			<!--<div class="jxnl">继续努力</div>-->
+		</div>
+		
+		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			function GetRequest() {
+				var url = location.search; //获取url中"?"符后的字串
+				var theRequest = new Object();
+				if(url.indexOf("?") != -1) {
+					var str = url.substr(1);
+					strs = str.split("&");
+					for(var i = 0; i < strs.length; i++) {
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+					}
+				}
+				return theRequest;
+			}
+
+			var request = new Object();
+			request = GetRequest();
+			var yztoken = request['token'];
+			var yzdevice = request['device'];
+			var yzid = request['uid'];
+//			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
+//			var yzdevice = 'android';
+//			var yzid = 1252;
+
+//			获取我的信息
+			function getmyxinxi(){
+				var myxinxiurl = geturl(oneurl,'user/public/getNameById');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "get",
+					url: myxinxiurl,
+					dataType: "json",
+					data: {
+						"id": yzid
+					},
+					success: function(result) {
+						console.log(JSON.stringify(result.data));
+					},
+					error: function() {
+						console.log('获取土豪榜列表失败');
+					}
+				});
+			}
+//			getmyxinxi();
+
+			var thtophtml = '';
+			var thlisthtml = '';
+
+			function getrichlist() {
+//				var richlisturl = 'tuhao.json';
+				var richlisturl = geturl(oneurl,'broadcast/public/rich');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: richlisturl,
+					dataType: "json",
+					data: {
+						"id": yzid
+					},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+//						console.log(result.msg.length);
+						if(result.msg.length == 0) {
+							document.getElementById('thbang').style.border = 0;
+							document.getElementById('thtishi').style.display = 'block';
+						}else if(result.msg.length == 1){
+							thtophtml += '<li class="tuhaoli oneli">' +
+								'<div class="thnumber">' +
+								'<img src="img/oneimg.png" alt="" class="oneimg" />' +
+								'</div>' +
+								'<div class="imgdiv">' +
+								'<div class="imgimg">' +
+								'<img src="' + result.msg[0]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'</div>' +
+								'<div class="thname">' + result.msg[0]['nickname'] + '</div>' +
+								'</div>' +
+								'<div class="thxf">'+
+										'<span class="thgx">贡献</span>'+
+										'<span class="thnum">' + result.msg[0]['money'] + '</span>'+
+										'<span class="thqubi">趣币</span>'+
+									'</div>'+
+								'</li>';
+							document.getElementById('thtop').innerHTML = thtophtml;	
+						}else if(result.msg.length == 2){
+							thtophtml += '<li class="tuhaoli oneli">' +
+								'<div class="thnumber">' +
+								'<img src="img/oneimg.png" alt="" class="oneimg" />' +
+								'</div>' +
+								'<div class="imgdiv">' +
+								'<div class="imgimg">' +
+								'<img src="' + result.msg[0]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'</div>' +
+								'<div class="thname">' + result.msg[0]['nickname'] + '</div>' +
+								'</div>' +
+								'<div class="thxf">'+
+										'<span class="thgx">贡献</span>'+
+										'<span class="thnum">' + result.msg[0]['money'] + '</span>'+
+										'<span class="thqubi">趣币</span>'+
+									'</div>'+
+								'</li>' + '<li class="tuhaoli oneli">' +
+								'<div class="thnumber">' +
+								'<img src="img/twoimg.png" alt="" class="oneimg" />' +
+								'</div>' +
+								'<div class="imgdiv">' +
+								'<div class="imgimg">' +
+								'<img src="' + result.msg[1]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'</div>' +
+								'<div class="thname">' + result.msg[1]['nickname'] + '</div>' +
+								'</div>' +
+								'<div class="thxf">'+
+										'<span class="thgx">贡献</span>'+
+										'<span class="thnum">' + result.msg[1]['money'] + '</span>'+
+										'<span class="thqubi">趣币</span>'+
+									'</div>'+
+								'</li>';
+								document.getElementById('thtop').innerHTML = thtophtml;
+						}else if(result.msg.length == 3){
+							thtophtml += '<li class="tuhaoli oneli">' +
+								'<div class="thnumber">' +
+								'<img src="img/oneimg.png" alt="" class="oneimg" />' +
+								'</div>' +
+								'<div class="imgdiv">' +
+								'<div class="imgimg">' +
+								'<img src="' + result.msg[0]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'</div>' +
+								'<div class="thname">' + result.msg[0]['nickname'] + '</div>' +
+								'</div>' +
+								'<div class="thxf">'+
+										'<span class="thgx">贡献</span>'+
+										'<span class="thnum">' + result.msg[0]['money'] + '</span>'+
+										'<span class="thqubi">趣币</span>'+
+									'</div>'+
+								'</li>' + '<li class="tuhaoli oneli">' +
+								'<div class="thnumber">' +
+								'<img src="img/twoimg.png" alt="" class="oneimg" />' +
+								'</div>' +
+								'<div class="imgdiv">' +
+								'<div class="imgimg">' +
+								'<img src="' + result.msg[1]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'</div>' +
+								'<div class="thname">' + result.msg[1]['nickname'] + '</div>' +
+								'</div>' +
+								'<div class="thxf">'+
+										'<span class="thgx">贡献</span>'+
+										'<span class="thnum">' + result.msg[1]['money'] + '</span>'+
+										'<span class="thqubi">趣币</span>'+
+									'</div>'+
+								'</li>' + '<li class="tuhaoli oneli">' +
+								'<div class="thnumber">' +
+								'<img src="img/threeimg.png" alt="" class="oneimg" />' +
+								'</div>' +
+								'<div class="imgdiv">' +
+								'<div class="imgimg">' +
+								'<img src="' + result.msg[2]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'</div>' +
+								'<div class="thname">' + result.msg[2]['nickname'] + '</div>' +
+								'</div>' +
+								'<div class="thxf">'+
+										'<span class="thgx">贡献</span>'+
+										'<span class="thnum">' + result.msg[2]['money'] + '</span>'+
+										'<span class="thqubi">趣币</span>'+
+									'</div>'+
+								'</li>';
+							document.getElementById('thtop').innerHTML = thtophtml;
+						}else {
+							thtophtml += '<li class="tuhaoli oneli">' +
+								'<div class="thnumber">' +
+								'<img src="img/oneimg.png" alt="" class="oneimg" />' +
+								'</div>' +
+								'<div class="imgdiv">' +
+								'<div class="imgimg">' +
+								'<img src="' + result.msg[0]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'</div>' +
+								'<div class="thname">' + result.msg[0]['nickname'] + '</div>' +
+								'</div>' +
+								'<div class="thxf">'+
+										'<span class="thgx">贡献</span>'+
+										'<span class="thnum">' + result.msg[0]['money'] + '</span>'+
+										'<span class="thqubi">趣币</span>'+
+									'</div>'+
+								'</li>' + '<li class="tuhaoli oneli">' +
+								'<div class="thnumber">' +
+								'<img src="img/twoimg.png" alt="" class="oneimg" />' +
+								'</div>' +
+								'<div class="imgdiv">' +
+								'<div class="imgimg">' +
+								'<img src="' + result.msg[1]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'</div>' +
+								'<div class="thname">' + result.msg[1]['nickname'] + '</div>' +
+								'</div>' +
+								'<div class="thxf">'+
+										'<span class="thgx">贡献</span>'+
+										'<span class="thnum">' + result.msg[1]['money'] + '</span>'+
+										'<span class="thqubi">趣币</span>'+
+									'</div>'+
+								'</li>' + '<li class="tuhaoli oneli">' +
+								'<div class="thnumber">' +
+								'<img src="img/threeimg.png" alt="" class="oneimg" />' +
+								'</div>' +
+								'<div class="imgdiv">' +
+								'<div class="imgimg">' +
+								'<img src="' + result.msg[2]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'</div>' +
+								'<div class="thname">' + result.msg[2]['nickname'] + '</div>' +
+								'</div>' +
+								'<div class="thxf">'+
+										'<span class="thgx">贡献</span>'+
+										'<span class="thnum">' + result.msg[2]['money'] + '</span>'+
+										'<span class="thqubi">趣币</span>'+
+									'</div>'+
+								'</li>';
+							document.getElementById('thtop').innerHTML = thtophtml;
+							var arr = result.msg;
+							arr = arr.splice(3, result.msg.length);
+							console.log(JSON.stringify(arr));
+							console.log(arr.length);
+							for(var i = 0; i < arr.length; i++) {
+								thlisthtml += '<li class="tuhaoli">' +
+									'<div class="thnumber">' + Number(i + 4) + '</div>' +
+									'<div class="imgdiv">' +
+									'<div class="imgimg">' +
+									'<img src="' + arr[i]['avatar'] + '" alt="" class="thheadimg cover" />' +
+									'</div>' +
+									'<div class="thname">' + arr[i]['nickname'] + '</div>' +
+									'</div>' +
+									'<div class="thxf">'+
+										'<span class="thgx">贡献</span>'+
+										'<span class="thnum">' + arr[i]['money'] + '</span>'+
+										'<span class="thqubi">趣币</span>'+
+									'</div>'+
+									'</li>';
+
+								document.getElementById('thbang').innerHTML = thlisthtml;
+							}
+						}
+					},
+					error: function() {
+						console.log('获取土豪榜列表失败');
+					}
+				});
+			}
+			getrichlist();
+		</script>
+	</body>
+</html>

@@ -1,0 +1,1 @@
+var returnCitySN = {"cip": "111.164.182.124", "cid": "120000", "cname": "天津市"};

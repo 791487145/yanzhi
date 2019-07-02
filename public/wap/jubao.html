@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>举报</title>
+		<style type="text/css">
+			*{
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			html,body{
+				width: 100%;
+				height: 100%;
+				background: #F5F5F5;
+				padding-top: 0.2rem;
+			}
+			li{
+				list-style: none;
+			}
+			li img {
+				width: 24px;
+				height: 24px;
+				position: absolute;
+				right: 15px;
+				top: 50%;
+    			margin-top: -12px;
+			}
+			.list{
+				width: 100%;
+				position: relative;
+				background: #fff;
+			}
+			.list:before{
+				position: absolute;
+			    right: 0;
+			    left: 0;
+			    height: 1px;
+			    content: '';
+			    -webkit-transform: scaleY(.5);
+			    transform: scaleY(.5);
+			    background-color: #c8c7cc;
+			    top: -1px;
+			}
+			.list:after{
+			    position: absolute;
+			    right: 0;
+			    bottom: 0;
+			    left: 0;
+			    height: 1px;
+			    content: '';
+			    -webkit-transform: scaleY(.5);
+			    transform: scaleY(.5);
+			    background-color: #c8c7cc;
+			}
+			.jubaoli {
+			    font-size: 0.37rem;
+			    padding: 0.34rem 0.47rem;
+			    position: relative;
+    			overflow: hidden;
+			}
+			.jubaoli:after {
+			    position: absolute;
+			    right: 0;
+			    bottom: 0;
+			    left: 15px;
+			    height: 1px;
+			    content: '';
+			    -webkit-transform: scaleY(.5);
+			    transform: scaleY(.5);
+			    background-color: #c8c7cc;
+			}
+			.dui-active {
+				background: #ccc;
+			}
+			
+			.jubao-neirong {
+				margin-top: 0.2rem;
+			}
+			
+			textarea {
+				border: 0;
+				height: 3rem;
+				font-size: 0.38rem;
+				line-height: 21px;
+			    width: 100%;
+			    margin-bottom: 15px;
+			    padding: 10px 15px;
+			    -webkit-user-select: text;
+			    border: 1px solid rgba(0,0,0,.2);
+			    border-radius: 3px;
+			    outline: 0;
+			    background-color: #fff;
+			    -webkit-appearance: none;
+			}
+			
+			.cover {
+				position: absolute;
+				top: -0.78rem;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: #323232;
+				padding: 0 0.3rem;
+				opacity: 0.7;
+			}
+			
+			.success {
+				position: fixed;
+				top: 40%;
+				left: 10%;
+				width: 80%;
+				height: 2.4rem;
+				background: #fff;
+				text-align: center;
+				padding: 0 0.3rem;
+			}
+			
+			.suc-suc {
+				height: 0.4rem;
+				line-height: 0.4rem;
+				color: #000;
+				margin-top: 0.1rem;
+				font-size: 0.30rem;
+				font-weight: 700;
+				color: green;
+				margin: 0;
+				margin-top: 0.2rem;
+			}
+			
+			.thank {
+				height: 0.7rem;
+				font-size: 0.28rem;
+				margin: 0.15rem 0;
+				height: 0.7rem;
+				box-sizing: border-box;
+				line-height: 0.5rem;
+			}
+			
+			button {
+				height: 0.8rem;
+				border: 0;
+				color: red;
+				font-size: 0.24rem;
+			}
+			
+			.baocun{
+				width: 100%;
+				height: 1rem;
+				margin-top: 3rem;
+				text-align: center;
+			}
+			.bcbutton{
+				width: 3.02rem;
+				height: 1rem;
+				background: #ffe02f;
+				border: 0;
+				font-size: 0.36rem;
+				outline: none;
+				color: #333;
+				margin: 0 auto;
+			}
+		</style>
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		
+		<div class="jubaocon">
+			<div class="list">
+				<li class="jubaoli" data-id="jb1">酒托、饭托<img src="img/Hei_dui6.png" alt="" /></li>
+				<li class="jubaoli" data-id="jb2">骚扰（垃圾信息、广告）<img src="img/Hei_dui6.png" alt="" /></li>
+				<li class="jubaoli" data-id="jb3">诈骗信息<img src="img/Hei_dui6.png" alt="" /></li>
+				<li class="jubaoli" data-id="jb4">色情、暴力信息<img src="img/Hei_dui6.png" alt="" /></li>
+				<li class="jubaoli" data-id="jb5">形象差异极大（性别不符）<img src="img/Hei_dui6.png" alt="" /></li>
+			</div>
+			<div class="jubao-neirong">
+				<textarea name="" rows="" cols="" placeholder="详细描述被举报人的恶意行为"></textarea>
+			</div>
+			<div class="cover" style="display:none;">
+
+			</div>
+			<div class="success" id="success" style="display: none;">
+				<p class="suc-suc">举报成功</p>
+				<p class="thank">感谢您的举报，我们会认真处理您的举报内容，谢谢您的合作</p>
+				<button id="know">知道了</button>
+			</div>
+			<div class="baocun">
+				<button class="bcbutton" id="compile">提交</button>
+			</div>
+		</div>
+		
+		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="alertMsg.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+				//获取举报类型 int
+				var jbnum = '';
+				//获取举报内容
+				var jbtext = '';
+				function choose(){
+					var Liitems = document.getElementsByTagName('li');
+					var cover = document.getElementsByClassName('cover')[0];
+					var Textarea = document.getElementsByTagName('textarea')[0];
+					var success = document.getElementById('success');
+					for(var i = 0; i < Liitems.length; i++) {
+						Liitems[i].addEventListener('click', function(e) {							
+							e = e || e.stopPropagation();
+							for(var j = 0; j < Liitems.length; j++) {
+								if(Liitems[j].lastChild.getAttribute('src') == 'img/Hei_dui5.png') {
+									Liitems[j].lastChild.setAttribute('src', 'img/Hei_dui6.png');
+								}
+							}
+							this.lastChild.setAttribute('src', 'img/Hei_dui5.png');
+							jbnum = $(this).attr('data-id').replace('jb','');
+//							console.log(jbnum);
+						})
+					}
+					
+					document.getElementById("compile").addEventListener('click', function(e) {
+						e.stopPropagation();
+						var num = 0;
+						for(var i = 0; i < Liitems.length; i++) {
+							if(Liitems[i].lastChild.getAttribute('src') == 'img/Hei_dui5.png') {
+								setTimeout(function() {
+									
+									num = 0;
+								}, 1000)
+	
+							} else if(Liitems[i].lastChild.getAttribute('src') != 'img/Hei_dui5.png') {
+								num++
+								if(num == 5 && Textarea.value.length == 0) {
+									alertMsg('请填写举报内容');
+								}
+							}
+						}
+						
+						//			获取token device
+						//			传值:window.location.href = 'RegOk.htm?email='+email+'&name='+username+''; 
+						function GetRequest() {
+							var url = location.search; //获取url中"?"符后的字串
+							var theRequest = new Object();
+							if(url.indexOf("?") != -1) {
+								var str = url.substr(1);
+								//					alert(str);
+								strs = str.split("&");
+								for(var i = 0; i < strs.length; i++) {
+									theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+								}
+							}
+							return theRequest;
+						}
+			
+						var request = new Object();
+						request = GetRequest();
+						//token device
+						var yztoken = request['token'];
+						var yzdevice = request['device'];
+						var yzid = request['uid'];
+						var yzsbuser = request['sbuser'];
+						console.log(yzsbuser);
+						console.log(yzid);
+						console.log(jbnum);
+						console.log(Textarea.value);
+//						var jubaourl = 'http://yz.baiyoumi.cn/api/broadcast/public/report';
+						var jubaourl = geturl(oneurl,'broadcast/public/report');
+						$.ajax({
+							headers: {
+								'YZ-Token': yztoken,
+								'YZ-Device-Type': yzdevice
+							},
+							type: "post",
+							url: jubaourl,
+							dataType: "json",
+							data: {
+//								"type": yzsbuser,
+								"id": yzid,
+								"re_type": jbnum,
+								"info": Textarea.value
+							},
+							success: function(result) {
+								console.log(JSON.stringify(result));
+								if(result.msg == '举报成功'){
+									alertMsg('举报成功，我们会尽快做出处理！');
+								}
+							},
+							error: function() {
+								console.log('举报接口出错');
+							}
+						});
+						
+					});					
+				}
+				
+				choose();
+				
+				
+		</script>
+	</body>
+</html>

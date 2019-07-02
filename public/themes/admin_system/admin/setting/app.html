@@ -1,0 +1,64 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li class="active"><a>APP设置</a></li>
+			<li><a href="{:url('setting/money')}">提成设置</a></li>
+			<li><a href="{:url('setting/vip')}">VIP设置</a></li>
+			<li><a href="{:url('setting/broadcast')}">直播设置</a></li>
+			<li><a href="{:url('appmenu/index')}">菜单设置</a></li>
+		</ul>
+		<form method="post" class="form-horizontal js-ajax-form margin-top-20" role="form" action="{:url('setting/appPost')}">
+			<div class="form-group">
+				<label for="input-hot_keyword" class="col-sm-2 control-label">热门搜索词</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-hot_keyword" name="hot_keyword" value="{$hot_keyword|default=''}">
+					<p class="help-block">热门搜索关键词，多个关键词以英文逗号分隔</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-share_title" class="col-sm-2 control-label">分享标题</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-share_title" name="share_title" value="{$share_title|default=''}">
+					<p class="help-block">APP中分享时显示的标题</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-share_des" class="col-sm-2 control-label">分享内容</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-share_des" name="share_des" value="{$share_des|default=''}">
+					<p class="help-block">APP中分享时显示的内容</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-login_movie" class="col-sm-2 control-label">登录页视频</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-login_movie" name="login_movie" value="{$login_movie|default=''}">
+					<p class="help-block">登录页背景视频URL</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-recommend_time" class="col-sm-2 control-label">主播推荐时间</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-recommend_time" name="recommend_time" value="{$recommend_time|default='10,300'}">
+					<p class="help-block">用户打开APP后，推荐主播的时间，单位：秒，多个时间用英文逗号分隔</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-send_msg_pay" class="col-sm-2 control-label">发消息费用</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-send_msg_pay" name="send_msg_pay" value="{$send_msg_pay|default='5'}">
+					<p class="help-block">单位：平台币，非VIP用户发送消息时，扣除的平台币</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary js-ajax-submit">{:lang('SAVE')}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

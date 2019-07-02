@@ -1,0 +1,236 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a>下载统计</a></li>
+    </ul>
+    <form class="well form-inline margin-top-20" method="post" action="{:url('statis/user/down')}">
+        渠道ID：
+        <input type="text" class="form-control" name="channel" value="{$param['channel']|default=''}">&nbsp; &nbsp;
+        设备：
+        <select class="form-control" name="device">
+            <foreach name="arr_device" key="k" item="d">
+                <option value="{$k}">{$d}</option>
+            </foreach>
+        </select>
+        &nbsp; &nbsp;
+        统计日期：
+        <input type="text" class="form-control js-bootstrap-date" name="start_time" value="{$param['start_time']|default=''}" style="width: 140px;" autocomplete="off">-
+        <input type="text" class="form-control js-bootstrap-date" name="end_time" value="{$param['end_time']|default=''}" style="width: 140px;" autocomplete="off"> &nbsp; &nbsp;
+        <input type="submit" class="btn btn-primary" value="搜索"/>
+        <a class="btn btn-danger" href="{:url('statis/user/down')}">清空</a>
+    </form>
+    <div id="container" class="table table-hover table-bordered" style="height: 200px; width: 100% ">
+    </div>
+
+    <table class="table table-hover table-bordered">
+        <thead>
+        <tr>
+            <th style="text-align: center;vertical-align: middle">渠道</th>
+            <th style="text-align: center">下载数</th>
+            <th style="text-align: center">安装数</th>
+            <th style="text-align: center">注册数</th>
+            <th style="text-align: center">安装转化率</th>
+            <th style="text-align: center">注册转化率</th>
+            <th style="text-align: center">下载IP数</th>
+            <th style="text-align: center">安装IP数</th>
+            <th style="text-align: center">注册IP数</th>
+        </tr>
+        </thead>
+        <tbody>
+        <foreach name="channel_list" key="cid" item="vo">
+            <tr>
+                <php>
+                    $p_ins = $vo['count_down'] == 0 ? 0 : sprintf("%.2f",($vo['count_ins']*100/$vo['count_down']));
+                    $p_reg = $vo['count_ins'] == 0 ? 0 : sprintf("%.2f",($vo['count_reg']*100/$vo['count_ins']));
+                </php>
+                <td>{$hash_channel[$cid]|default="推广员$cid"}</td>
+                <td style="text-align: right">{$vo['count_down']|default=0}</td>
+                <td style="text-align: right">{$vo['count_ins']|default=0}</td>
+                <td style="text-align: right">{$vo['count_reg']|default=0}</td>
+                <td style="text-align: right">{$p_ins}%</td>
+                <td style="text-align: right">{$p_reg}%</td>
+                <td style="text-align: right">{$vo['ip_down']|default=0}</td>
+                <td style="text-align: right">{$vo['ip_ins']|default=0}</td>
+                <td style="text-align: right">{$vo['ip_reg']|default=0}</td>
+            </tr>
+        </foreach>
+        </tbody>
+    </table>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+<script src="__STATIC__/js/echarts/echarts.min.js"></script>
+<script type="text/javascript">
+
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom);
+    var app = {};
+    option = null;
+    var posList = [
+        'left', 'right', 'top', 'bottom',
+        'inside',
+        'insideTop', 'insideLeft', 'insideRight', 'insideBottom',
+        'insideTopLeft', 'insideTopRight', 'insideBottomLeft', 'insideBottomRight'
+    ];
+
+    app.configParameters = {
+        rotate: {
+            min: -90,
+            max: 90
+        },
+        align: {
+            options: {
+                left: 'left',
+                center: 'center',
+                right: 'right'
+            }
+        },
+        verticalAlign: {
+            options: {
+                top: 'top',
+                middle: 'middle',
+                bottom: 'bottom'
+            }
+        },
+        position: {
+            options: echarts.util.reduce(posList, function (map, pos) {
+                map[pos] = pos;
+                return map;
+            }, {})
+        },
+        distance: {
+            min: 0,
+            max: 100
+        }
+    };
+
+    app.config = {
+        rotate: 90,
+        align: 'left',
+        verticalAlign: 'middle',
+        position: 'insideBottom',
+        distance: 15,
+        onChange: function () {
+            var labelOption = {
+                normal: {
+                    rotate: app.config.rotate,
+                    align: app.config.align,
+                    verticalAlign: app.config.verticalAlign,
+                    position: app.config.position,
+                    distance: app.config.distance
+                }
+            };
+            myChart.setOption({
+                series: [{
+                    label: labelOption
+                }, {
+                    label: labelOption
+                }]
+            });
+        }
+    };
+
+    var labelOption = {
+        normal: {
+            show: true,
+            position: app.config.position,
+            distance: app.config.distance,
+            align: app.config.align,
+            verticalAlign: app.config.verticalAlign,
+            rotate: app.config.rotate,
+            formatter: '',
+            fontSize: 16,
+            rich: {
+                name: {
+                    textBorderColor: '#fff'
+                }
+            }
+        }
+    };
+
+    option = {
+        color: [ '#006699','#003366','#cc1b1e','#e3585b','#118a0b','#4ce045'],
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        legend: {
+            data: ['下载数', '下载IP数','安装数', '安装IP数','注册数', '注册IP数']
+        },
+        toolbox: {
+            show: true,
+            orient: 'vertical',
+            left: 'right',
+            top: 'center',
+            feature: {
+                mark: {show: true},
+                dataView: {show: false, readOnly: false},
+                magicType: {show: false, type: ['line', 'bar', 'stack', 'tiled']},
+                restore: {show: false},
+                saveAsImage: {show: true}
+            }
+        },
+        calculable: true,
+        xAxis: [
+            {
+                type: 'category',
+                axisTick: {show: false},
+                data: {$date_list}
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                name: '下载数',
+                type: 'line',
+                barGap: 0,
+                label: labelOption,
+                data: {$down_list}
+            },
+            {
+                name: '下载IP数',
+                type: 'line',
+                label: labelOption,
+                data: {$dip_list}
+            },
+            {
+                name: '安装数',
+                type: 'line',
+                barGap: 0,
+                label: labelOption,
+                data: {$ins_list}
+            },
+            {
+                name: '安装IP数',
+                type: 'line',
+                label: labelOption,
+                data: {$iip_list}
+            },
+            {
+                name: '注册数',
+                type: 'line',
+                barGap: 0,
+                label: labelOption,
+                data: {$reg_list}
+            },
+            {
+                name: '注册IP数',
+                type: 'line',
+                label: labelOption,
+                data: {$rip_list}
+            }
+        ]
+    };;
+    if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }
+</script>
+</body>
+</html>

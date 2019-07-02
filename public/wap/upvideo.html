@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>形象视频</title>
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			*{
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			html,body{
+				width: 100%;
+				height: 100%;
+			}
+			.spcon{
+				width: 100%;
+				/*height: 100%;*/
+			}
+			.livideo {
+				float: left;
+				width: 32%;
+				/*background: #fff;*/
+				height: 4rem;
+				margin: 0.66%;
+				overflow: hidden;
+				vertical-align: middle;
+				position: relative;
+			}
+			
+			.livideo .picimg {
+				margin: auto;
+				width: 100%;
+				vertical-align: middle;
+				height: 100%;
+			}
+			
+			.cover {
+				object-fit: cover;
+			}
+			
+			.img-jia {
+				width: 1.28rem;
+				height: 1.28rem;
+				position: fixed;
+				right: 0.8rem;
+				bottom: 0.8rem;
+				border-radius: 50%;
+				background-color: #fd698d;
+				z-index: 1;
+			}
+			
+			.img-jia a {
+				display: inline-block;
+				width: 1.28rem;
+				height: 1.28rem;
+				background: url(img/img-jia.png) no-repeat;
+				background-size: 1.28rem 1.28rem;
+			}
+			
+			.img-jia input {
+				width: 100%;
+				height: 100%;
+				border-radius: 100%;
+				outline: none;
+				opacity: 0;
+				filter: alpha(opacity=0);
+			}
+			
+			.img-jia img {
+				width: 100%;
+				height: 100%;
+			}
+			video{
+				width: 100%;
+				height: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="spcon">
+			<ul class="ulimg" id="ulimg">
+				<li class="livideo">
+					<video src="img/vyi.mp4"></video>
+				</li>
+				<li class="livideo">
+					<video src="img/ver.mp4"></video>
+				</li>
+				<li class="livideo">
+					<video src="img/vsan.mp4"></video>
+				</li>
+				<li class="livideo">
+					<video src="img/vsi.mp4"></video>
+				</li>
+			</ul>
+		</div>
+		<div class="img-jia">
+			<a><input type="file" id="file" class="filepath" onchange="changepic(this)" accept="video/*"></a>
+		</div>
+		
+		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+//			接口地址
+			var upvideourl = geturl(oneurl,'');
+			function upvideo(){
+				
+			}
+		</script>
+	</body>
+</html>

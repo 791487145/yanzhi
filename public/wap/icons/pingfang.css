@@ -1,0 +1,15 @@
+@font-face {
+    font-family: PingFang Medium;
+    src: url("PingFang Medium.woff");
+}
+@font-face {
+    font-family: PingFangSC-Regular,sans-serif;
+    src: url("PingFang Regular.woff");
+}
+@font-face {
+    font-family: PingFang Bold;
+    src: url("PingFang Bold.woff");
+}
+*{
+	font-family: PingFangSC-Regular,sans-serif;
+}

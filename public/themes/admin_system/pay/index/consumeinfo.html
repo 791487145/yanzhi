@@ -1,0 +1,121 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('pay/index/consume')}">消费管理</a></li>
+        <li class="active"><a>订单详情</a></li>
+    </ul>
+    <form id="form1" method="post" class="form-horizontal js-ajax-form margin-top-20">
+        <php>
+            $arrType = ['不限','礼物','私播','视频'];
+            $channelStatis = ['非推广订单','推广订单'];
+            $channelType = ['推广员','渠道'];
+        </php>
+        <div class="col-md-9">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">订单号</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" readonly="readonly" value="{$order['sn']}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">消费用户</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" readonly="readonly" value="{$user['user_nickname']}【{$user['mobile']}】">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">【{$anchor['level_name']}】</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" readonly="readonly" value="{$anchor['name']}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">订单类型</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" readonly="readonly" value="{$arrType[$order['type']]}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">订单内容</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" readonly="readonly" value="{$order['gift_name']} × {$order['gift_num']}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">消费平台币</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" readonly="readonly" value="{$order['coin']}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">消费时间</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" readonly="readonly" value="{:date('Y-m-d H:i:s',$order['add_time'])}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">备注</label>
+                <div class="col-md-6 col-sm-10">
+                    <textarea class="form-control" readonly="readonly">{$order['more']}</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <table class="table table-bordered">
+                <tr>
+                    <td>
+                        <a href="{:url('pay/index/consumeInfo',['go'=>'-1','id'=>$order['id']])}">上一单</a> |
+                        <a href="{:url('pay/index/consumeInfo',['go'=>'1','id'=>$order['id']])}">下一单</a>
+                        <php>if($order['channel_id'] > 0 && $order['channel_statis'] == 0){</php>
+                        <a href="{:url('pay/index/consumeChannel',['id'=>$order['id']])}" class="js-ajax-dialog-btn btn-default pull-right" data-msg="确定订单计入推广数据吗？">计入推广</a>
+                        <php>}</php>
+                    </td>
+                </tr>
+                <tr> <th><b>主播收入</b></th></tr>
+                <tr>
+                    <td>
+                        <input class="form-control" type="text" readonly="readonly" value="{$order['coin_anchor']} 平台币">
+                    </td>
+                </tr>
+                <php>if($order['guide_id'] > 0){</php>
+                <tr> <th><b>工会【{$guide['name']}】收入</b></th></tr>
+                <tr>
+                    <td>
+                        <input class="form-control" type="text" readonly="readonly" value="{$order['coin_guide']} 平台币">
+                    </td>
+                </tr>
+                <php>}</php>
+                <tr><th><b>推广信息</b></th></tr>
+                <tr>
+                    <td>
+                        <input class="form-control" type="text" readonly="readonly" value="{$channelStatis[$order['channel_statis']]}">
+                        <php>if($order['channel_statis'] == 1){</php>
+                        <input class="form-control" type="text" readonly="readonly" value="{$channelType[$channel['is_channel']]}：{$channel['channel_name']}【{$channel['channel_code']}】">
+                        <input class="form-control" type="text" readonly="readonly" value="提成：{$order['coin_channel']} 平台币">
+                        <php>if($channel['parent_id'] > 0){</php>
+                        <input class="form-control" type="text" readonly="readonly" value="上级：{$channel['parent_name']}【{$channel['parent_code']}】">
+                        <input class="form-control" type="text" readonly="readonly" value="提成：{$order['coin_parent']} 平台币">
+                        <php>}}else{ $order['coin_system'] = $order['coin'] - $order['coin_anchor'] - $order['coin_guide'];}</php>
+                    </td>
+                </tr>
+                <tr> <th><b>平台收入</b></th></tr>
+                <tr>
+                    <td>
+                        <input class="form-control" type="text" readonly="readonly" value="{$order['coin_system']} 平台币">
+                    </td>
+                </tr>
+                <tr> <th><b>用户IP</b></th></tr>
+                <tr>
+                    <td>
+                        <input class="form-control" type="text" readonly="readonly" value="{$order['ip']}">
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

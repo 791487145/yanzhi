@@ -1,0 +1,78 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a>渠道管理</a></li>
+        <li><a href="{:url('channel/add')}">添加渠道</a></li>
+    </ul>
+    <form class="well form-inline margin-top-20" method="post" action="{:url('channel/index')}">
+        用户ID：
+        <input class="form-control" type="text" name="uid" style="width: 200px;" value="{:input('request.uid')}"
+               placeholder="请输入用户ID">
+        关键字：
+        <input class="form-control" type="text" name="keyword" style="width: 200px;" value="{:input('request.keyword')}"
+               placeholder="代码/名称/姓名/联系方式">
+        <input type="submit" class="btn btn-primary" value="搜索"/>
+        <a class="btn btn-danger" href="{:url('channel/index')}">清空</a>
+    </form>
+    <form method="post" class="js-ajax-form">
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>渠道名称</th>
+                <!--<th>上级渠道</th>-->
+                <th>联系人</th>
+                <th>手机号码 | QQ | 微信</th>
+                <th>收款人</th>
+                <th>收款账户</th>
+                <th>VIP分成</th>
+                <th>趣币分成</th>
+                <th>扣量</th>
+                <!--<th>对下级提成</th>-->
+                <th>{:lang('STATUS')}</th>
+                <th>{:lang('ACTIONS')}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <php>
+                $colorStatus=['#999999','#398b33','#d0272a','#4147bd'];
+                $arrStatus=['待审核','审核通过','不通过','已解约'];
+                $btnStatus=['启用','解约','启用','续约'];
+            </php>
+            <foreach name="list" item="vo">
+                <php>
+                    $dStatus = '';
+                    if($vo['domain'] != '')$dStatus = '<font color="red">'.$vo['domain'].'</font>';
+                    $ratio_vip = 100-$vo['ratio_vip'];
+                    $ratio = 100-$vo['ratio'];
+                    $effective = 100 - $vo['effective'];
+                </php>
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td>{$vo.name} {$dStatus}</td>
+                    <!--<td>{$hash[$vo.parent_id]}</td>-->
+                    <td>{$vo.cdr}</td>
+                    <td>{$vo.mobile} | {$vo.qq} | {$vo.weixin}</td>
+                    <td>{$vo.pay_name}</td>
+                    <td>【{$vo.pay_type}】{$vo.pay_account}</td>
+                    <td>{$ratio_vip}%<!-- / 上级{$vo.ratio_vip_parent}%--></td>
+                    <td>{$ratio}%<!-- / 上级{$vo.ratio_parent}%--></td>
+                    <td>{$effective}%</td>
+                    <!--<td>{$vo.ratio_sub}%</td>-->
+                    <td style="color: {$colorStatus[$vo.status]}">{$arrStatus[$vo.status]}</td>
+                    <td>
+                        <a href="{:url('channel/status',array('id'=>$vo.id))}" class="js-ajax-dialog-btn" data-msg="确定{$btnStatus[$vo.status]}吗？">{$btnStatus[$vo.status]}</a>
+                        <a href="{:url('channel/edit',array('id'=>$vo.id))}">编辑</a>
+                    </td>
+                </tr>
+            </foreach>
+            </tbody>
+        </table>
+        <div class="pagination">{$page}</div>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('pay/index/profit')}">收益管理</a></li>
+        <li class="active"><a>订单详情</a></li>
+    </ul>
+    <form id="form1" method="post" class="form-horizontal js-ajax-form margin-top-20">
+        <php>
+            $arrType = ['推广','礼物','私播','会长','上级渠道'];
+            $arrPayType = ['','余额','VIP'];
+            $arrCosType = ['','送礼物','私播','视频','弹幕'];
+        </php>
+        <div class="col-md-9">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">收益类型</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" readonly="readonly" value="{$arrType[$order['type']]}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">受益时间</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" readonly="readonly" value="{:date('Y-m-d H:i:s',$order['add_time'])}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">订单类型</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" readonly="readonly" value="{$order['table_name'] == 'pay_payment' ? ('充值-'.$arrPayType[$about['type']]) : ('消费-'.$arrCosType[$about['type']])}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">订单号</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" readonly="readonly" value="{$about['sn']}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">{$order['table_name'] == 'pay_payment' ? '充值金额' : '消费平台币'}</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" readonly="readonly" value="{$order['table_name'] == 'pay_payment' ? ($about['money'].' 元') : ($about['coin'].' 平台币')}">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <table class="table table-bordered">
+                <tr>
+                    <td>
+                        <a href="{:url('pay/index/profitInfo',['go'=>'-1','id'=>$order['id']])}">上一单</a> |
+                        <a href="{:url('pay/index/profitInfo',['go'=>'1','id'=>$order['id']])}">下一单</a>
+                    </td>
+                </tr>
+                <tr><th><b>受益人类型</b></th></tr>
+                <tr>
+                    <td>
+                        <input class="form-control" type="text" readonly="readonly" value="{$order['utype']}">
+                    </td>
+                </tr>
+                <tr><th><b>收益金额</b></th></tr>
+                <tr>
+                    <td>
+                        <input class="form-control" type="text" readonly="readonly" value="{$order['coin']} 平台币">
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

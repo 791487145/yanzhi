@@ -1,0 +1,125 @@
+<include file="public@header" />
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('channel/index')}">渠道管理</a></li>
+        <li><a href="{:url('channel/add')}">添加渠道</a></li>
+        <li class="active"><a>编辑渠道</a></li>
+    </ul>
+    <form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('channel/editPost')}">
+        <input type="hidden" name="c[id]" value="{$c.id}">
+        <input type="hidden" name="u[id]" value="{$u.id}">
+        <div class="col-md-9">
+            <div class="form-group">
+                <label for="input-name" class="col-sm-2 control-label">渠道名称<span class="form-required">*</span></label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-name" value="{$c.name}" readonly="readonly">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-domain" class="col-sm-2 control-label">渠道域名</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-domain" name="c[domain]" value="{$c.domain}">
+                </div>
+            </div>
+
+            <div class="form-group" style="background-color: #ecf0f1; height: 1px"></div>
+            <div class="form-group">
+                <label for="input-cdr" class="col-sm-2 control-label">联系人<span class="form-required">*</span></label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-cdr" name="c[cdr]" value="{$c.cdr}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-mobile" class="col-sm-2 control-label">手机号码<span class="form-required">*</span></label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-mobile" name="c[mobile]" value="{$c.mobile}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-qq" class="col-sm-2 control-label">QQ号码</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-qq" name="c[qq]" value="{$c.qq}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-weixin" class="col-sm-2 control-label">微信账号</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-weixin" name="c[weixin]" value="{$c.weixin}">
+                </div>
+            </div>
+
+            <div class="form-group" style="background-color: #ecf0f1; height: 1px"></div>
+            <div class="form-group">
+                <label for="input-pay_name" class="col-sm-2 control-label">收款人<span class="form-required">*</span></label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-pay_name" name="c[pay_name]" value="{$c.pay_name}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-pay_type" class="col-sm-2 control-label">收款方式<span class="form-required">*</span></label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-pay_type" name="c[pay_type]" value="{$c.pay_type}">
+                    <p>
+                        <a href="javascript:;" onclick="$('#input-pay_type').val('支付宝')">支付宝</a> |
+                        <a href="javascript:;" onclick="$('#input-pay_type').val('微信支付')">微信支付</a> |
+                        <a href="javascript:;" onclick="$('#input-pay_type').val('网银转账')">网银转账</a>
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-pay_account" class="col-sm-2 control-label">收款账户<span class="form-required">*</span></label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-pay_account" name="c[pay_account]" value="{$c.pay_account}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('SAVE')}</button>
+                    <a class="btn btn-default" href="javascript:history.back(-1);">{:lang('BACK')}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <table class="table table-bordered">
+                <tr><th><b>登录信息</b></th></tr>
+                <tr><td><input type="text" class="form-control" id="input-user_login" value="{$u.user_login}" readonly="readonly"></td></tr>
+                <tr><td><input type="text" class="form-control" id="input-user_pass" name="u[user_pass]" value="" placeholder="不填写则不修改密码"></td></tr>
+                <tr><th><b>提成设置</b></th></tr>
+                <tr><td>
+                    <php>
+                        $ratio_vip_c = 100 - $c['ratio_vip'];
+                        $ratio_c = 100 - $c['ratio'];
+                        $effective_c = 100 - $c['effective'];
+                    </php>
+                    <input type="text" class="form-control" id="input-ratio_vip" name="c[ratio_vip]" value="{$c.ratio_vip}">
+                    <p>VIP充值平台提成，即渠道分成<a id="ratio_vip_c">{$ratio_vip_c}</a>%</p>
+                    <input type="text" class="form-control" id="input-ratio" name="c[ratio]" value="{$c.ratio}">
+                    <p>余额充值平台提成，即渠道分成<a id="ratio_c">{$ratio_c}</a>%</p>
+                    <input type="text" class="form-control" id="input-ratio_sub" name="c[ratio_sub]" value="{$c.ratio_sub}">
+                    <p>对子渠道的提成</p>
+                    <input type="text" class="form-control" id="input-effective" name="c[effective]" value="{$c.effective}">
+                    <p>有效订单比例，即扣量<a id="effective_c">{$effective_c}</a>%</p>
+                </td></tr>
+            </table>
+        </div>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+<script>
+    $("#input-ratio_vip").bind("input propertychange",function(event){
+        var tmp = 100 - $(this).val();
+        $("#ratio_vip_c").html(tmp);
+    });
+    $("#input-ratio").bind("input propertychange",function(event){
+        var tmp = 100 - $(this).val();
+        $("#ratio_c").html(tmp);
+    });
+    $("#input-effective").bind("input propertychange",function(event){
+        var tmp = 100 - $(this).val();
+        $("#effective_c").html(tmp);
+    });
+</script>
+</body>
+</html>

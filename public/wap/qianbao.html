@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title>我的钱包</title>
+		<link rel="stylesheet" type="text/css" href="icons/iconfont.css" />
+		<style type="text/css">
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+				background: #fff;
+			}
+			
+			a {
+				text-decoration: none;
+				outline:none;
+				-webkit-tap-highlight-color: rgba(0,0,0,0);
+			}
+			
+			.zhanghu {
+				width: 100%;
+				/*height: 0.2rem;*/
+				height: 1rem;
+				background: #f5f5f5;
+				color: #888;
+				font-size: 0.34rem;
+				line-height: 1rem;
+				padding-left: 0.37rem;
+			}
+			
+			.jinbi {
+				width: 100%;
+				/*height: 3rem;*/
+				height: 2.37rem;
+				background: #fff;
+				/*border-bottom: 1px solid #d8d8d8;*/
+				border-bottom: 1px solid #f3f4f5;
+				/*text-align: center;*/
+				position: relative;
+				display: flex;
+			}
+			.yuebi{
+				font-size: 0.43rem;
+				color: #333;
+				margin: 0.3rem 0 0.3rem;
+			}
+			.myyue{
+				font-size: 0.48rem;
+				color: #333;
+			}
+			
+			.tixianbutton {
+				width: 2.02rem;
+				height: 0.76rem;
+				background: #ffe02f;
+				border: 0;
+				border-radius: 0.62rem;
+				outline: none;
+				color: #333;
+				margin-top: 0.3rem;
+			}
+			
+			.czbutton {
+				width: 2.02rem;
+				height: 0.76rem;
+				background: #ffe02f;
+				border: 0;
+				border-radius: 0.62rem;
+				outline: none;
+				color: #333;
+				margin-top: 0.3rem;
+			}
+			
+			.qianbaolist {
+				width: 100%;
+				position: relative;
+				list-style: none;
+				background-color: #fff;
+			}
+			
+			.qianbaolist:before {
+				position: absolute;
+				right: 0;
+				left: 0;
+				height: 1px;
+				content: '';
+				-webkit-transform: scaleY(.5);
+				transform: scaleY(.5);
+				background-color: #c8c7cc;
+				top: -1px;
+			}
+			
+			.listli {
+				width: 100%;
+				height: 0.7rem;
+				position: relative;
+				padding: 1.03rem 0;
+				overflow: hidden;
+				padding-right: 65px;
+			}
+			.listli:after {
+				position: absolute;
+				right: 0.4rem;
+				top: 67%;
+				display: inline-block;
+				content: "";
+				width: 0.24rem;
+				height: 0.24rem;
+				border: solid #999;
+				border-width: 1px 1px 0 0;
+				-webkit-transform: translate(0, -50%) rotate(45deg);
+				transform: translate(0, -50%) rotate(45deg);
+			}
+			.listimg {
+				vertical-align: middle;
+				height: 0.7rem;
+			}
+			
+			.lista {
+				position: relative;
+				display: inline-block;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				color: #333;
+				vertical-align: middle;
+				width: 2.09rem;
+				text-align: center;
+			}
+			
+			.listspan {
+				float: right;
+				margin-right: -40px;
+				color: #bbb;
+				font-size: 0.52rem;
+			}
+			
+			.listtitle {
+				font-size: 0.4rem;
+				vertical-align: middle;
+			}
+			
+			.rzcover {
+				width: 100%;
+				height: 100%;
+				background: #000;
+				opacity: 0.7;
+				position: absolute;
+				top: 0;
+				left: 0;
+				display: none;
+			}
+			
+			.rzmask,.txmask {
+				width: 90%;
+				height: 4.8rem;
+				background: #fff;
+				position: absolute;
+				top: 35%;
+				left: 50%;
+				margin-left: -45%;
+				border-top: 4px solid #ffe02f;
+				padding-top: 0.6rem;
+				display: none;
+			}
+			
+			.rztop {
+				width: 100%;
+				text-align: center;
+				color: #000;
+				height: 2.8rem;
+				border-bottom: 1px solid #D8D8D8;
+			}
+			
+			.rzbom {
+				width: 100%;
+				height: 1.2rem;
+			}
+			
+			.rztitle {
+				font-size: 0.46rem;
+				margin-bottom: 0.8rem;
+			}
+			
+			.rztext {
+				font-size: 0.43rem;
+			}
+			
+			.rzbom button {
+				background: none;
+				width: 49%;
+				height: 100%;
+				border: 0;
+				font-size: 0.43rem;
+			}
+			
+			button.rzleft {
+				border-right: 1px solid #D8D8D8;
+			}
+			
+			button.rzright {
+				color: #ffe02f;
+			}
+			
+			.sfrz{
+				width: 100%;
+			    height: 1.4rem;
+			    line-height: 1.4rem;
+			    font-size: 0.38rem;
+			    color: #999;
+			    margin-top: 0.2rem;
+			}
+			.jinbiimg{
+				width: 0.8rem;
+				height: 0.8rem;
+				margin: 0.81rem 0.65rem 0 0.65rem;
+			}
+			.jinbiimg img{
+				width: 100%;
+				height: 100%;
+			}
+			.jbzi{
+				color: #666;
+				font-size: 0.34rem;
+				margin-top: 0.43rem;
+			}
+			.jbzhi{
+				color: #222;
+				font-size: 0.56rem;
+				margin-top: 0.3rem;
+			}
+			.jbchongzhi{
+				position: absolute;
+				right: 0.68rem;
+				top: 0.74rem;
+				padding: 0.18rem 0.64rem;
+				font-size: 0.37rem;
+				color: #333;
+				border-radius: 0.62rem;
+				background: #FFDD00;
+				border: 0;
+				outline: none;
+			}
+		</style>
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<div class="qblist">
+			<div class="zhanghu">我的账户</div>
+			<div class="jinbi">
+				<!--<div class="yuebi">账户余额</div>
+				<div class="myyue" id="myyue"></div>-->
+				<!--<div class="txdiv">
+					<button class="tixianbutton">提现</button>
+				</div>-->
+				<div class="jinbiimg">
+					<img src="img/jinbi.png" alt="" />
+				</div>
+				<div class="jinbicenter">
+					<div class="jbzi">趣币</div>
+					<div class="jbzhi" id="myyue"></div>
+				</div>
+				<button class="jbchongzhi">充值</button>
+			</div>
+			<ul class="qianbaolist">
+				<!--<li class="listli li3">
+					<a class="lista"><img src="img/qiandai.png" alt="" class="listimg" /></a>
+					<span class="listtitle">我的收益</span>
+				</li>-->
+				<li class="listli li1">
+					<a class="lista"><img src="img/car.png" alt="" class="listimg" /></a>
+					<span class="listtitle">消费记录</span>
+				</li>
+				<li class="listli li2">
+					<a class="lista"><img src="img/qian.png" alt="" class="listimg" /></a>
+					<span class="listtitle">充值记录</span>
+				</li>
+			</ul>
+		</div>
+		<div class="rzcover"></div>
+		<div class="rzmask">
+			<div class="rztop">
+				<div class="rztitle">提示</div>
+				<div class="rztext">你还没有实名认证，请实名后再提现</div>
+			</div>
+			<div class="rzbom">
+				<button class="rzleft">取消</button>
+				<button class="rzright">去实名认证</button>
+			</div>
+		</div>
+		<div class="txmask">
+			<div class="rztop">
+				<div class="rztitle">提示</div>
+				<div class="rztext">你还没有选择提现方式，现在无法提现</div>
+			</div>
+			<div class="rzbom">
+				<button class="rzleft">取消</button>
+				<button class="rzright">去设置</button>
+			</div>
+		</div>
+		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			function GetRequest() {
+				var url = location.search; //获取url中"?"符后的字串
+				var theRequest = new Object();
+				if(url.indexOf("?") != -1) {
+					var str = url.substr(1);
+					strs = str.split("&");
+					for(var i = 0; i < strs.length; i++) {
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+					}
+				}
+				return theRequest;
+			}
+
+			var request = new Object();
+			request = GetRequest();
+			var yztoken = request['token'];
+			var yzdevice = request['device'];
+			var yzid = request['uid'];
+//			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
+//			var yzdevice = 'android';
+//			var yzid = 2518;
+//			var yztoken = 'bf3293de175dc3fb8d4dff91b4d9c54800c83805bf309fb3ebedae139adc9a2a';
+//			var yzdevice = 'iphone';
+			var realuser = '';
+			var payset = '';
+			function userinfo(){
+				var userurl = geturl(oneurl,'user/profile/getinfo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: userurl,
+					dataType: "json",
+					data: {},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						realuser = result.data.real_user;
+						payset = result.data.pay_set;
+					},
+					error: function(data) {
+						console.log('失败'+JSON.stringify(data));
+					}
+				});
+			}			
+			userinfo();
+
+			$('.li1').on('click', function() {
+				window.location.href = 'xiaofei.html?token='+yztoken+'&device='+yzdevice;
+			})
+			$('.li2').on('click', function() {
+				window.location.href = 'chongzhi.html?token='+yztoken+'&device='+yzdevice;
+			})
+//			$('.li3').on('click', function() {
+//				window.location.href = 'shouyi.html?token='+yztoken+'&device='+yzdevice;
+////				window.location.href = 'shouyinew.html?token='+yztoken+'&device='+yzdevice;
+//			})
+			
+//			$('.tixianbutton').click(function() {
+//				console.log(realuser);
+//				console.log(payset);
+//				if(realuser != 1) {
+//					$('.rzcover').css('display', 'block');
+//					$('.rzmask').css('display', 'block');
+//					$('.rzleft').click(function() {
+//						$('.rzcover').css('display', 'none');
+//						$('.rzmask').css('display', 'none');
+//					})
+//					$('.rzright').click(function() {
+//						window.location.href = 'renzheng.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+//					})
+//				}else if(payset != 1){
+//					$('.rzcover').css('display', 'block');
+//					$('.txmask').css('display', 'block');
+//					$('.rzleft').click(function() {
+//						$('.rzcover').css('display', 'none');
+//						$('.txmask').css('display', 'none');
+//					})
+//					$('.rzright').click(function() {
+//						window.location.href = 'txtype.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+//					})
+//				} else if(realuser == 1 & payset == 1) {
+//					window.location.href = 'tixian.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+//				}
+//			})						
+			
+			var mycoin = '';
+			var myyue = '';
+
+			function getyue() {
+				var yueurl = geturl(oneurl,'pay/index/package');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: yueurl,
+					dataType: "json",
+					data: {},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						mycoin = result.data.coin;
+						myyue = result.data.profit;
+						document.getElementById('myyue').innerHTML = mycoin;
+					},
+					error: function(data) {
+						console.log('失败'+JSON.stringify(data));
+					}
+				});
+			}
+			getyue();	
+			
+			$('.jbchongzhi').click(function(){
+				window.location.href = 'jinbi.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice;
+			})
+		</script>
+	</body>
+
+</html>

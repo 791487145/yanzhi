@@ -1,0 +1,60 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a>主播管理</a></li>
+    </ul>
+    <form class="well form-inline margin-top-20" method="post" action="{:url('broadcast/anchor/index')}">
+        工会：
+        <select class="form-control" name="gid" style="width: 200px;">
+            <option value="0">请选择</option>
+            <foreach name="guide"  item="vo">
+                <php> $selected = ($vo['id'] == $gid) ? " selected" : "";</php>
+                <option value="{$vo['id']}"{$selected}>{$vo['code']} {$vo['name']}</option>
+            </foreach>
+        </select>
+        关键字：
+        <input class="form-control" type="text" name="keyword" style="width: 200px;" value="{:input('request.keyword')}" placeholder="昵称/姓名/手机">
+        <input type="submit" class="btn btn-primary" value="搜索"/>
+        <a class="btn btn-danger" href="{:url('broadcast/anchor/index')}">清空</a>
+    </form>
+    <form method="post" class="js-ajax-form">
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>{:lang('REALNAME')}</th>
+                <th>{:lang('NICENAME')}</th>
+                <th>{:lang('AVATAR')}</th>
+                <th>{:lang('MOBILE')}</th>
+                <th>{:lang('APPLY_TIME')}</th>
+                <th>{:lang('EXAMINE_TIME')}</th>
+                <th>{:lang('STATUS')}</th>
+                <th>{:lang('ACTIONS')}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <php>
+                $anchorStatuses=[lang('ANCHOR_STATUS_WAIT'),lang('ANCHOR_STATUS_SUCC'),lang('ANCHOR_STATUS_FAIL')];
+                $colorStatuses=["#aaa","#2aab20","#f61d1d"];
+            </php>
+            <foreach name="list" item="vo">
+                <tr>
+                    <td>{$vo['truename']}【{$vo['idnum']}】</td>
+                    <td>{$vo['user_nickname']?$vo['user_nickname']:lang('NOT_FILLED')}</td>
+                    <td><img width="25" height="25" src="{:url('user/public/avatar',array('id'=>$vo['id']))}"/></td>
+                    <td>{$vo.mobile}</td>
+                    <td>{:date('Y-m-d H:i:s',$vo['add_time'])}</td>
+                    <td>{:date('Y-m-d H:i:s',$vo['audit_time'])}</td>
+                    <td style="color: {$colorStatuses[$vo['status']]}">{$anchorStatuses[$vo['status']]}</td>
+                    <td><a href="{:url('broadcast/anchor/info',array('id'=>$vo['user_id']))}">{:lang('SHOW_INFO')}</a></td>
+                </tr>
+            </foreach>
+            </tbody>
+        </table>
+        <div class="pagination">{$page}</div>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title>我的收益</title>
+		<link rel="stylesheet" type="text/css" href="icons/iconfont.css" />
+		<style type="text/css">
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+				background: #fff;
+				/*background: #efeff4;*/
+			}
+			
+			a {
+				text-decoration: none;
+				outline:none;
+				-webkit-tap-highlight-color: rgba(0,0,0,0);
+			}
+			
+			.kongbai {
+				width: 100%;
+				height: 0.2rem;
+				background: #f5f5f5;
+				color: #a5a5a5;
+				font-size: 0.31rem;
+				line-height: 1rem;
+				padding-left: 0.37rem;
+			}
+			
+			.jinbi {
+				/*width: 100%;
+				height: 3rem;
+				background: #fff;
+				text-align: center;*/
+				/*width: 100%;*/
+				width: 94%;
+				margin: 0 3%;
+			    height: 3.3rem;
+			    background: #fff;
+			    text-align: center;
+			    padding-top: 0.3rem;
+			    background: url(img/qbtopbg.png) no-repeat;
+			    /*background-size: cover;*/
+			    background-size: contain;
+			    position: relative;
+			}
+			.yuebi{
+				font-size: 0.43rem;
+				color: #333;
+				/*margin: 0.3rem 0 0.3rem;*/
+				margin: 0 0 0.3rem;
+			}
+			.myyue{
+				font-size: 0.48rem;
+				color: #333;
+			}
+			
+			.tixianbutton {
+				width: 2.02rem;
+				height: 0.76rem;
+				background: #ffe02f;
+				border: 0;
+				border-radius: 0.62rem;
+				outline: none;
+				color: #333;
+				margin-top: 0.3rem;
+			}
+			
+			.czbutton {
+				width: 2.02rem;
+				height: 0.76rem;
+				background: #ffe02f;
+				border: 0;
+				border-radius: 0.62rem;
+				outline: none;
+				color: #333;
+				margin-top: 0.3rem;
+			}
+			
+			.qianbaolist {
+				width: 100%;
+				position: relative;
+				list-style: none;
+				background-color: #fff;
+			}
+			
+			.qianbaolist:before {
+				position: absolute;
+				right: 0;
+				left: 0;
+				height: 1px;
+				content: '';
+				-webkit-transform: scaleY(.5);
+				transform: scaleY(.5);
+				background-color: #c8c7cc;
+				top: -1px;
+			}
+			
+			.listli {
+				width: 100%;
+				height: 0.7rem;
+				position: relative;
+				padding: 1.03rem 0;
+				overflow: hidden;
+				padding-right: 65px;
+			}
+			.listli:after {
+				position: absolute;
+				right: 0.4rem;
+				top: 67%;
+				display: inline-block;
+				content: "";
+				width: 0.24rem;
+				height: 0.24rem;
+				border: solid #999;
+				border-width: 1px 1px 0 0;
+				-webkit-transform: translate(0, -50%) rotate(45deg);
+				transform: translate(0, -50%) rotate(45deg);
+			}
+			.listimg {
+				vertical-align: middle;
+				height: 0.7rem;
+			}
+			
+			.lista {
+				position: relative;
+				display: inline-block;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				color: #333;
+				vertical-align: middle;
+				width: 2.09rem;
+				text-align: center;
+			}
+			
+			.listspan {
+				float: right;
+				margin-right: -40px;
+				color: #bbb;
+				font-size: 0.52rem;
+			}
+			
+			.listtitle {
+				font-size: 0.4rem;
+				vertical-align: middle;
+			}
+			
+			.rzcover {
+				width: 100%;
+				height: 100%;
+				background: #000;
+				opacity: 0.7;
+				position: absolute;
+				top: 0;
+				left: 0;
+				display: none;
+			}
+			
+			.rzmask,.txmask {
+				width: 90%;
+				height: 4.8rem;
+				background: #fff;
+				position: absolute;
+				top: 35%;
+				left: 50%;
+				margin-left: -45%;
+				border-top: 4px solid #ffe02f;
+				padding-top: 0.6rem;
+				display: none;
+			}
+			
+			.rztop {
+				width: 100%;
+				text-align: center;
+				color: #000;
+				height: 2.8rem;
+				border-bottom: 1px solid #D8D8D8;
+			}
+			
+			.rzbom {
+				width: 100%;
+				height: 1.2rem;
+			}
+			
+			.rztitle {
+				font-size: 0.46rem;
+				margin-bottom: 0.8rem;
+			}
+			
+			.rztext {
+				font-size: 0.43rem;
+			}
+			
+			.rzbom button {
+				background: none;
+				width: 49%;
+				height: 100%;
+				border: 0;
+				font-size: 0.43rem;
+			}
+			
+			button.rzleft {
+				border-right: 1px solid #D8D8D8;
+			}
+			
+			button.rzright {
+				color: #ffe02f;
+			}
+			
+			.sfrz{
+				width: 100%;
+			    height: 1.4rem;
+			    line-height: 1.4rem;
+			    font-size: 0.38rem;
+			    color: #999;
+			    margin-top: 0.2rem;
+			}
+			
+			.syjl {
+				width: 100%;
+				height: 1rem;
+				position: absolute;
+				top: 50%;
+				margin-top: -0.5rem;
+				line-height: 1rem;
+				font-size: 0.43rem;
+				display: none;
+				text-align: center;
+			}
+			.syall{
+				/*margin: 1.18rem 0 0 5%;*/
+				margin: 0.8rem 0 0 5%;
+			}
+			.syallzi{
+				font-size: 0.62rem;
+				/*font-family: PingFang Bold;*/
+				font-weight: bold;
+			}
+			.syallzhi{
+				font-size: 0.37rem;
+				color: #666;
+				margin-left: 0.2rem;
+			}
+			.syli{
+				width: 94%;
+				height: 5.6rem;
+				margin: 0.37rem 3% 0;
+				/*background: url(img/sybg.png);*/
+				background: #fff;
+				border-radius: 0.25rem;
+				background-size: cover;
+				padding: 0.56rem 0.53rem 0 0.96rem;
+				position: relative;
+				/*background: orange;*/
+				box-shadow: 2px 2px 10px #ccc;
+			}
+			/*.syliall{
+				margin-top: 0.56rem;
+			}*/
+			.syliallzi{
+				font-size: 0.53rem;
+				color: rgb(51,51,51);
+			}
+			.syliallzhi{
+				font-size: 0.53rem;
+				color: rgb(51,51,51);
+				position: absolute;
+				right: 0.53rem;
+			}
+			.sytime{
+				color: rgb(170,170,170);
+				font-size: 0.31rem;
+				/*margin-top: 0.31rem;*/
+				margin-top: 0.25rem;
+			}
+			.sylili{
+				border-bottom: 1px solid #f3f4f5;
+				padding-bottom: 0.18rem;
+				margin-top: 0.56rem;
+			}
+			.symxzi{
+				color: rgb(109,109,111);
+				font-size: 0.34rem;
+			}
+			.symxzhi{
+				position: absolute;
+				right: 0.53rem;
+				color: rgb(109,109,111);
+				font-size: 0.34rem;
+			}
+			.syqb{
+				line-height: 1.2rem;
+			    height: 1.2rem;
+			    font-size: 0.31rem;
+			    color: rgb(170,170,170);
+			    text-align: right;
+			    /*background: pink;*/
+			}
+			.leftzhi{
+				color: rgb(170,170,170);
+				font-size: 0.31rem;
+			}
+			.sycon{
+				width: 100%;
+				height: 100%;
+				/*background: #fff;*/
+				/*background: #efeff4;*/
+				overflow-y: auto;
+				padding-bottom: 0.37rem;
+			}
+			.txbutton{
+				width: 3rem;
+				height: 100%;
+				/*background: red;*/
+				position: absolute;
+				top:0;
+				right: 0;
+			}
+			.zbyue{
+				position: absolute;
+				bottom: 0.8rem;
+				left: 0.9rem;
+				color: #000;
+				font-size: 0.52rem;
+				font-weight: bold;
+			}
+		</style>
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<div class="qblist">
+			<div class="kongbai"></div>
+			<div class="jinbi">
+				<!--<div class="yuebi">账户余额</div>
+				<div class="myyue" id="myyue"></div>
+				<div class="txdiv">
+					<button class="tixianbutton">提现</button>
+				</div>-->
+				<div class="zbyue" id="myyue"></div>
+				<div class="txbutton"></div>
+			</div>
+			<div class="sycon">
+				<div class="syall">
+					<span class="syallzi">总收益</span>
+					<span class="syallzhi" id="allshouyi"></span>
+				</div>
+				<div class="xflist" id="xflist">
+					<div class="syjl" id="syjl">暂无收益</div>
+					<!--<div class="syli">
+						<div class="syliall">
+							<span class="syliallzi">收益</span>
+							<span class="syliallzhi">1100趣币</span>
+						</div>
+						<div class="sytime">5月30日</div>
+						<div class="sylili">
+							<span class="symxzi">视频通话</span>
+							<span class="leftzhi">（111分钟）</span>
+							<span class="symxzhi">100趣币</span>
+						</div>
+						<div class="sylili">
+							<span class="symxzi">礼物收入</span>
+							<span class="leftzhi">（111个）</span>
+							<span class="symxzhi">100趣币</span>
+						</div>
+						<div class="syqb">已放入钱包</div>
+					</div>-->
+					<!--<div class="syli">
+						<div class="syliall">
+							<span class="syliallzi">收益</span>
+							<span class="syliallzhi">1100趣币</span>
+						</div>
+						<div class="sytime">5月30日</div>
+						<div class="sylili">
+							<span class="symxzi">视频通话</span>
+							<span class="leftzhi">（111分钟）</span>
+							<span class="symxzhi">100趣币</span>
+						</div>
+						<div class="sylili">
+							<span class="symxzi">礼物收入</span>
+							<span class="leftzhi">（111个）</span>
+							<span class="symxzhi">100趣币</span>
+						</div>
+						<div class="syqb">已放入钱包</div>
+					</div>-->
+					<!--<div class="syli">
+						<div class="syliall">
+							<span class="syliallzi">收益</span>
+							<span class="syliallzhi">1100趣币</span>
+						</div>
+						<div class="sytime">5月30日</div>
+						<div class="sylili">
+							<span class="symxzi">视频通话</span>
+							<span class="leftzhi">（111分钟）</span>
+							<span class="symxzhi">100趣币</span>
+						</div>
+						<div class="sylili">
+							<span class="symxzi">礼物收入</span>
+							<span class="leftzhi">（111个）</span>
+							<span class="symxzhi">100趣币</span>
+						</div>
+						<div class="syqb">已放入钱包</div>
+					</div>-->
+					<!--<div class="syli">
+						<div class="syliall">
+							<span class="syliallzi">收益</span>
+							<span class="syliallzhi">1100趣币</span>
+						</div>
+						<div class="sytime">5月30日</div>
+						<div class="sylili">
+							<span class="symxzi">视频通话</span>
+							<span class="leftzhi">（111分钟）</span>
+							<span class="symxzhi">100趣币</span>
+						</div>
+						<div class="sylili">
+							<span class="symxzi">礼物收入</span>
+							<span class="leftzhi">（111个）</span>
+							<span class="symxzhi">100趣币</span>
+						</div>
+						<div class="syqb">已放入钱包</div>
+					</div>-->
+				</div>
+			</div>
+		</div>
+		<div class="rzcover"></div>
+		<div class="rzmask">
+			<div class="rztop">
+				<div class="rztitle">提示</div>
+				<div class="rztext">你还没有实名认证，请实名后再提现</div>
+			</div>
+			<div class="rzbom">
+				<button class="rzleft">取消</button>
+				<button class="rzright">去实名认证</button>
+			</div>
+		</div>
+		<div class="txmask">
+			<div class="rztop">
+				<div class="rztitle">提示</div>
+				<div class="rztext">你还没有选择提现方式，现在无法提现</div>
+			</div>
+			<div class="rzbom">
+				<button class="rzleft">取消</button>
+				<button class="rzright">去设置</button>
+			</div>
+		</div>
+		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			function GetRequest() {
+				var url = location.search; //获取url中"?"符后的字串
+				var theRequest = new Object();
+				if(url.indexOf("?") != -1) {
+					var str = url.substr(1);
+					strs = str.split("&");
+					for(var i = 0; i < strs.length; i++) {
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+					}
+				}
+				return theRequest;
+			}
+
+			var request = new Object();
+			request = GetRequest();
+			var yztoken = request['token'];
+			var yzdevice = request['device'];
+			var yzid = request['uid'];
+//			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
+//			var yzdevice = 'android';
+//			var yztoken = 'bf3293de175dc3fb8d4dff91b4d9c54800c83805bf309fb3ebedae139adc9a2a';
+//			var yzdevice = 'iphone';
+//			var yzid = 2518;			
+			var realuser = '';
+			var payset = '';
+			function userinfo(){
+				var userurl = geturl(oneurl,'user/profile/getinfo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: userurl,
+					dataType: "json",
+					data: {},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						realuser = result.data.real_user;
+						payset = result.data.pay_set;
+					},
+					error: function(data) {
+						console.log('失败'+JSON.stringify(data));
+					}
+				});
+			}			
+			userinfo();
+
+			$('.li1').on('click', function() {
+				window.location.href = 'xiaofei.html?token='+yztoken+'&device='+yzdevice;
+			})
+			$('.li2').on('click', function() {
+				window.location.href = 'chongzhi.html?token='+yztoken+'&device='+yzdevice;
+			})
+			$('.li3').on('click', function() {
+				window.location.href = 'shouyi.html?token='+yztoken+'&device='+yzdevice;
+//				window.location.href = 'shouyinew.html?token='+yztoken+'&device='+yzdevice;
+			})
+			
+//			$('.tixianbutton').click(function() {
+			$('.txbutton').click(function() {
+				console.log(realuser);
+				console.log(payset);
+				if(realuser != 1) {
+					$('.rzcover').css('display', 'block');
+					$('.rzmask').css('display', 'block');
+					$('.rzleft').click(function() {
+						$('.rzcover').css('display', 'none');
+						$('.rzmask').css('display', 'none');
+					})
+					$('.rzright').click(function() {
+						window.location.href = 'renzheng.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+					})
+				}else if(payset != 1){
+					$('.rzcover').css('display', 'block');
+					$('.txmask').css('display', 'block');
+					$('.rzleft').click(function() {
+						$('.rzcover').css('display', 'none');
+						$('.txmask').css('display', 'none');
+					})
+					$('.rzright').click(function() {
+						window.location.href = 'txtype.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+					})
+				} else if(realuser == 1 & payset == 1) {
+					window.location.href = 'tixian.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+				}
+			})						
+			
+			var mycoin = '';
+			var myyue = '';
+
+			function getyue() {
+				var yueurl = geturl(oneurl,'pay/index/package');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: yueurl,
+					dataType: "json",
+					data: {},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						mycoin = result.data.coin;
+						myyue = result.data.profit;
+						document.getElementById('myyue').innerHTML = myyue;
+					},
+					error: function(data) {
+						console.log('失败'+JSON.stringify(data));
+					}
+				});
+			}
+			getyue();		
+			
+			var wdsyhtml = '';
+			var sytime = '';
+			var yuesum = 0;
+
+			function getshouyi() {
+//				var shouyiurl = 'shouyi.json';
+				var shouyiurl = geturl(oneurl,'pay/index/profitDayList');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: shouyiurl,
+					dataType: "json",
+					data: {
+//						"id": yzid
+					},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						if(result.msg == '暂无数据') {
+							document.getElementById('syjl').style.display = 'block';
+						} else {
+							for(var i = 0; i < result.data.length; i++) {
+								//时间戳
+								sytime = result.data[i]['date'];
+								//获取时间
+								var date = new Date(sytime * 1000);
+								Y = date.getFullYear() + '-';
+								M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+								D = change(date.getDate()) + ' ';
+								h = change(date.getHours()) + ':';
+								m = change(date.getMinutes()) + ':';
+								s = change(date.getSeconds());
+//								console.log(Y + M + D + h + m + s);
+								
+								function change(t) {
+									if(t < 10) {
+										return "0" + t;
+									} else {
+										return t;
+									}
+								}
+								wdsyhtml += '<div class="syli">'+
+									'<div class="syliall">'+
+										'<span class="syliallzi">收益</span>'+
+										'<span class="syliallzhi">'+result.data[i].coin+'</span>'+
+									'</div>'+
+									'<div class="sytime">'+result.data[i].date+'</div>'+
+									'<div class="sylili">'+
+										'<span class="symxzi">视频通话</span>'+
+										'<span class="leftzhi">（'+result.data[i].num2+'次）</span>'+
+										'<span class="symxzhi">'+result.data[i].coin2+'趣币</span>'+
+									'</div>'+
+									'<div class="sylili">'+
+										'<span class="symxzi">礼物收入</span>'+
+										'<span class="leftzhi">（'+result.data[i].num1+'次）</span>'+
+										'<span class="symxzhi">'+result.data[i].coin1+'趣币</span>'+
+									'</div>'+
+									'<div class="syqb">已放入钱包</div>'+
+								'</div>';
+								
+								yuesum += result.data[i].coin;
+							}
+							document.getElementById('allshouyi').innerHTML = yuesum+'趣币';
+							document.getElementById('xflist').innerHTML = wdsyhtml;
+						}
+					},
+					error: function(result) {
+						console.log('获取我的收益出错');
+						console.log(JSON.stringify(result));
+					}
+				});
+			}
+			getshouyi();
+		</script>
+	</body>
+
+</html>

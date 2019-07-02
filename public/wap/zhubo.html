@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>主播工作台</title>
+		<link rel="stylesheet" type="text/css" href="icons/pingfang.css"/>
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			*{
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			html,body{
+				width: 100%;
+				height: 100%;
+			}
+			.gztcon{
+				width: 100%;
+				height: auto;
+				background: rgb(248,248,248);
+			}
+			.gzttop{
+				width: 100%;
+				height: 2.65rem;
+				background: #fff;
+				display: flex;
+				padding: 0.3rem 0 0 0.8rem;
+			}
+			.gzttopleft{
+				width: 2rem;
+				height: 2rem;
+				border-radius: 100%;
+				margin-right: 0.4rem;
+				margin-top: 0.1rem;
+			}
+			.zbhead{
+				width: 100%;
+				height: 100%;
+				border-radius: 100%;
+			}
+			.top1{
+				font-size: 0.37rem;
+				color: rgb(85,85,85);
+				/*font-family: PingFang Medium;*/
+				margin-top: 0.5rem;
+				margin-bottom: 0.18rem;
+			}
+			.top2{
+				font-size: 0.25rem;
+				color: rgb(186,186,186);
+			}
+			.shenfentitle{
+				color: rgb(153,153,153);
+				font-size: 0.34rem;
+				padding-left: 0.56rem;
+				height: 1.21rem;
+				padding-top: 0.5rem;
+			}
+			.divli {
+				background: #fff;
+				width: 100%;
+				height: 1.46rem;
+				line-height: 1.46rem;
+			}
+			
+			.lileft {
+				width: 50%;
+				padding-left: 0.56rem;
+				display: inline-block;
+				vertical-align: middle;
+			}
+			
+			.rzdiv {
+				display: inline-block;
+			    position: absolute;
+			    right: 1.1rem;
+			}
+			
+			.rzstate {
+				font-size: 0.31rem;
+				color: rgb(172,172,172);
+			}
+			
+			.poli {
+				position: relative;
+			}
+			
+			.poli:after {
+				position: absolute;
+				right: 0.4rem;
+				top: 50%;
+				display: inline-block;
+				content: "";
+				width: 0.24rem;
+				height: 0.24rem;
+				border: solid #999;
+				border-width: 1px 1px 0 0;
+				-webkit-transform: translate(0, -50%) rotate(45deg);
+				transform: translate(0, -50%) rotate(45deg);
+			}
+			.lileftimg{
+				width: 0.75rem;
+				height: 0.75rem;
+				margin-right: 0.26rem;
+				vertical-align: middle;
+			}
+			.sfleftspan{
+				font-size: 0.4rem;
+				color: rgb(20,20,20);
+				/*font-family: PingFang Medium;*/
+				vertical-align: middle;
+			}
+			.caiyititle{
+				height: 1.21rem;
+				padding: 0.5rem 0 0 0.56rem;
+				color: rgb(153,153,153);
+				font-size: 0.34rem;
+			}			
+			.qxtitle{
+				color: rgb(20,20,20);
+				/*font-family: PingFang Medium;*/
+				font-size: 0.4rem;
+			}
+			.shuoming{
+				font-size: 0.31rem;
+				color: rgb(153,153,153);
+			}
+			.qxli{
+				background: #fff;
+				width: 100%;
+				height: 1.46rem;
+				line-height: 1.46rem;
+				position: relative;
+			}
+			.qxleft{
+				display: inline-block;
+				margin-left: 0.56rem;
+			}
+			.tjsqbutton{
+				display: inline-block;
+				position: absolute;
+				right: 0.4rem;
+				width: 1.7rem;
+				height: 0.59rem;
+				border-radius: 0.31rem;
+				background: #ccc;
+				color: #fff;
+				font-size: 0.31rem;
+				text-align: center;
+				line-height: 0.59rem;
+				top: 50%;
+				margin-top: -0.31rem;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="gztcon">
+			<div class="gzttop">
+				<div class="gzttopleft">
+					<img src="img/girl.png" alt="" class="zbhead"/>
+				</div>
+				<div class="gzttopright">
+					<div class="top1">小仙女，你还没有完成相关认证</div>
+					<div class="top2">请根据你的特长去申请相关权限</div>
+				</div>
+			</div>
+			<div class="shenfentitle">用户身份认证</div>
+			<div class="divli poli" id="usersfrz">
+				<div class="lileft">
+					<img src="img/sfrz.png" alt="" class="lileftimg"/>
+					<span class="sfleftspan">用户身份认证</span>
+				</div>
+				<div class="rzdiv">
+					<span class="rzstate" id="rzspan"></span>
+				</div>
+			</div>
+			<div class="caiyititle">需要展示你的才艺</div>
+			<div class="divli poli lineli" onclick="isshiming('rzlxli')">
+				<div class="lileft">
+					<img src="img/leixing.png" alt="" class="lileftimg"/>
+					<span class="sfleftspan">选择入驻类型</span>
+				</div>
+				<div class="rzdiv">
+					<span class="rzstate">未选择</span>
+				</div>
+			</div>
+			<div class="divli poli lineli" onclick="isshiming('cyspli')">
+				<div class="lileft">
+					<img src="img/video.png" alt="" class="lileftimg"/>
+					<span class="sfleftspan">上传2个才艺视频</span>
+				</div>
+				<div class="rzdiv">
+					<span class="rzstate">未上传</span>
+				</div>
+			</div>
+			<div class="divli poli lineli" onclick="isshiming('brzpli')">
+				<div class="lileft">
+					<img src="img/video.png" alt="" class="lileftimg"/>
+					<span class="sfleftspan">上传6张本人照片</span>
+				</div>
+				<div class="rzdiv">
+					<span class="rzstate">未选择</span>
+				</div>
+			</div>
+			<div class="divli poli lineli" onclick="isshiming('brlyli')">
+				<div class="lileft">
+					<img src="img/voice.png" alt="" class="lileftimg"/>
+					<span class="sfleftspan">上传1段本人录音</span>
+				</div>
+				<div class="rzdiv">
+					<span class="rzstate">未上传</span>
+				</div>
+			</div>
+			<div class="caiyititle">你想开启的权限</div>
+			<div class="qxli">
+				<div class="qxleft">
+					<span class="qxtitle">开启直播</span>
+					<span class="shuoming">（入驻类型、视频、照片必填）</span>
+				</div>
+				<div class="tjsqbutton">提交申请</div>
+			</div>
+			<div class="qxli">
+				<div class="qxleft">
+					<span class="qxtitle">开启视频通话</span>
+					<span class="shuoming">（入驻类型、视频、照片必填）</span>
+				</div>
+				<div class="tjsqbutton">提交申请</div>
+			</div>
+			<div class="qxli">
+				<div class="qxleft">
+					<span class="qxtitle">开启语音通话</span>
+					<span class="shuoming">（入驻类型、录音必填）</span>
+				</div>
+				<div class="tjsqbutton">提交申请</div>
+			</div>
+		</div>
+		
+		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="alertMsg.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			function GetRequest() {
+				var url = location.search; //获取url中"?"符后的字串
+				var theRequest = new Object();
+				if(url.indexOf("?") != -1) {
+					var str = url.substr(1);
+					strs = str.split("&");
+					for(var i = 0; i < strs.length; i++) {
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+					}
+				}
+				return theRequest;
+			}
+			var request = new Object();
+			request = GetRequest();
+			var yztoken = request['token'];
+			var yzdevice = request['device'];
+			var yzid = request['uid'];
+//			var yztoken = '3de74cfd5e58e66f5817e2e520d2b43d269aa52ae521011e19a6f32a4cb57ca7';
+//			var yzdevice = 'iphone';
+//			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
+//			var yzdevice = 'android';
+//			var yzid = 8;
+			
+			var real_user = ''; //是否已经实名认证
+//			判断是否已经实名认证
+			function isrz() {
+				var userurl = geturl(oneurl,'user/profile/getinfo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					url: userurl,
+					type: "POST",
+					dataType: 'json',
+					data: {},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						real_user = result.data.real_user;
+						if(real_user != 1){
+							document.getElementById('rzspan').innerHTML = '未认证';
+							document.getElementById('rzspan').style.color = 'orange';
+						}else{
+							document.getElementById('rzspan').innerHTML = '已认证';
+						}
+					},
+					error: function(data) {
+						console.log('获取用户登录信息失败');
+					}
+				});
+			}
+			isrz();
+			//申请主播之前先实名认证
+			function isshiming(sctype) {
+				var userurl = geturl(oneurl,'user/profile/getinfo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					url: userurl,
+					type: "POST",
+					dataType: 'json',
+					data: {},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						real_user = result.data.real_user;
+						if(real_user != 1){
+							alertMsg('请先进行实名认证')
+						}else{
+//							if(sctype == 'rzlxli'){
+//								window.location.href = 'rzlxli.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+//							}else if(sctype == 'cyspli'){
+//								window.location.href = 'cyspli.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+//							}else if(sctype == 'brzpli'){
+//								window.location.href = 'brzpli.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+//							}else{
+//								window.location.href = 'brlyli.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+//							}
+						}
+					},
+					error: function(data) {
+						console.log('获取用户登录信息失败');
+					}
+				});
+			}
+			
+			$('#usersfrz').click(function(){
+				if(real_user != 1){
+					window.location.href = 'renzheng.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+				}
+			})
+		</script>
+	</body>
+</html>

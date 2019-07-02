@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>个人资料</title>
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="icons/pingfang.css"/>
+		<style type="text/css">
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}			
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+				background: #f5f5f5;
+			}			
+			.mycon {
+				width: 100%;
+				height: 100%;
+				position: relative;
+			}			
+			.mytop {
+				width: 100%;
+				height: 10rem;
+				position: relative;
+			}
+			.zhezhao{
+				width: 100%;
+				height: 100%;
+				background: rgba(0,0,0,0.15);
+				position: absolute;
+				top: 0;
+			}
+			.myhead {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}			
+			.bjbutton {
+				width: 1.6rem;
+				height: 0.6rem;
+				background: #ffe02f;
+				text-align: center;
+				line-height: 0.6rem;
+				border-radius: 0.31rem;
+				position: absolute;
+				right: 0.37rem;
+				bottom: 1.06rem;
+				background: url(img/bjbutton.png) no-repeat;
+				background-size: cover;
+			}			
+			.myxinxi {
+				position: absolute;
+				bottom: 0.38rem;
+				color: #fff;
+				left: 0.37rem;
+			}			
+			.myxinxit {
+				display: flex;
+				margin-bottom: 0.08rem;
+			}			
+			.myname {
+				font-size: 0.56rem;
+				font-family: PingFang Bold;
+				margin-right: 0.2rem;
+				max-width: 3.1rem;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}			
+			.mysexage {
+				vertical-align: middle;
+			    background-color: cornflowerblue;
+			    border-radius: 0.2rem;
+			    height: 0.34rem;
+			    width: 0.8rem;
+			    line-height: 0.3rem;
+			    margin-top: 0.1rem;
+			}			
+			.mysexage img {
+				vertical-align: middle;
+			    width: 0.3rem;
+			    height: 0.3rem;
+			    margin-left: 0.03rem;
+			}			
+			.mysexage span {
+				vertical-align: middle;
+			    font-size: 0.26rem;
+			    margin-left: -0.06rem;
+			}			
+			.myxinxib span {
+				font-size: 0.34rem;
+			}
+			.shuline{
+				margin: 0 0.1rem;
+			}
+			.divli {
+				background: #fff;
+				width: 100%;
+				height: 1.4rem;
+				line-height: 1.4rem;
+				margin-bottom: 0.25rem;
+			}			
+			.edittitle {
+				color: rgb(170,170,170);
+				font-size: 0.4rem;
+				width: 25%;
+				padding-left: 0.37rem;
+				display: inline-block;
+			}
+			
+			.jsdiv {
+				float: right;
+				margin-right: 0.73rem;
+			}
+			.qianmingdiv{
+				width: 65%;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.jsname {
+				font-size: 0.43rem;
+				color: #333;
+			}
+			
+			.poli {
+				position: relative;
+			}
+			
+			.poli:after {
+				position: absolute;
+				right: 0.43rem;
+				top: 50%;
+				display: inline-block;
+				content: "";
+				width: 0.24rem;
+				height: 0.24rem;
+				border: solid #999;
+				border-width: 1px 1px 0 0;
+				-webkit-transform: translate(0, -50%) rotate(45deg);
+				transform: translate(0, -50%) rotate(45deg);
+			}			
+			.noborder {
+				border: 0;
+			}			
+			.mypicdiv,
+			.jhpicdiv {
+				width: 100%;
+				height: auto;
+				background: #fff;
+				display: flex;
+				padding: 0.46rem 0 0.6rem;
+				margin-bottom: 0.25rem;
+			}			
+			.mypictitle,.jhpictitle {
+				width: 25%;
+				padding-left: 0.37rem;
+			}			
+			.pictitle,
+			.jhtitle {
+				color: rgb(170,170,170);
+				font-size: 0.4rem;
+				margin-top: 0.1rem;
+			}			
+			.picsnum,
+			.jhpicsnum {
+				margin-top: 0.3rem;
+				font-size: 0.68rem;
+				color: rgb(220,220,220);
+			}			
+			.picjia {
+				width: 2.1rem;
+				height: 2.1rem;
+				display: inline-block;
+				float: left;
+			}			
+			.mypics,
+			.jhpics {
+				padding-left: 0.24rem;
+				width: 75%;
+			}
+			
+			.img-jia,
+			.jh-jia {
+				float: left;
+			}			
+			.img-jia a,
+			.jh-jia a {
+				display: inline-block;
+				width: 2.09rem;
+				height: 2.09rem;
+				background: url(img/picjia.png) no-repeat;
+				background-size: 2.09rem 2.09rem;
+			}			
+			.img-jia input,
+			.jh-jia input {
+				width: 100%;
+				height: 100%;
+				border-radius: 100%;
+				outline: none;
+				opacity: 0;
+				filter: alpha(opacity=0);
+			}			
+			#ulimg li,#jhimgs li {
+				display: inline-block;
+				width: 2.1rem;
+				height: 2.1rem;
+				margin: 0.66%;
+			}			
+			#ulimg img,#jhimgs img {
+				border-radius: 0.16rem;
+				width: 100%;
+				vertical-align: middle;
+				height: 100%;
+			}			
+			.cover {
+				object-fit: cover;
+			}			
+			.mui-preview-image.mui-fullscreen {
+				position: fixed;
+				z-index: 20;
+				background-color: #000;
+			}			
+			.mui-preview-header,
+			.mui-preview-footer {
+				position: absolute;
+				width: 100%;
+				left: 0;
+				z-index: 10;
+			}			
+			.mui-preview-header {
+				height: 44px;
+				bottom: 0px;
+			}			
+			.mui-preview-footer {
+				height: 50px;
+				bottom: 0px;
+			}			
+			.mui-preview-header .mui-preview-indicator {
+				display: block;
+				line-height: 25px;
+				color: #fff;
+				text-align: center;
+				margin: 15px auto 4;
+				background-color: rgba(0, 0, 0, 0.4);
+				border-radius: 12px;
+				font-size: 16px;
+			}			
+			.mui-preview-image {
+				display: none;
+				-webkit-animation-duration: 0.5s;
+				animation-duration: 0.5s;
+				-webkit-animation-fill-mode: both;
+				animation-fill-mode: both;
+			}			
+			.mui-preview-image.mui-preview-in {
+				-webkit-animation-name: fadeIn;
+				animation-name: fadeIn;
+			}			
+			.mui-preview-image.mui-preview-out {
+				background: none;
+				-webkit-animation-name: fadeOut;
+				animation-name: fadeOut;
+			}			
+			.mui-preview-image.mui-preview-out .mui-preview-header,
+			.mui-preview-image.mui-preview-out .mui-preview-footer {
+				display: none;
+			}			
+			.mui-zoom-scroller {
+				position: absolute;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+				-webkit-box-pack: center;
+				-webkit-justify-content: center;
+				justify-content: center;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				-webkit-backface-visibility: hidden;
+			}			
+			.mui-zoom {
+				-webkit-transform-style: preserve-3d;
+				transform-style: preserve-3d;
+			}			
+			.mui-slider .mui-slider-group .mui-slider-item img {
+				width: auto;
+				height: auto;
+				max-width: 100%;
+				max-height: 100%;
+			}		
+			.mui-android-4-1 .mui-slider .mui-slider-group .mui-slider-item img {
+				width: 100%;
+			}			
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-slider-group .mui-slider-item {
+				display: inline-table;
+			}			
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-zoom-scroller img {
+				display: table-cell;
+				vertical-align: middle;
+			}			
+			.mui-preview-loading {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				display: none;
+			}			
+			.mui-preview-loading.mui-active {
+				display: block;
+			}			
+			.mui-preview-loading .mui-spinner-white {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				margin-left: -25px;
+				margin-top: -25px;
+				height: 50px;
+				width: 50px;
+			}		
+			.mui-preview-image img.mui-transitioning {
+				-webkit-transition: -webkit-transform 0.5s ease, opacity 0.5s ease;
+				transition: transform 0.5s ease, opacity 0.5s ease;
+			}			
+			@-webkit-keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}		
+			@keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}			
+			@-webkit-keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			}			
+			@keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			}			
+			.jsdiv input {
+				border: 0;
+				text-align: right;
+				color: #333;
+			}
+			.header{
+				position: fixed;
+			    z-index: 10;
+			    right: 0;
+			    left: 0;
+			    height: 64px;
+			    padding-right: 10px;
+			    padding-left: 10px;
+			    border-bottom: 0;
+			    background: rgba(255,255,255,1);
+			    -webkit-backface-visibility: hidden;
+			    backface-visibility: hidden;
+			    text-align: center;
+			    line-height: 80px;
+			    display: none;
+			}
+			.headtitle{
+				font-size: 0.53rem;
+			}
+			.heada{
+				position: absolute;
+				width: 0.68rem;
+				height: 0.68rem;
+				top: 0.22rem;
+				left: 0.26rem;
+			}
+			.heada img{
+				width: 100%;
+				height: 100%;
+			}
+			.myfanhui{
+				width: 1.8rem;
+			    height: 1.8rem;
+			    position: absolute;
+			    top: 0.5rem;
+			    left: 0;
+			    text-align: center;
+			    line-height: 1.8rem;
+			}
+			.imgfanhui{
+				width: 0.68rem;
+				height: 0.68rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="header" id="nav">
+			<a class="heada"><img src="img/headback.png" alt="" /></a>
+			<div class="headtitle">个人资料</div>
+		</header>
+		<div class="mycon">
+			<div class="mytop">
+				<img src="" alt="" class="myhead" id="show" />
+				<div class="zhezhao">
+					<div class="myfanhui">
+						<img src="img/headback.png" class="imgfanhui"/>
+					</div>
+					<div class="myxinxi">
+						<div class="myxinxit">
+							<div class="myname" id="myname"></div>
+							<div class="mysexage" id="sexbg">
+								<img src="" id="sexdiv" />
+								<span id="birthday"></span>
+							</div>
+						</div>
+						<div class="myxinxib">
+							<span id="birthday1"></span>
+							<span class="shuline">|</span>
+							<span id="myheight"></span>
+							<span class="shuline">|</span>
+							<span id="mycity"></span>
+							<span class="shuline">|</span>
+							<span id="work"></span>
+						</div>
+					</div>
+					<div class="bjbutton"></div>
+				</div>
+			</div>
+			<!--微信二维码-->
+			<div class="divli poli noborder" id="spdiv">
+				<div class="edittitle">视频接听</div>
+				<div class="jsdiv">
+					<span class="jsname"></span>
+				</div>
+			</div>
+			<!--生活照片  普通照片 vip为0-->
+			<div class="mypicdiv">
+				<div class="mypictitle">
+					<div class="pictitle">生活照片</div>
+					<div class="picsnum" id="picsnum"></div>
+				</div>
+				<div class="mypics">
+					<div class="img-jia">
+						<a><input type="file" id="file" class="filepath" onchange="changepic('ptpic')" accept="image/*" capture="camera"></a>
+					</div>
+					<ul id="ulimg">
+
+					</ul>
+				</div>
+			</div>		
+			<!--精华照片  加锁vip为1-->
+			<div class="jhpicdiv">
+				<div class="jhpictitle">
+					<div class="jhtitle">精华照片</div>
+					<div class="jhpicsnum" id="jhpicsnum"></div>
+				</div>
+				<div class="jhpics">
+					<div class="jh-jia">
+						<a><input type="file" id="file1" class="filepath" onchange="changepic('jhpic')" accept="image/*" capture="camera"></a>
+					</div>
+					<ul id="jhimgs">
+						
+					</ul>
+				</div>
+			</div>
+			<!--形象视频-->
+			<div class="divli poli noborder" id="editshipin">
+				<div class="edittitle">形象视频</div>
+				<div class="jsdiv">
+					<span class="jsname"></span>
+				</div>
+			</div>
+			<!--个性签名-->
+			<div class="divli poli noborder" id="editsign">
+				<div class="edittitle">个性签名</div>
+				<div class="jsdiv qianmingdiv">
+					<span class="jsname" id="sign"></span>
+				</div>
+			</div>
+		</div>
+
+		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
+		<script src="exif.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="alertMsg.js" type="text/javascript" charset="utf-8"></script>
+		<script src="mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="mui.previewimage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="mui.zoom.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			function GetRequest() {
+				var url = location.search; //获取url中"?"符后的字串
+				var theRequest = new Object();
+				if(url.indexOf("?") != -1) {
+					var str = url.substr(1);
+					strs = str.split("&");
+					for(var i = 0; i < strs.length; i++) {
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+					}
+				}
+				return theRequest;
+			}
+			var request = new Object();
+			request = GetRequest();
+			var yztoken = request['token'];
+			var yzdevice = request['device'];
+			var yzid = request['uid'];
+//			var yztoken = '3de74cfd5e58e66f5817e2e520d2b43d269aa52ae521011e19a6f32a4cb57ca7';
+//			var yzdevice = 'iphone';
+//			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
+//			var yzdevice = 'android';
+//			var yzid = 1309;
+
+			//获取头部到屏幕顶部的距离 
+			var headtop = $('.mytop').offset().top;
+//			console.log(headtop);
+			var headheight = $('.mytop').outerHeight()-128;
+//			console.log(headheight);
+			var sTop = 0;
+//			监听页面滚动
+			$(window).scroll(function(){
+				$('.header').css({
+					"display": "block",
+					"position": "fixed",
+					"top": "0"
+				});
+				var h = document.documentElement.scrollTop||document.body.scrollTop;
+				var headerTop = document.getElementById("nav"); 
+				headerTop.style.background="rgba(255,255,255,0.4"+h*2.5+")";
+				
+				// 获取页面向上滚动的距离
+				sTop = $(this).scrollTop();
+//				if(sTop > headheight){
+//					$('.header').css('background','rgba(255,255,255,1)')
+//				}
+				if(sTop > 140){
+					$('.header').css('background','rgba(255,255,255,1)')
+				}
+				if(sTop <= headtop) {
+					$('.header').css({
+						"display": "none"
+					});
+				}
+			})
+
+			//获取个人信息
+			var myname = document.getElementById('myname');
+			function getinfo() {
+				var getinfourl = geturl(oneurl, 'user/profile/getinfo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: 'POST',
+					url: getinfourl,
+					dataType: 'json',
+					data: {},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						var shtime = parseInt(Math.random() * 100 + 1);
+						document.getElementById('show').src = data.data.avatar + '?' + shtime;
+						myname.innerHTML = data.data.nickname;
+						var sexdiv = data.data.sex;
+						if(sexdiv == 1) {
+							sexdiv = 'img/sex1.png';
+							document.getElementById('sexbg').style.backgroundColor = 'cornflowerblue';
+						} else {
+							sexdiv = 'img/sex2.png';
+							document.getElementById('sexbg').style.backgroundColor = 'pink';
+						}
+						var birthday = data.data.birthday;
+						video_online = data.data.video_online;
+						if(video_online == 0) {
+							$('.btn_fath').removeClass("on").addClass("off");
+						} else if(video_online == 1) {
+							$('.btn_fath').removeClass("off").addClass("on");
+							$('.btn_fath').children('.move').css('left', '1.1rem');
+							$('.btn_fath').children('.move').attr('data-state', 'on');
+						}
+						document.getElementById('sexdiv').src = sexdiv;		
+						document.getElementById('birthday').innerHTML = birthday;
+						document.getElementById('birthday1').innerHTML = birthday + '岁';
+						document.getElementById('myheight').innerHTML = data.data.height;
+						document.getElementById('mycity').innerHTML = data.data.domicile;
+						document.getElementById('sign').innerHTML = data.data.signature;
+						document.getElementById('work').innerHTML = data.data.job;
+					},
+					error: function(data) {
+						console.log('出错了');
+					}
+				})
+			}
+			getinfo();
+			
+			$('.heada').click(function(){
+				window.location.href = 'phone://pop';
+			})
+			$('.imgfanhui').click(function(){
+				window.location.href = 'phone://pop';
+			})
+			
+			$('#spdiv').click(function(){
+				window.location.href = 'setshipin.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice;
+			})
+
+			var picshtml = '';
+			var picsnum = '';
+			var okurl = '';
+			var jhpicshtml = '';
+			var sz0 = [];
+			var sz1 = [];
+			var vippicurl = '';
+
+			//获取相册
+			function getuserpics() {
+				var picsurl = geturl(oneurl, 'broadcast/public/photo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "POST",
+					url: picsurl,
+					dataType: "json",
+					data: {},
+					success: function(result) {
+						console.log(JSON.stringify(result));						
+						for(var i = 0; i < result.data.length; i++) {							
+							if(result.data[i].is_vip == 0){
+								sz0.push(i);
+								picshtml += '<li class="liimg">' +
+									'<img src="' + result.data[i].url + '" data-preview-src="" data-preview-group="1" class="cover picimg" />' +
+									'</li>';
+								document.getElementById('ulimg').innerHTML = picshtml;
+								document.getElementById('picsnum').innerHTML = sz0.length;
+							}
+							if(result.data[i].is_vip == 1){
+								vippicurl = result.data[i]['url'];
+								if(vippicurl == ''){
+									vippicurl = 'img/vipcover1.png';
+								}
+								sz1.push(i);
+								jhpicshtml += '<li class="liimg">' +
+									'<img src="' + vippicurl + '" data-preview-src="" data-preview-group="2" class="cover picimg" />' +
+									'</li>';
+								document.getElementById('jhimgs').innerHTML = jhpicshtml;
+								document.getElementById('jhpicsnum').innerHTML = sz1.length;
+							}							
+						}
+					},
+					error: function(data) {
+						console.log('获取相册出错');
+					}
+				});
+			}
+
+			getuserpics();
+			mui.previewImage();
+
+			//将base64转换为文件
+			function dataURLtoFile(dataurl, filename) {
+				var arr = dataurl.split(','),
+					mime = arr[0].match(/:(.*?);/)[1],
+					bstr = atob(arr[1]),
+					n = bstr.length,
+					u8arr = new Uint8Array(n);
+				while(n--) {
+					u8arr[n] = bstr.charCodeAt(n);
+				}
+				return new File([u8arr], filename, {
+					type: mime
+				});
+
+			};
+
+			//对图片旋转处理 added by lzk
+			function rotateImg(img, direction, canvas) {
+				//alert(img);
+				//最小与最大旋转方向，图片旋转4次后回到原方向  
+				var min_step = 0;
+				var max_step = 3;
+				//var img = document.getElementById(pid);  
+				if(img == null) return;
+				//img的高度和宽度不能在img元素隐藏后获取，否则会出错  
+				var height = img.height;
+				var width = img.width;
+				//var step = img.getAttribute('step');  
+				var step = 2;
+				if(step == null) {
+					step = min_step;
+				}
+				if(direction == 'right') {
+					step++;
+					//旋转到原位置，即超过最大值  
+					step > max_step && (step = min_step);
+				} else {
+					step--;
+					step < min_step && (step = max_step);
+				}
+				//旋转角度以弧度值为参数  
+				var degree = step * 90 * Math.PI / 180;
+				var ctx = canvas.getContext('2d');
+				switch(step) {
+					case 0:
+						canvas.width = width;
+						canvas.height = height;
+						ctx.drawImage(img, 0, 0);
+						break;
+					case 1:
+						canvas.width = height;
+						canvas.height = width;
+						ctx.rotate(degree);
+						ctx.drawImage(img, 0, -height);
+						break;
+					case 2:
+						canvas.width = width;
+						canvas.height = height;
+						ctx.rotate(degree);
+						ctx.drawImage(img, -width, -height);
+						break;
+					case 3:
+						canvas.width = height;
+						canvas.height = width;
+						ctx.rotate(degree);
+						ctx.drawImage(img, -width, 0);
+						break;
+				}
+			}
+			var imgvip = 0;
+			//上传相册
+			function changepic(pictype) {
+//				e.stopPropagation();
+				if(typeof FileReader == "undefined") {
+					alert("您的浏览器不支持FileReader对象！");
+				}
+				if(pictype == 'ptpic'){
+					var fileimg = document.getElementById('file').files[0]; //获取file对象
+				}else if(pictype == 'jhpic'){
+					var fileimg = document.getElementById('file1').files[0]; //获取file对象
+					imgvip = 1;
+				}
+				
+				//判断file类型是否为图片
+				if(!fileimg) {
+					return
+				}
+				var Orientation = null;
+				var imgtype = fileimg.type.substring(fileimg.type.lastIndexOf("/") + 1).toLowerCase();
+				if(imgtype != "jpg" && imgtype != 'jpeg' && imgtype != 'png') {
+					console.log(imgtype);
+					console.log('图片格式不对');
+				}
+
+				//设置限制图像的大小为2M
+				var maximgsize = 1024 * 1024 * 2;
+				if(fileimg.size > maximgsize) {
+					//alert('文件大小不超过2M');
+					//return
+				}
+				//获取照片方向角属性，用户旋转控制
+				EXIF.getData(fileimg, function() {
+					EXIF.getAllTags(this);
+					Orientation = EXIF.getTag(this, 'Orientation');
+				})
+				var reader = new FileReader(); //声明一个FileReader实例
+				reader.readAsDataURL(fileimg); //调用redsAsDataURL方法读取选中的文件
+				reader.onload = function(e) { //利用onload事件中获取到成功读取的选中的图像文件，并以插入一个img方式来显示读取的图像文件
+					var img = new Image();
+					img.src = e.target.result;
+					img.onload = function() {
+						var w = this.width,
+							h = this.height,
+							scale = w / h;
+						if(w > 600) {
+							w = 600;
+						}
+						h = w / scale;
+						var canvas = document.createElement('canvas');
+						var ctx = canvas.getContext('2d');
+						$(canvas).attr({
+							width: w,
+							height: h
+						});
+						ctx.drawImage(this, 0, 0, w, h);
+						if(navigator.userAgent.match(/iphone/i)) {
+							if(Orientation != "" && Orientation != 1) {
+								switch(Orientation) {
+									case 6: //需要顺时针（向左）90度旋转
+										rotateImg(this, 'left', canvas);
+										break;
+									case 8: //需要逆时针（向右）90度旋转
+										rotateImg(this, 'right', canvas);
+										break;
+									case 3: //需要180度旋转
+										rotateImg(this, 'right', canvas); //转两次
+										rotateImg(this, 'right', canvas);
+										break;
+								}
+							}
+						}
+
+						var base64 = canvas.toDataURL('image/jpeg', 1 || 0.8);
+						var fd = new FormData();
+						fd.append("act", "photo");
+						fd.append("file", dataURLtoFile(base64, "pics.jpg")); //加入文件对象
+						upphoto(fd,imgvip);
+					}
+				};
+			}
+
+			//图片上传
+			function upphoto(fd,imgvip) {
+				var headurl = geturl(oneurl, 'user/upload/img');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					url: headurl,
+					type: 'post',
+					datatype: 'json',
+					data: fd,
+					cache: false,
+					traditional: true,
+					contentType: false,
+					processData: false,
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						if(result.code == 1) {
+							okurl = 'http://' + yuming + result.data.url;
+							savephoto(result.data.url, imgvip);
+						}
+					},
+					error: function(data) {
+						console.log(data.responseText);
+					}
+				})
+			}
+
+			//保存相册
+			function savephoto(imgurl, imgvip) {
+//				console.log(imgvip)
+				var saveurl = geturl(oneurl, 'user/profile/savePhoto');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: saveurl,
+					dataType: "json",
+					data: {
+						"url": imgurl,
+						"vip": imgvip
+					},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						alertMsg(result.msg);
+						if(result.code == 1) {
+							if(imgvip == 0){
+								picshtml += '<li class="liimg">' +
+									'<img src="' + okurl + '" class="cover picimg" />' +
+									'</li>';
+								document.getElementById('ulimg').innerHTML = picshtml;
+								var sz0length = 1 + sz0.length++;
+								document.getElementById('picsnum').innerHTML = sz0length;
+//								console.log(Number(sz0length));
+							}else if(imgvip == 1){
+								jhpicshtml += '<li class="liimg">' +
+									'<img src="' + okurl + '" class="cover picimg" />' +
+									'</li>';
+								document.getElementById('jhimgs').innerHTML = jhpicshtml;
+								var sz1length = 1 + sz1.length++;
+								document.getElementById('jhpicsnum').innerHTML = sz1length;
+							}				
+						} else {
+							alertMsg('上传失败');
+						}
+					},
+					error: function(data) {
+						console.log('保存相册失败');
+						console.log(JSON.stringify(data));
+						console.log(JSON.stringify(data.responseText));
+					}
+				});
+			}
+
+			//修改签名
+			$('#editsign').click(function() {
+				window.location.href = 'qianming.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice;
+			})
+//			编辑资料
+			$('.bjbutton').click(function() {
+				window.location.href = 'bianji.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice;
+			})
+//			形象视频
+			$('#editshipin').click(function(){
+				window.location.href = 'upvideo.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice;
+			})
+		</script>
+	</body>
+
+</html>

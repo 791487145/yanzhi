@@ -1,0 +1,89 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a>虚拟用户管理</a></li>
+        <li><a href="{:url('user/virtual/add')}">添加虚拟用户</a></li>
+    </ul>
+    <form class="well form-inline margin-top-20" method="post" action="{:url('user/virtual/index')}">
+        用户ID：
+        <input class="form-control" type="text" name="uid" style="width: 200px;" value="{:input('request.uid')}"
+               placeholder="请输入用户ID">
+        关键字：
+        <input class="form-control" type="text" name="keyword" style="width: 200px;" value="{:input('request.keyword')}"
+               placeholder="用户名/昵称/邮箱/手机">
+        <input type="submit" class="btn btn-primary" value="搜索"/>
+        <a class="btn btn-danger" href="{:url('user/virtual/index')}">清空</a>
+    </form>
+    <form method="post" class="js-ajax-form">
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>{:lang('NICENAME')}</th>
+                <th>{:lang('AVATAR')}/视频</th>
+                <th>{:lang('REGISTRATION_TIME')}</th>
+                <th>推荐位置</th>
+                <th>{:lang('STATUS')}</th>
+                <th>接通率</th>
+                <th>{:lang('ACTIONS')}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <php>
+                $user_statuses=array("0"=>lang('USER_STATUS_BLOCKED'),"1"=>lang('USER_STATUS_ACTIVATED'),"2"=>lang('USER_STATUS_UNVERIFIED'));
+                $recommendArr = array(
+                "0" => array("status"=>"未推荐","view"=>"推荐主播","to"=>"1","msg"=>"确定推荐主播吗？"),
+                "1" => array("status"=>"已推荐","view"=>"取消推荐","to"=>"0","msg"=>"确定取消推荐吗？")
+                );
+                $vRecomArr = array(
+                "0" => array("status"=>"下线","view"=>"1V1上线","to"=>"1","msg"=>"确定1V1上线吗？"),
+                "1" => array("status"=>"在线","view"=>"1V1下线","to"=>"0","msg"=>"确定1V1下线吗？")
+                );
+            </php>
+            <foreach name="list" item="vo">
+                <tr>
+                    <php>
+                        $recomS=$recommendArr[$vo['recommend']];
+                        $vRecom=$vRecomArr[$vo['video_recom']];
+                    </php>
+                    <td>{$vo.id}</td>
+                    <td>{$vo['user_nickname']?$vo['user_nickname']:lang('NOT_FILLED')}</td>
+                    <td>
+                        <img width="25" height="25" src="{$vo['avatar']}"/>
+                    </td>
+                    <td>{:date('Y-m-d H:i:s',$vo['create_time'])}</td>
+                    <td><php>
+                            $recom = json_decode($vo['recom_type'],true);
+                        </php>
+                        <foreach name="recom" key="rk" item="rc">
+                            <gt name="rk" value="0"> | </gt>
+                            {$recomType[$rc]}
+                        </foreach></td>
+                    <td>{$user_statuses[$vo['user_status']]} / {$recomS.status} / {$vRecom.status} </td>
+                    <td>
+                        {$vo['connect_per']}%
+                        <a href="{:url('user/virtual/autoConnect',array('id'=>$vo['id']))}" class="js-ajax-dialog-btn" data-msg="确定更换接通率吗？">
+                            <i class="fa fa-refresh" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{:url('user/virtual/edit',array('id'=>$vo['id']))}">{:lang('EDIT')}</a>
+                        <a href="{:url('user/virtual/message',array('id'=>$vo['id']))}">话术</a>
+                        <a href="{:url('user/virtual/photo',array('id'=>$vo['id']))}">相册</a>
+                        <a href="{:url('user/virtual/video',array('id'=>$vo['id']))}">视频</a>
+                        <a href="{:url('user/virtual/comment',array('id'=>$vo['id']))}">评论</a>
+                        <a href="{:url('user/virtual/recommend',array('id'=>$vo['id'],'recommend'=>$recomS['to']))}" class="js-ajax-dialog-btn" data-msg="{$recomS.msg}">{$recomS.view}</a>
+                        <a href="{:url('user/virtual/setOnline',array('id'=>$vo['id'],'online'=>$vRecom['to']))}" class="js-ajax-dialog-btn" data-msg="{$vRecom.msg}">{$vRecom.view}</a>
+                    </td>
+                </tr>
+            </foreach>
+            </tbody>
+        </table>
+        <div class="pagination">{$page}</div>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

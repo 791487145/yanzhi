@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>提现记录</title>
+		<link rel="stylesheet" type="text/css" href="icons/iconfont.css" />
+		<style type="text/css">
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+				position: relative;
+			}
+			
+			a {
+				text-decoration: none;
+				outline:none;
+				-webkit-tap-highlight-color: rgba(0,0,0,0);
+			}
+			
+			li {
+				list-style: none;
+				width: 90%;
+				margin: 0 5%;
+				border-bottom: 1px solid #ccc;
+				display: block;
+				display: flex;
+				position: relative;
+			}
+			
+			.lileft p {
+				margin: 0.3rem 0;
+				font-size: 0.4rem;
+				color: #888;
+			}
+			
+			.leftp1 span {
+				color: red;
+			}
+			
+			.leftp2 span {
+				color: red;
+			}
+			
+			.liright {
+				position: absolute;
+				right: 0;
+			}
+			
+			.liright p {
+				margin: 0.3rem 0;
+				font-size: 0.4rem;
+				text-align: right;
+				color: #888;
+			}
+			
+			.liright span {
+				color: #000;
+			}
+			
+			.txjl {
+				width: 100%;
+				text-align: center;
+				font-size: 0.43rem;
+				position: absolute;
+				height: 1rem;
+				line-height: 1rem;
+				top: 50%;
+				margin-top: -0.5rem;
+				display: none;
+			}
+			.kongbai{
+				width: 100%;
+				height: 0.2rem;
+				background: #F5F5F5;
+			}
+		</style>
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<div class="kongbai"></div>
+		<div class="xflist" id="txlist">
+			<!--<li>
+				<div class="lileft">
+					<p class="leftp1">提现金额：<span>30</span>元</p>
+					<p class="leftp2">申请状态：<span>待审核</span></p>
+					<p class="leftp2">2018-09-24 13:39:08</p>
+				</div>
+				<div class="liright">					
+					<p>收款人姓名：<span>张三</span></p>
+					<p>收款类型：<span>微信</span></p>
+					<p>收款人账号：<span>123456</span></p>
+				</div>
+			</li>-->
+			<div class="txjl" id="txjl">暂无提现记录</div>
+		</div>
+		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			//			获取token device
+			//			传值:window.location.href = 'RegOk.htm?email='+email+'&name='+username+''; 
+			function GetRequest() {
+				var url = location.search; //获取url中"?"符后的字串
+				var theRequest = new Object();
+				if(url.indexOf("?") != -1) {
+					var str = url.substr(1);
+					//					alert(str);
+					strs = str.split("&");
+					for(var i = 0; i < strs.length; i++) {
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+					}
+				}
+				return theRequest;
+			}
+
+			var request = new Object();
+			request = GetRequest();
+			//token device
+			var yztoken = request['token'];
+			var yzdevice = request['device'];
+			var yzid = request['uid'];
+			
+
+			var txjlhtml = '';
+			var txtime = '';
+
+			function gettixian() {
+//				var tixianurl = 'http://yz.baiyoumi.cn/api/pay/index/extractionList';
+//				var tixianurl = 'tixian.json';
+				var tixianurl = geturl(oneurl,'pay/index/extractionList');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: tixianurl,
+					dataType: 'json',
+					data: {
+						"id": yzid
+					},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						if(result.msg == '暂无数据') {
+							document.getElementById('txjl').style.display = 'block';
+						} else {
+							for(var i = 0; i < result.data.length; i++) {
+								//审核状态
+								var status = result.data[i]['status'];
+								if(status == 0) {
+									status = '待审核';
+								} else if(status == 1) {
+									status = '审核通过';
+								} else if(status == 2) {
+									status = '已打款';
+								}
+								//收款类型
+								var pay_type = result.data[i]['pay_type'];
+								if(pay_type == 'wxpay') {
+									pay_type = '微信转账';
+								} else if(pay_type == 'apipay') {
+									pay_type = '支付宝转账';
+								} else if(pay_type == 'unipay') {
+									pay_type = '银行卡转账';
+								}
+								//时间戳
+								txtime = result.data[i]['time'];
+								//获取时间
+								var date = new Date(txtime * 1000);
+								Y = date.getFullYear() + '-';
+								M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+								D = change(date.getDate()) + ' ';
+								h = change(date.getHours()) + ':';
+								m = change(date.getMinutes()) + ':';
+								s = change(date.getSeconds());
+
+								function change(t) {
+									if(t < 10) {
+										return "0" + t;
+									} else {
+										return t;
+									}
+								}
+								txjlhtml += '<li>' +
+									'<div class="lileft">' +
+									'<p class="leftp1">提现金额：<span>' + result.data[i]['money'] + '&nbsp;</span>元</p>' +
+									'<p class="leftp2">申请状态：<span>' + status + '</span></p>' +
+									'<p class="leftp2">' + Y + M + D + h + m + s + '</p>' +
+									'</div>' +
+									'<div class="liright">' +
+									'<p>收款人姓名：<span>' + result.data[i]['pay_name'] + '</span></p>' +
+									'<p>收款类型：<span>' + pay_type + '</span></p>' +
+									'<p>收款人账号：<span>' + result.data[i]['pay_account'] + '</span></p>' +
+									'</div>' +
+									'</li>';
+							}
+							document.getElementById('txlist').innerHTML = txjlhtml;
+						}
+					},
+					error: function() {
+						console.log('获取提现记录失败');
+					}
+				});
+			}
+			gettixian();
+		</script>
+	</body>
+
+</html>

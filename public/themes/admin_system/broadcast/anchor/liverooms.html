@@ -1,0 +1,59 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a>主播管理</a></li>
+    </ul>
+    <form class="well form-inline margin-top-20" method="post" action="{:url('broadcast/anchor/liverooms')}">
+        工会：
+        <select class="form-control" name="gid" style="width: 200px;">
+            <option value="0">请选择</option>
+            <foreach name="guide"  item="vo">
+                <php> $selected = ($vo['id'] == $gid) ? " selected" : "";</php>
+                <option value="{$vo['id']}"{$selected}>{$vo['code']} {$vo['name']}</option>
+            </foreach>
+        </select>
+        关键字：
+        <input class="form-control" type="text" name="keyword" style="width: 200px;" value="{:input('request.keyword')}" placeholder="昵称/姓名/手机">
+        <input type="submit" class="btn btn-primary" value="搜索"/>
+        <a class="btn btn-danger" href="{:url('broadcast/anchor/liverooms')}">清空</a>
+    </form>
+    <form method="post" class="js-ajax-form">
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>直播间名称</th>
+                <th>主播</th>
+                <th>开始时间</th>
+                <th>观众数量</th>
+                <th>礼物价值</th>
+                <th>{:lang('ACTIONS')}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <php>
+                $anchorStatuses=[lang('ANCHOR_STATUS_WAIT'),lang('ANCHOR_STATUS_SUCC'),lang('ANCHOR_STATUS_FAIL')];
+                $colorStatuses=["#aaa","#2aab20","#f61d1d"];
+            </php>
+            <foreach name="list" item="vo">
+                <php>
+                    if($vo['live_tag'] != '')$vo['live_tag'] = '<img src="/upload/tag/'.$vo['live_tag'].'.png" height="20">';
+                </php>
+                <tr>
+                    <td>{$vo['live_title']}{$vo['live_tag']}</td>
+                    <td>【{$vo.gname|default='-'}】{$vo['user_nickname']?$vo['user_nickname']:lang('NOT_FILLED')}</td>
+                    <td>{:date('Y-m-d H:i:s',$vo['live_start'])}</td>
+                    <td>{$vo.audience}</td>
+                    <td>{$vo.total_coin}</td>
+                    <td></td>
+                </tr>
+            </foreach>
+            </tbody>
+        </table>
+        <div class="pagination">{$page}</div>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

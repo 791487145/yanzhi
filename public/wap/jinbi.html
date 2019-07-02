@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title>充值趣币</title>
+		<link rel="stylesheet" type="text/css" href="icons/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="icons/pingfang.css" />
+		<style type="text/css">
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+				background: #f5f5f5;
+			}
+			
+			a {
+				text-decoration: none;
+			}
+			
+			.liubai {
+				width: 100%;
+				background: #F5F5F5;
+				height: 0.2rem;
+			}
+			
+			.hycon {
+				width: 100%;
+				height: auto;
+				background: #fff;
+			}
+			
+			.hytop {
+				width: 96%;
+				height: 3.09rem;
+				background: url(img/hytopbg.png) no-repeat;
+				background-size: 100% 3.09rem;
+				margin: 0 2%;
+				position: relative;
+				padding-top: 0.84rem;
+				display: flex;
+				text-align: center;
+			}
+			
+			.xinxidiv {
+				text-align: center;
+				width: 100%;
+			}
+			
+			.renname {
+				color: #fff;
+				font-size: 0.53rem;
+				font-weight: bold;
+			}
+			
+			.shifouvip {
+				color: #fff;
+				margin-top: 0.3rem;
+				font-size: 0.34rem;
+			}
+			
+			.hycenter {
+				width: 100%;
+			}
+			
+			.zfstylediv {
+				padding: 0.5rem 0;
+				width: 96%;
+				text-align: center;
+				margin: 0 2%;
+				border-bottom: 1px solid #F3F4F5;
+				height: 1.45rem;
+			}
+			
+			.zfstyle {
+				color: #333;
+				font-size: 0.4rem;
+				width: 20%;
+				display: inline-block;
+				text-align: center;
+				position: relative;
+				height: 100%;
+			}
+			
+			.bomline {
+				position: absolute;
+				width: 0.81rem;
+				height: 0.06rem;
+				background: #ffdd00;
+				left: 50%;
+				margin-left: -0.4rem;
+				display: none;
+				top: 0.9rem;
+				border-radius: 0.6rem;
+			}
+			
+			.lineactive {
+				display: block;
+			}
+			
+			.zflist {
+				display: none;
+			}
+			
+			.zflistactive {
+				display: block;
+			}
+			
+			.zfli,
+			.zfliwx {
+				display: flex;
+				width: 100%;
+				height: 1.28rem;
+			}
+			
+			.zflileft {
+				width: 15%;
+				margin: 0 auto;
+				text-align: center;
+				line-height: 1.28rem;
+			}
+			
+			.zfliright {
+				display: flex;
+				border-bottom: 1px solid #f3f4f5;
+				position: relative;
+				width: 85%;
+			}
+			
+			.zfliright:after {
+				position: absolute;
+				right: 0.4rem;
+				top: 50%;
+				display: inline-block;
+				content: "";
+				width: 0.24rem;
+				height: 0.24rem;
+				border: solid #999;
+				border-width: 1px 1px 0 0;
+				-webkit-transform: translate(0, -50%) rotate(45deg);
+				transform: translate(0, -50%) rotate(45deg);
+			}
+			
+			.liimgdiv {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.liimgdiv img {
+				width: 0.5rem;
+				height: 0.5rem;
+				vertical-align: middle;
+			}
+			
+			.lilefttop {
+				margin-top: 0.31rem;
+				vertical-align: middle;
+			}
+			
+			.hystyle {
+				font-size: 0.4rem;
+				color: #333;
+				vertical-align: middle;
+			}
+			
+			.tuijianzf {
+				width: 1.03rem;
+				height: 0.4rem;
+				vertical-align: middle;
+			}
+			
+			.lileftbom {
+				line-height: 1.28rem;
+				color: #333;
+			}
+			
+			.nowjiage {
+				font-size: 0.37rem;
+			}
+			
+			.oldjiage {
+				font-size: 0.25rem;
+				color: #999;
+				text-decoration: line-through;
+			}
+			
+			.shuline {
+				color: #999;
+			}
+			
+			.xianshi {
+				color: #999;
+				font-size: 0.34rem;
+			}
+			
+			.liriright {
+				position: absolute;
+				right: 1rem;
+				text-align: right;
+				top: 0.42rem;
+			}
+			
+			.lirighttop {
+				color: #666;
+				font-size: 0.34rem;
+			}
+			
+			.lirightbom {
+				color: #999;
+				font-size: 0.34rem;
+			}
+			
+			.tqtitle {
+				/*font-family: PingFang Medium;*/
+				font-size: 0.31rem;
+				color: #898989;
+				margin: 0.5rem 0 0.2rem 0.4rem;
+			}
+			
+			.tqimgdiv {
+				width: 100%;
+			}
+			
+			.tqimg {
+				width: 100%;
+				height: 100%;
+			}
+			.morediv{
+				margin-top: 0.56rem;
+			}
+			.other {
+				width: 100%;
+			}
+			
+			.other span {
+				font-size: 0.26rem
+			}
+			
+			h3.title {
+				color: #F2AE11;
+				font-size: 1.3rem;
+				text-align: center;
+				font-weight: 500;
+				line-height: 1.1
+			}
+			
+			h3.title span {
+				display: block;
+				font-size: 0.34rem;
+				color: #666;
+				position: relative
+			}
+			
+			h3.title span:after,
+			h3.title span:before {
+				content: '';
+				position: absolute;
+				top: 50%;
+				background: #aeaeae;
+				width: 14%;
+				height: 0.01rem;
+				transform: translate(0, -50%);
+			}
+			
+			h3.title span:before {
+				left: 21%
+			}
+			
+			h3.title span:after {
+				right: 21%
+			}
+			.czdiv{
+				text-align: center;
+				font-size: 0.34rem;
+				color: #666;
+				margin-top: 0.4rem;
+				margin-bottom: 0.8rem;
+			}
+			.czdiv a{
+				color: #ffdd00;
+			}
+		</style>
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<div class="liubai"></div>
+		<div class="hycon">
+			<div class="hytop">
+				<div class="xinxidiv">
+					<div class="renname" id="coinnum"></div>
+					<div class="shifouvip">剩余趣币</div>
+				</div>
+			</div>
+			<div class="hycenter">
+				<div class="zfstylediv">
+					<div class="style1 zfstyle">
+						<span>支付宝</span>
+						<div class="bomline lineactive"></div>
+					</div>
+					<div class="style2 zfstyle">
+						<span>微&nbsp;信</span>
+						<div class="bomline"></div>
+					</div>
+				</div>
+				<div class="zflistdiv">
+					<div class="zflist1 zflist zflistactive">
+						<div class="zfli">
+							<div class="zflileft">
+								<div class="liimgdiv">
+									<img src="img/jinbi.png" alt="" class="nianhy" />
+								</div>
+							</div>
+							<div class="zfliright">
+								<div class="lirileft">
+									<div class="lileftbom">
+										<span class="nowjiage">100趣币</span>
+									</div>
+								</div>
+								<div class="liriright">
+									<div class="lirighttop">¥10</div>
+								</div>
+							</div>
+						</div>
+						<div class="zfli">
+							<div class="zflileft">
+								<div class="liimgdiv">
+									<img src="img/jinbi.png" alt="" class="nianhy" />
+								</div>
+							</div>
+							<div class="zfliright">
+								<div class="lirileft">
+									<div class="lileftbom">
+										<span class="nowjiage">200趣币</span>
+									</div>
+								</div>
+								<div class="liriright">
+									<div class="lirighttop">¥20</div>
+								</div>
+							</div>
+						</div>
+						<div class="zfli">
+							<div class="zflileft">
+								<div class="liimgdiv">
+									<img src="img/jinbi.png" alt="" class="nianhy" />
+								</div>
+							</div>
+							<div class="zfliright">
+								<div class="lirileft">
+									<div class="lileftbom">
+										<span class="nowjiage">300趣币</span>
+									</div>
+								</div>
+								<div class="liriright">
+									<div class="lirighttop">¥30</div>
+								</div>
+							</div>
+						</div>
+						<div class="zfli">
+							<div class="zflileft">
+								<div class="liimgdiv">
+									<img src="img/jinbi.png" alt="" class="nianhy" />
+								</div>
+							</div>
+							<div class="zfliright">
+								<div class="lirileft">
+									<div class="lileftbom">
+										<span class="nowjiage">400趣币</span>
+									</div>
+								</div>
+								<div class="liriright">
+									<div class="lirighttop">¥40</div>
+								</div>
+							</div>
+						</div>
+						<div class="zfli">
+							<div class="zflileft">
+								<div class="liimgdiv">
+									<img src="img/jinbi.png" alt="" class="nianhy" />
+								</div>
+							</div>
+							<div class="zfliright">
+								<div class="lirileft">
+									<div class="lileftbom">
+										<span class="nowjiage">500趣币</span>
+									</div>
+								</div>
+								<div class="liriright">
+									<div class="lirighttop">¥50</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="zflist2 zflist">
+						<div class="zfliwx">
+							<div class="zflileft">
+								<div class="liimgdiv">
+									<img src="img/jinbi.png" alt="" class="nianhy" />
+								</div>
+							</div>
+							<div class="zfliright">
+								<div class="lirileft">
+									<div class="lileftbom">
+										<span class="nowjiage">400趣币</span>
+									</div>
+								</div>
+								<div class="liriright">
+									<div class="lirighttop">¥40</div>
+								</div>
+							</div>
+						</div>
+						<div class="zfliwx">
+							<div class="zflileft">
+								<div class="liimgdiv">
+									<img src="img/jinbi.png" alt="" class="nianhy" />
+								</div>
+							</div>
+							<div class="zfliright">
+								<div class="lirileft">
+									<div class="lileftbom">
+										<span class="nowjiage">500趣币</span>
+									</div>
+								</div>
+								<div class="liriright">
+									<div class="lirighttop">¥50</div>
+								</div>
+							</div>
+						</div>
+						<div class="zfliwx">
+							<div class="zflileft">
+								<div class="liimgdiv">
+									<img src="img/jinbi.png" alt="" class="nianhy" />
+								</div>
+							</div>
+							<div class="zfliright">
+								<div class="lirileft">
+									<div class="lileftbom">
+										<span class="nowjiage">600趣币</span>
+									</div>
+								</div>
+								<div class="liriright">
+									<div class="lirighttop">¥60</div>
+								</div>
+							</div>
+						</div>
+						<div class="zfliwx">
+							<div class="zflileft">
+								<div class="liimgdiv">
+									<img src="img/jinbi.png" alt="" class="nianhy" />
+								</div>
+							</div>
+							<div class="zfliright">
+								<div class="lirileft">
+									<div class="lileftbom">
+										<span class="nowjiage">700趣币</span>
+									</div>
+								</div>
+								<div class="liriright">
+									<div class="lirighttop">¥70</div>
+								</div>
+							</div>
+						</div>
+						<div class="zfliwx">
+							<div class="zflileft">
+								<div class="liimgdiv">
+									<img src="img/jinbi.png" alt="" class="nianhy" />
+								</div>
+							</div>
+							<div class="zfliright">
+								<div class="lirileft">
+									<div class="lileftbom">
+										<span class="nowjiage">800趣币</span>
+									</div>
+								</div>
+								<div class="liriright">
+									<div class="lirighttop">¥80</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="hytequan">
+			<div class="tqtitle">趣币功能特权</div>
+			<div class="tqimgdiv">
+				<img src="img/qubitq.png" alt="" class="tqimg" />
+			</div>
+		</div>
+		<div class="morediv">
+			<div class="other">
+				<h3 class="title"><span>更多功能即将开放</span></h3>
+			</div>
+			<div class="czdiv">
+				<span>充值代表同意</span>
+				<a class="czxieyi">《充值服务协议》</a>
+			</div>
+		</div>
+
+		<!--<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>-->
+		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="alertMsg.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			function GetRequest() {
+				var url = location.search; //获取url中"?"符后的字串
+				var theRequest = new Object();
+				if(url.indexOf("?") != -1) {
+					var str = url.substr(1);
+					strs = str.split("&");
+					for(var i = 0; i < strs.length; i++) {
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+					}
+				}
+				return theRequest;
+			}
+
+			var request = new Object();
+			request = GetRequest();
+			//token device
+			var yztoken = request['token'];
+			var yzdevice = request['device'];
+			var yzid = request['uid'];
+//			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
+//			var yzdevice = 'android';
+//			var yzid = 8;
+
+			$('.zfstyle').click(function() {
+				var _index = $(this).index();
+				$('.zfstyle .lineactive').removeClass('lineactive');
+				$(this).children('.bomline').addClass('lineactive');
+				$('.zflist').hide().eq($(this).index()).show();
+			})
+
+			//选择的时长价格
+			var scmoney = '';
+			//选择支付方式
+			var charge_type = 'zhifubao';
+			//充值类型 1是平台余额
+			var typetype = 1;
+			var viphtml = '';
+			var coinnum = '';//金币余额
+			//获取平台币数量
+			function getjinbi() {
+				var jinbiurl = geturl(oneurl,'pay/index/package');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: jinbiurl,
+					dataType: "json",
+					data: {},
+					success: function(result) {
+						console.log(JSON.stringify(result));						
+						coinnum = result.data.coin;
+						document.getElementById('coinnum').innerHTML = coinnum;
+					},
+					error: function() {
+						console.log('获取账户余额失败');
+					}
+				});
+			}
+			getjinbi();
+
+			//支付宝跳转支付
+			var scway = document.getElementsByClassName('zfli');
+			for(var i = 0; i < scway.length; i++) {
+				scway[i].addEventListener('click', function() {
+					//获取到点击的钱数
+					scmoney = this.children[1].children[1].children[0].innerHTML.substr(1);
+					console.log(scmoney);
+					//支付宝是1
+					charge_type = 1;
+					zhifu(1, 1, scmoney);
+				})
+			}
+			//微信跳转支付
+			var scwaywx = document.getElementsByClassName('zfliwx');
+			for(var i = 0; i < scwaywx.length; i++) {
+				scwaywx[i].addEventListener('click', function() {
+					//获取到点击的钱数
+					scmoney = this.children[1].children[1].children[0].innerHTML.substr(1);
+					console.log(scmoney);
+					//微信是2
+					charge_type = 2;
+					zhifu(1, 2, scmoney);
+				})
+			}
+
+			function zhifu(typetype, charge_type, scmoney) {
+				console.log(typetype);
+				console.log(charge_type);
+				console.log(scmoney);
+				var zhifuurl = geturl(oneurl, 'pay/index/payOrder');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: zhifuurl,
+					async: false,
+					data: {
+						'type': typetype,
+						'mode': charge_type,
+						'money': scmoney
+					},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						//如果是ios 支付宝和微信都通过openURL的方式打开
+						//如果是安卓  支付宝用openURL打开，微信用SDK方式
+						//plus.runtime.openURL(result.data.url);
+						var u = navigator.userAgent,
+							app = navigator.appVersion;
+						var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+						var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+						if(isAndroid) {
+							if(charge_type == 1) {
+								//plus.runtime.openURL(result.data.url);
+								window.location.href = result.data.url;
+							} else if(charge_type == 2) {
+								var wxurl = result.data.url;
+								console.log(wxurl);
+								$.ajax({
+									type: 'POST',
+									url: wxurl,
+									dataType: 'json',
+									data: {},
+									success: function(rsp) {
+										console.log(JSON.stringify(rsp));
+										var wxxinxi = {
+											timestamp: rsp.result_data.timestamp,
+											noncestr: rsp.result_data.noncestr,
+											partnerid: rsp.result_data.partnerid,
+											prepayid: rsp.result_data.prepayid,
+											package: rsp.result_data.package,
+											appid: rsp.result_data.appid,
+											sign: rsp.result_data.sign
+										};
+										plus.payment.request(pays[id], wxxinxi, function(result) {
+											console.log(JSON.stringify(result));
+										}, function(e) {
+											console.error(JSON.stringify(e));
+										})
+									},
+									error: function(data) {
+										console.log(JSON.stringify(data));
+										console.log('微信支付出错');
+									}
+								})
+							}
+						}
+						if(isIOS) {
+							console.log("苹果机！");
+							if(charge_type == 1) {
+								//var urlstr = encodeURI(result.data.url);
+								//plus.runtime.openURL(urlstr);
+								window.location.href = result.data.url;
+								console.log(JSON.stringify(result.data.url));
+							}
+							if(charge_type == 2) {
+								//var urlstr = encodeURI(result.data.url);
+								//window.location.href = urlstr;
+								alertMsg('微信支付目前暂未开通');
+							}
+						}
+					},
+					error: function(result) {
+						console.log('充值订单出错了');
+					}
+				});
+			}
+//			跳转到充值协议
+			$('.czxieyi').on('click',function(){
+				window.location.href = 'czxieyi.html';
+			})
+		</script>
+	</body>
+
+</html>

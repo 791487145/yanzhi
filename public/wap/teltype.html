@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>解决消息来电无提示</title>
+		<style type="text/css">
+			*{
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			html,body{
+				width: 100%;
+				height: 100%;
+			}
+			.telcon{
+				width: 100%;
+				height: 100%;
+				display: none;
+			}
+			.teldiv img{
+				width: 100%;
+				height: 100%;
+				display: block;
+				margin-top: -0.1rem;
+			}
+			.imgdiv{
+				width: 100%;
+				height: 100%;
+			}
+			.liubai{
+				width: 100%;
+				height: 0.2rem;
+				background: #f5f5f5;
+			}
+
+		</style>
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div class="liubai"></div>
+		<div class="telcon" id="xiaomicon">
+			<div class="teldiv">
+				<img src="img/xiaomi1.jpg"/>
+				<img src="img/xiaomi2.jpg"/>				
+				<img src="img/xiaomi3.jpg"/>
+				<img src="img/xiaomi4.jpg"/>
+				<img src="img/xiaomi5.jpg"/>
+				<img src="img/xiaomi6.jpg"/>
+				<img src="img/xiaomi7.jpg"/>
+				<img src="img/xiaomi8.jpg"/>
+				<img src="img/xiaomi9.jpg"/>
+				<img src="img/xiaomi10.jpg"/>
+				<img src="img/xiaomi11.png"/>
+			</div>
+		</div>
+		<div class="telcon" id="vivocon">
+			<div class="teldiv">
+				<img src="img/vivo1.jpg"/>
+				<img src="img/vivo2.jpg"/>
+				<img src="img/vivo3.jpg"/>
+				<img src="img/vivo4.jpg"/>
+				<img src="img/vivo5.jpg"/>
+				<img src="img/vivo6.jpg"/>
+				<img src="img/vivo7.jpg"/>
+				<img src="img/vivo8.png"/>
+			</div>
+		</div>
+		<div class="telcon" id="oppocon">
+			<div class="teldiv">
+				<img src="img/oppo1.jpg"/>
+				<img src="img/oppo2.jpg"/>
+				<img src="img/oppo3.jpg"/>
+				<img src="img/oppo4.jpg"/>
+				<img src="img/oppo5.jpg"/>
+				<img src="img/oppo6.jpg"/>
+				<img src="img/oppo7.jpg"/>
+				<img src="img/oppo8.jpg"/>
+			</div>
+		</div>
+		<div class="telcon" id="meizucon">
+			<div class="teldiv">
+				<img src="img/meizu1.jpg"/>
+				<img src="img/meizu2.jpg"/>
+				<img src="img/meizu3.jpg"/>
+				<img src="img/meizu4.jpg"/>
+				<img src="img/meizu5.jpg"/>
+				<img src="img/meizu6.jpg"/>
+				<img src="img/meizu7.jpg"/>
+			</div>
+		</div>
+		<div class="telcon" id="huaweicon">
+			<div class="teldiv">
+				<img src="img/huawei1.jpg"/>
+				<img src="img/huawei2.jpg"/>
+				<img src="img/huawei3.jpg"/>
+				<img src="img/huawei4.jpg"/>
+				<img src="img/huawei5.png"/>
+			</div>
+		</div>
+		<div class="telcon" id="pingguocon">
+			<div class="teldiv">
+				<img src="img/pingguo1.jpg"/>
+				<img src="img/pingguo2.jpg"/>
+				<img src="img/pingguo3.jpg"/>
+				<img src="img/pingguo4.jpg"/>
+			</div>
+		</div>
+		<div class="telcon" id="meitucon">
+			<div class="teldiv">
+				<img src="img/meitu1.jpg"/>
+				<img src="img/meitu2.jpg"/>
+				<img src="img/meitu3.jpg"/>
+				<img src="img/meitu4.jpg"/>
+				<img src="img/meitu5.png"/>
+			</div>
+		</div>
+		
+		<script type="text/javascript">
+			//接收一个值
+			function oneValues() {
+				var result;
+				var url = window.location.search; //获取url中"?"符后的字串  
+				if(url.indexOf("?") != -1) {
+					result = url.substr(url.indexOf("=") + 1);
+				}
+				return result;
+			}
+			oneValues();
+			var teltype = oneValues();
+			console.log(teltype);
+			if(teltype == 'xiaomi'){
+				document.getElementById('xiaomicon').style.display = 'block';
+			}else if(teltype == 'vivo'){
+				document.getElementById('vivocon').style.display = 'block';
+			}else if(teltype == 'oppo'){
+				document.getElementById('oppocon').style.display = 'block';
+			}else if(teltype == 'meizu'){
+				document.getElementById('meizucon').style.display = 'block';
+			}else if(teltype == 'huawei'){
+				document.getElementById('huaweicon').style.display = 'block';
+			}else if(teltype == 'pingguo'){
+				document.getElementById('pingguocon').style.display = 'block';
+			}else if(teltype == 'meitu'){
+				document.getElementById('meitucon').style.display = 'block';
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,48 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs">
+            <li><a href="{:url('setting/app')}">APP设置</a></li>
+            <li><a href="{:url('setting/money')}">提成设置</a></li>
+            <li><a href="{:url('setting/vip')}">VIP设置</a></li>
+            <li><a href="{:url('setting/broadcast')}">直播设置</a></li>
+            <li class="active"><a>菜单设置</a></li>
+        </ul>
+    </ul>
+    <form method="post" class="js-ajax-form margin-top-20">
+        <php> $status=array("1"=>lang('DISPLAY'),"0"=>lang('HIDDEN'));</php>
+        <table class="table table-hover table-bordered table-list">
+            <thead>
+            <tr>
+                <th>排序</th>
+                <th>菜单位置</th>
+                <th>菜单名称</th>
+                <th>菜单代码</th>
+                <th>菜单分组</th>
+                <th>状态</th>
+                <th width="180"><a href="javascript:parent.openIframeLayer('{:url('appmenu/add')}','添加菜单',{});">添加</a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <foreach name="list" item="vo">
+                <tr>
+                    <td>{$vo.mark}</td>
+                    <td>{$vo.page}</td>
+                    <td><neq name="vo.icon" value=""><img src="{$vo.icon}" style="width: 20px; height: 20px;"> </neq>{$vo.name}</td>
+                    <td>{$vo.code}</td>
+                    <td>{$vo.group}</td>
+                    <td>{$status[$vo.status]}</td>
+                    <td>
+                        <a href="javascript:parent.openIframeLayer('{:url('appmenu/edit',array('id'=>$vo['id']))}','{$vo.name} 编辑',{});">编辑</a>
+                    </td>
+                </tr>
+            </foreach>
+            </tbody>
+        </table>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>
