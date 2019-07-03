@@ -99,14 +99,15 @@ class IndexController extends RestUserBaseController
         }
 
         $result = $this->validate($data,OrderRequest::class);
-
+        Log::alert('validate_res'.print_r($result,true));
         if(!empty($result)){
             $this->error($result);
         }
-       
-        $res = $orderService->order($user,$data);
-        $result = $payBeiweiService->pay($request,$paymentModel,$res['sn'],$res,$data['mode']);
 
+        $res = $orderService->order($user,$data);
+        Log::alert('order_res'.print_r($res,true));
+        $result = $payBeiweiService->pay($request,$paymentModel,$res['sn'],$res,$data['mode']);
+        Log::alert('pay_res'.print_r($result,true));
         $this->success('下单成功',$result);
     }
 
