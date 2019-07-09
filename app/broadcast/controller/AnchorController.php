@@ -44,7 +44,7 @@ class AnchorController extends AdminBaseController
      * )
      */
     public function index() {
-        $where = ['u.user_type'=>2];
+        $where = ['u.user_type'=>2, 'is_zombie'=>0, 'is_virtual'=>0];
 
         $gid = input('param.gid', 0, 'intval');
         $this->assign('gid', $gid);
@@ -109,11 +109,16 @@ class AnchorController extends AdminBaseController
             }
         }
 
+        $appSetting = cmf_get_option('app_settings');
+        $ratio = $anchor['ratio'] > 0 ? $anchor['ratio'] : $appSetting['single_reward'];
+        $ratio_gift = $anchor['ratio_gift'] > 0 ? $anchor['ratio_gift'] : $appSetting['live_reward'];
+
         $user = Db::name("user")->where(["id" => $id, "user_type" => 2])->find();
         if (!$user){
             $this->error("没有该用户");
         }
         $photo = Db::name('user_photo')->where(["user_id" => $id])->select();
+        $video = Db::name('user_video')->where(["user_id" => $id])->select();
         $guideId = $anchor['guide_id'];
         if ($guideId > 0){
             $guide = Db::name('guide')->where(['id'=>$guideId])->find();
@@ -123,7 +128,10 @@ class AnchorController extends AdminBaseController
 
         $this->assign('user', $user);
         $this->assign('anchor', $anchor);
+        $this->assign('ratio', $ratio);
+        $this->assign('ratio_gift', $ratio_gift);
         $this->assign('photo', $photo);
+        $this->assign('video', $video);
         $this->assign('exam', $exam);
         // 渲染模板输出
         return $this->fetch();

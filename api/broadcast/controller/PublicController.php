@@ -8,6 +8,8 @@
 // +----------------------------------------------------------------------
 namespace api\broadcast\controller;
 
+use api\broadcast\service\PayConsumeModel;
+use api\model\PayPaymentModel;
 use think\Db;
 use think\Validate;
 use cmf\controller\RestUserBaseController;

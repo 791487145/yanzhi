@@ -454,4 +454,54 @@ class IndexController extends AdminBaseController
         $this->assign('order', $order);
         return $this->fetch();
     }
+
+    /**
+     * 提现管理
+     * @return mixed
+     */
+    public function extraction()
+    {
+        $sn = $this->request->param('sn');
+        $nickname = $this->request->param('nickname');
+        $where = [];
+        if ($sn != '')$where['a.sn']                = ['like',"%$sn%"];
+        if ($sn != '')$where['u.user_nickname']    = ['like',"%$nickname%"];
+
+        $result = Db::name('pay_extraction')
+            ->field('a.*,u.user_nickname')
+            ->alias('a')
+            ->join('__USER__ u', 'a.user_id = u.id')
+            ->where($where)
+            ->order('id', 'DESC')
+            ->paginate(10);
+        $this->assign('list', $result->items());
+        $this->assign('page', $result->render());
+        return $this->fetch();
+    }
+
+    /**
+     * 变更提现订单状态
+     * @throws \think\Exception
+     */
+    public function extractionStatus()
+    {
+        $id         = input('id', 0, 'intval');
+        $status  = input('status', 0, 'intval');
+        $data = ['status'=>$status];
+        $str = "";
+        switch ($status)
+        {
+            case 1:     $str = "审核通过"; $data['exam_time'] = time();     break;
+            case 2:     $str = "确认打款"; $data['send_time'] = time();     break;
+            case 3:     $str = "审核拒绝"; $data['exam_time'] = time();     break;
+        }
+
+        $re = Db::name("pay_extraction")->where('id',$id)->update($data);
+        if ($re)
+        {
+            $this->success($str."成功");
+        }else{
+            $this->error($str."失败");
+        }
+    }
 }

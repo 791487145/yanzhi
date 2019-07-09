@@ -183,7 +183,7 @@ class PublicController extends RestBaseController
         $update['money_system']             = $order['money'];               //默认全部计入平台收入金额
         $update['money_parent']             = 0;                              //上级收入金额
         $update['money_channel']            = 0;                              //渠道收入金额
-        $update['channel_statis']           = 0;                              //计入渠道统计0没扣量
+        $update['channel_statis']           = $order['channel_statis'];       //计入渠道统计1没扣量
         if ( $order['channel_statis'] == 1 ) {//需要处理推广统计的，获取提成信息
             $channel = Db::name('channel')->where(['id'=>$user['channel_id']])->find();
 
@@ -203,7 +203,6 @@ class PublicController extends RestBaseController
                     $count = PayPaymentModel::where('channel_id',$user['channel_id'])->where('status',PayPaymentModel::PAY_SUCCESS)->count();//获取已有订单数量
                     if ($count){//已有订单
                         if ($count['pay_num'] > 5){//5单以内不扣量，从第6单开始扣量
-                            $update['channel_statis'] = 1;
                             if (($count['sta_num'] + 1) / ($count['pay_num'] + 1) > $channel['effective']) {//增加一单后，如果有效订单占比>渠道设置的比例，则当前订单不计入统计
                                 $update['channel_statis'] = 0;
                             }
@@ -212,15 +211,21 @@ class PublicController extends RestBaseController
                 }
             }
             //处理推广分成金额
-            if (isset($update['channel_statis']) && $update['channel_statis'] == 1){
+            /*if (isset($update['channel_statis']) && $update['channel_statis'] == 1){
                 $update['money_system']           = $order['money'] * $update['ratio'] / 100;        //平台收入金额
                 $m_tmp = $order['money'] - $update['money_system'];
                 $update['money_parent']           = $m_tmp * $update['ratio_parent'] / 100;//上级收入金额
                 $update['money_channel']          = $m_tmp - $update['money_parent'];
+            }*/
+            if (isset($update['channel_statis']) && $update['channel_statis'] == 1){
+                $update['money_channel']           = $order['money'] * $update['ratio'] / 100;        //渠道收入金额
+                $m_tmp = $order['money'] - $update['money_channel'];
+                $update['money_parent']           = $m_tmp * $update['ratio_parent'] / 100;//上级收入金额
+                $update['money_system']          = $m_tmp - $update['money_parent'];
             }
         }
 
-        Db::transaction(function () use($order,$update,$user){
+
             //修改订单状态
             Db::name('pay_payment')->where(['id' => $order['id']])->update($update);
 
@@ -282,7 +287,7 @@ class PublicController extends RestBaseController
             }
 
             Db::name('user')->where(['id' => $user['id']])->update($userUpdate);
-        });
+
     }
 
     /**
@@ -342,7 +347,7 @@ class PublicController extends RestBaseController
                 $update['money_channel']          = $m_tmp - $update['money_parent'];
             }
         }
-        halt($update);
+
         //修改订单状态
         Db::name('pay_payment')->where(['id'=>$order['id']])->update($update);
 

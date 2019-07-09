@@ -357,7 +357,7 @@ class PluginController extends AdminBaseController
         $this->_getActions($pluginName);
 
         cache('init_hook_plugins', null);
-        cache(null, 'admin_menus');// 删除后台菜单缓存
+        cache(null, 'admin_menus_1');// 删除后台菜单缓存
 
         $this->success('安装成功!');
     }
@@ -439,7 +439,7 @@ class PluginController extends AdminBaseController
         $this->_getActions($pluginName);
 
         cache('init_hook_plugins', null);
-        cache(null, 'admin_menus');// 删除后台菜单缓存
+        cache(null, 'admin_menus_1');// 删除后台菜单缓存
 
         $this->success('更新成功!');
     }
@@ -652,7 +652,7 @@ class PluginController extends AdminBaseController
         }
 
         cache('init_hook_plugins', null);
-        cache(null, 'admin_menus');// 删除后台菜单缓存
+        cache(null, 'admin_menus_1');// 删除后台菜单缓存
 
         $this->success('卸载成功!');
     }

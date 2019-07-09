@@ -78,7 +78,6 @@ class AdminIndexController extends AdminBaseController
         // 渲染模板输出
         return $this->fetch();
     }
-
     /**
      * 本站用户拉黑
      * @adminMenu(
@@ -106,7 +105,6 @@ class AdminIndexController extends AdminBaseController
             $this->error('数据传入失败！');
         }
     }
-
     /**
      * 本站用户启用
      * @adminMenu(
@@ -153,7 +151,6 @@ class AdminIndexController extends AdminBaseController
         // 渲染模板输出
         return $this->fetch();
     }
-
     /**
      * 图片状态变更
      */
@@ -167,5 +164,27 @@ class AdminIndexController extends AdminBaseController
         } else {
             $this->error('操作失败！');
         }
+    }
+
+    /**
+     * 用户视频列表
+     */
+    public function video()
+    {
+        $request = input('request.');
+
+        $db = Db::name('user_video')->alias('v')->join('user u','u.id=v.user_id')->field("v.*,u.user_nickname,u.avatar");
+
+        if (!empty($request['status']) && $request['status'] > 0) {
+            $db->where('status',$request['status']-1);
+        }
+        $list = $db->order("add_time DESC")->paginate(10);
+        // 获取分页显示
+        $page = $list->render();
+        $this->assign('req', $request);
+        $this->assign('list', $list);
+        $this->assign('page', $page);
+        // 渲染模板输出
+        return $this->fetch();
     }
 }

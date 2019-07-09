@@ -14,6 +14,113 @@ use think\Db;
 class TempController extends RestBaseController
 {
     /**
+     * 推广、跳转域名微信检测
+     */
+    public function checkTuiDomainWeixin() {
+        $main = Db::name("down_url")->where('id',1)->find();
+        $jumpUrl = substr($main['jump_url'],7);
+        $downUrl = substr($main['down_url'],7);
+        $str = $jumpUrl . ',' . $downUrl;
+        $otherUrl = Db::name("channel")->where(['domain'=>['neq','']])->whereNotNull("domain")->group("domain")->column("domain");
+        if (count($otherUrl) > 0) {
+            $str .= ",".implode(",",$otherUrl);
+        }
+        $reData = $this->checkWeixin($str);
+        $delDomain = [];
+        $msg = "";
+        $emailSetting = cmf_get_option('mail_setting');
+        foreach ($reData as $value) {
+            if ($value['result'] != 1) {
+                if ($value['url'] == $jumpUrl) {//推广主域名被封
+                    $msg .= "推广域名被封";
+                    $result = cmf_send_email($emailSetting['domain'], "推广主域名被封", "推广主域名被封:".$value['url']);
+                    if ($result && empty($result['error'])) {
+                        $msg .= 'succ；';
+                    } else {
+                        $msg .= 'fail['.$result['message'].']；';
+                    }
+                } elseif ($value['url'] == $downUrl) {//跳转域名被封
+                    $msg .= "跳转域名被封";
+                    $result = cmf_send_email($emailSetting['domain'], "跳转域名被封", "跳转域名被封:".$value['url']);
+                    if ($result && empty($result['error'])) {
+                        $msg .= 'succ；';
+                    } else {
+                        $msg .= 'fail['.$result['message'].']；';
+                    }
+                } else { //渠道推广域名被封
+                    $delDomain[] = $value['url'];
+                }
+            }
+        }
+        if (count($delDomain) > 0) {//存在被封的渠道推广域名
+            $channel = Db::name("channel")->whereIn('domain',$delDomain)->column("name");
+            $msg .= "渠道推广域名被封：".implode(",",$delDomain)."[渠道：".implode(",",$channel)."]";
+            Db::name("channel")->whereIn('domain',$delDomain)->update(['domain'=>'']);
+            $result = cmf_send_email($emailSetting['domain'], "渠道推广域名被封", "被封渠道:".implode(",",$channel));
+            if ($result && empty($result['error'])) {
+                $msg .= 'succ；';
+            } else {
+                $msg .= 'fail['.$result['message'].']；';
+            }
+        }
+        exit($msg);
+    }
+
+    /**
+     * 调用验证接口
+     * @param $urls 域名，多个使用英文逗号分隔
+     * @return mixed 验证结果数组
+     */
+    private function checkWeixin($urls) {
+        $url = "http://res.api.weixindomain.cn/wxlist?usercode=a7ab1aa9-f62f-4a40-866c-f6d9a174f063&password=JfnnlDI7RTiF9RgfG2JNCw==";
+        $data = http_build_query(['urls'=>$urls]);
+        $header = ['Content-type: application/x-www-form-urlencoded'];
+        $msg = $this->curlPost($url,$data,$header);
+        $reData = json_decode($msg, true);
+        return $reData;
+    }
+    /**
+     * 落地页域名微信检测
+     */
+    public function checkDomainWeixin(){
+        $info = Db::name("down_url")->where('id',1)->find();
+        $reData = $this->checkWeixin($info['land_url']);
+        $delDomain = $saveDomain = [];
+        foreach ($reData as $value) {
+            if ($value['result'] == 1) {
+                $saveDomain[] = $value['url'];
+            } else {
+                $delDomain[] = $value['url'];
+            }
+        }
+        $msg = $title = $content = "";
+        if (count($delDomain) > 0) {
+            //删除后的域名入库
+            Db::name("down_url")->where('id',1)->update(['land_url'=>implode(',',$saveDomain)]);
+            //发送邮件删除域名
+            $title .= "落地页域名被封,";
+            $content .= "被封落地页域名：".implode(',',$delDomain)."；";
+            $msg .= "del:".implode(',',$delDomain).";";
+        }
+        if (count($saveDomain) < 5) {
+            //发送邮件提示落地页域名不足
+            $title .= "域名不足,";
+            $content .= "剩余域名还有".count($saveDomain)."个";
+            $msg .= "num:".count($saveDomain).";";
+        }
+        if ($title != "") {
+            $emailSetting = cmf_get_option('mail_setting');
+            $result = cmf_send_email($emailSetting['domain'], $title, $content);
+            if ($result && empty($result['error'])) {
+                $msg .= 'succ';
+            } else {
+                $msg .= 'fail['.$result['message'].']';
+            }
+        }
+        exit($msg);
+    }
+  
+    /**
      * 10条视频随机增加10-20查看数
      * @throws \think\Exception
      */
@@ -31,12 +138,18 @@ class TempController extends RestBaseController
      * @throws \think\Exception
      */
     public function longEdit() {
-        $list = Db::name("user")->whereLike('recom_type','%"1"%')->select();
-        foreach ( $list as $value ) {
+        $list = Db::name("user")->whereLike('recom_type','%"1"%')->order('rand()')->select();
+        $now = time();
+        foreach ( $list as $key => $value ) {
             $more = json_decode($value['more'],true);
             $more['long'] = rand(50,3000);
-            Db::name("user")->where('id',$value['id'])->update(['more'=>json_encode($more)]);
-            var_dump($value['id'].'--'.$more['long']);
+            $now = $now - rand(10,600);
+            $data = [
+                'more'                  => json_encode($more),
+                'last_login_time'      => $now
+            ];
+            Db::name("user")->where('id',$value['id'])->update($data);
+            var_dump($value['id'].'--'.$more['long'].'--'.date('Y-m-d H:i:s',$now));
         }
         exit();
     }
@@ -69,11 +182,11 @@ class TempController extends RestBaseController
     public function jpushInfo()
     {
         $id = $this->request->param( "id" , 0 , 'intval' );
-        $data = Db::name("user")->where(['id'=>['>',$id]])->order('id asc')->find();
+        $data = Db::name("user")->where('id',$id)->find();
         if (!$data) {
             exit("finish");
         }
-        echo $data['id'];
+        echo $data['id']+1;//下一条记录的ID
         $more = json_decode($data['more'],true);
         $extras = [
             'vip_type'  => empty($more['vip_type']) ? 2 : $more['vip_type']
@@ -81,9 +194,22 @@ class TempController extends RestBaseController
         if ($data['avatar'] != '' &&  strpos($data['avatar'],'http') === false) {
             $data['avatar'] = '/www/wwwroot/yanzhi/public' .$data['avatar'];
         } else {//将网络文件放到临时目录
-            $fPath = "/www/wwwroot/yanzhi/public/upload/head";
-            $fName = "tmp.jpg";
-            if(file_exists($fPath.'/'.$fName))unlink($fPath.'/'.$fName);
+
+            $userIdStr = (string)$id;
+            $num_strlength = count($userIdStr);
+            if (10 > $num_strlength) {
+                $userIdStr = str_pad($userIdStr, 10, "0", STR_PAD_LEFT);
+            }
+
+            $idUrl =  [
+                substr($userIdStr, 0, 3),
+                substr($userIdStr, 3, 3),
+                substr($userIdStr, 6)
+            ];
+
+            $fPath = '/www/wwwroot/yanzhi/public/upload/head/' . $idUrl[0] . '/' . $idUrl[1];
+
+            $fName = $idUrl[2] . '.jpg';
             $tmp = $this->getFile($data['avatar'],$fPath,$fName);
             $data['avatar'] = $tmp['save_path'];
         }
@@ -99,7 +225,7 @@ class TempController extends RestBaseController
 
             $udata = [
                 'name'      =>'QY_'.$data['id'],
-                'pass'      =>'QY_'.$data['id'].'HUHU'
+                'pass'      => $data['id'].'DINGTJIAYUAN'
             ];
             $uResult = hook_one("user_jpush_reg", $udata);
             //var_dump($uResult);
@@ -114,9 +240,7 @@ class TempController extends RestBaseController
                 ]
             ];
             $eResult = hook_one("user_jpush_edit", $pData);
-            //var_dump($eResult);
         } else {
-            //var_dump($result);
         }
         exit();
     }
@@ -160,5 +284,62 @@ class TempController extends RestBaseController
             'file_name' => $filename,
             'save_path' => $save_dir . $filename
         );
+    }
+
+    /**
+     * 通过CURL发送HTTP请求
+     * @param string $url  //请求URL
+     * @param array $postFields //请求参数
+     * @return mixed
+     */
+    private function curlPost($url, $postFields, $header = array( 'Content-Type: application/json; charset=utf-8' ))
+    {
+        $ch = curl_init();
+        curl_setopt( $ch, CURLOPT_URL, $url);
+        curl_setopt( $ch, CURLOPT_POST, true );
+        curl_setopt( $ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt( $ch, CURLOPT_POSTFIELDS, $postFields);  //该curl_setopt可以向header写键值对
+        //curl_setopt( $ch, CURLOPT_HEADER, false); // 不返回头信息
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true);
+        $ret = curl_exec($ch);
+        if (false == $ret) {
+            $result = curl_error(  $ch);
+        } else {
+            $rsp = curl_getinfo( $ch, CURLINFO_HTTP_CODE);
+            if (200 != $rsp) {
+                $result = "请求状态 ". $rsp . " " . curl_error($ch);
+            } else {
+                $result = $ret;
+            }
+        }
+        curl_close ( $ch );
+        return $result;
+    }
+
+    /**
+     * 通过CURL发送HTTP请求
+     * @param string $url  //请求URL
+     * @param array $postFields //请求参数
+     * @return mixed
+     */
+    private function curlGet($url, $header = array( 'Content-Type: application/json; charset=utf-8' ) )
+    {
+        $ch = curl_init ();
+        curl_setopt( $ch, CURLOPT_URL, $url );
+        curl_setopt( $ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+        $ret = curl_exec ( $ch );
+        if (false == $ret) {
+            $result = curl_error(  $ch);
+        } else {
+            $rsp = curl_getinfo( $ch, CURLINFO_HTTP_CODE);
+            if (200 != $rsp) {
+                $result = "请求状态 ". $rsp . " " . curl_error($ch);
+            } else {
+                $result = $ret;
+            }
+        }
+        curl_close ( $ch );
+        return $result;
     }
 }

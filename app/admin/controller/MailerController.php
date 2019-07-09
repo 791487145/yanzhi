@@ -167,6 +167,24 @@ class MailerController extends AdminBaseController
 
     }
 
+    public function admin()
+    {
+        $emailSetting = cmf_get_option('mail_setting');
+        $this->assign($emailSetting);
+        return $this->fetch();
+    }
+    public function adminPost()
+    {
+        $post = array_map('trim', $this->request->param());
+
+        if (in_array('', $post) && !empty($post['smtpsecure'])) {
+            $this->error("不能留空！");
+        }
+
+        cmf_set_option('mail_setting', $post);
+
+        $this->success("保存成功！");
+    }
 
 }
 

@@ -22,7 +22,7 @@ use think\Db;
 class VirtualController extends AdminBaseController
 {
     //推荐类型
-    private $recomType = ['1'=>'附近人','2'=>'寻找结婚对象','3'=>'找个人看电影','4'=>'约个饭，见个面','5'=>'优质女生'];
+    private $recomType = ['1'=>'附近人','2'=>'颜值星秀','4'=>'成熟女性','5'=>'优质女生'];//,'3'=>'找个人看电影'
     /**
      * 虚拟用户列表
      */
@@ -113,14 +113,14 @@ class VirtualController extends AdminBaseController
         $now = time();
         //用户表数据
         $user = $data['u'];
-        if ($user["province"] == '0' || $user["city"] == '0')
-        {
+        if ($user["province"] == '0' || $user["city"] == '0') {
             $this->error("请选择所在城市");
         }
         $user['birthday']       = strtotime($user['birthday']);
         $user['is_virtual']     = 1;//虚拟用户标识
         $user['user_type']      = 2;
         $user['create_time']    = $now;
+        $user['last_login_time']    = $now;
         $user['user_status']    = 1;
         $user['more']           = json_encode($data['m']);
         $user['recom_type']     = empty($data['r'])?'':json_encode($data['r']);
@@ -136,13 +136,8 @@ class VirtualController extends AdminBaseController
             $this->error("用户添加失败");
         }
         $reMsg = "用户添加成功，";
-        //===========将用户ID写入极光IM start
-        $imData = [
-            'name'=>'QY_'.$userId,
-            'pass'=>'QY_'.$userId.'HUHU'
-        ];
-        hook_one("user_jpush_reg", $imData);
-        //===========将用户ID写入极光IM end
+        //===========将用户ID写入极光IM
+        $this->jpushInfo($userId, $user['user_nickname'], $user['avatar'], $user['sex']);
 
         //主播表数据
         $anchor = $data['c'];
@@ -205,8 +200,7 @@ class VirtualController extends AdminBaseController
      * 编辑虚拟用户提交
      * @throws \think\Exception
      */
-    public function editPost()
-    {
+    public function editPost() {
         $validate = new Validate([
             'u.user_nickname' => 'require',
             'u.birthday' => 'require',
@@ -219,7 +213,6 @@ class VirtualController extends AdminBaseController
             'c.level' => 'require',
             'c.single_coin' => 'require',
         ]);
-
         $validate->message([
             'u.user_nickname.require' => '请填写主播昵称',
             'u.birthday.require' => '请填写主播生日',
@@ -232,18 +225,15 @@ class VirtualController extends AdminBaseController
             'c.level.require' => '请填写主播等级',
             'c.single_coin.require' => '请填写私播单价',
         ]);
-
         $data = $this->request->post();
         if (!$validate->check($data)) {
             $this->error($validate->getError(),'/user/virtual/edit/id/'.$data['u']['id']);
         }
 
         $reMsg = "";
-
         //用户表数据
         $user = $data['u'];
-        if ($user['province'] == '0' || $user['city'] == '0')
-        {
+        if ($user['province'] == '0' || $user['city'] == '0') {
             $this->error("请选择所在城市",'/user/virtual/edit/id/'.$user['id']);
         }
         $user['birthday']       = strtotime($user['birthday']);
@@ -251,42 +241,36 @@ class VirtualController extends AdminBaseController
         $user['recom_type']     = empty($data['r'])?'':json_encode($data['r']);
         $userData = Db::name('user')->where('id',$user['id'])->find();
         $userEdit = [];
-        if ($user['user_nickname'] != $userData['user_nickname'])$userEdit['user_nickname'] = $user['user_nickname'];
-        if ($user['sex'] != $userData['sex'])$userEdit['sex'] = $user['sex'];
-        if ($user['birthday'] != $userData['birthday'])$userEdit['birthday'] = $user['birthday'];
-        if ($user['signature'] != $userData['signature'])$userEdit['signature'] = $user['signature'];
-        if ($user['more'] != $userData['more'])$userEdit['more'] = $user['more'];
-        if ($user['recom_type'] != $userData['recom_type'])$userEdit['recom_type'] = $user['recom_type'];
-        if ($user['province'] != $userData['province'])$userEdit['province'] = $user['province'];
-        if ($user['city'] != $userData['city'])$userEdit['city'] = $user['city'];
-        if ($user['avatar'] != $userData['avatar']){
+        if ($user['user_nickname'] != $userData['user_nickname'])   $userEdit['user_nickname'] = $user['user_nickname'];
+        if ($user['sex'] != $userData['sex'])                          $userEdit['sex'] = $user['sex'];
+        if ($user['birthday'] != $userData['birthday'])               $userEdit['birthday'] = $user['birthday'];
+        if ($user['signature'] != $userData['signature'])             $userEdit['signature'] = $user['signature'];
+        if ($user['more'] != $userData['more'])                        $userEdit['more'] = $user['more'];
+        if ($user['recom_type'] != $userData['recom_type'])           $userEdit['recom_type'] = $user['recom_type'];
+        if ($user['province'] != $userData['province'])               $userEdit['province'] = $user['province'];
+        if ($user['city'] != $userData['city'])                        $userEdit['city'] = $user['city'];
+        if ($user['avatar'] != $userData['avatar']) {
             $userEdit['avatar'] = $user['avatar'];
-            if (strpos($userEdit['avatar'],'http://') === false)
-            {
+            if (strpos($userEdit['avatar'],'http://') === false) {
                 $userEdit['avatar']     = '/upload/'.$userEdit['avatar'];
             }
         }
-        if (count($userEdit) > 0)//需要更新用户信息
-        {
+        if (count($userEdit) > 0) {//需要更新用户信息
             $userEdit['id'] = $user['id'];
             $reUser = Db::name('user')->update($userEdit);
-            if ($reUser)
-            {
+            if ($reUser) {
                 $reMsg .= "用户信息更新成功";
-            }
-            else
-            {
+            } else {
                 $reMsg .= "用户信息更新失败";
             }
-        } else{
+        } else {
             $reMsg .= "用户信息没有更新";
         }
         //主播表数据
         $anchor = $data['c'];
         //主播数据入库
         $reAnchor = Db::name("live_anchor")->where('user_id',$user['id'])->update($anchor);
-        if ($reAnchor)
-        {
+        if ($reAnchor) {
             $this->success($reMsg.",主播信息更新成功");
         }
         $this->success($reMsg.",主播信息更新失败");
@@ -359,9 +343,54 @@ class VirtualController extends AdminBaseController
             $this->error($str."失败");
         }
     }
+    /**
+     * @param $id       用户ID
+     * @param $name     昵称
+     * @param $pic      头像
+     * @param int $sex  性别
+     */
+    private function jpushInfo($id , $name , $pic , $sex = 1) {
+        $udata = [
+            'name'      =>'QY_'.$id,
+            'pass'      =>'QY_'.$id.'HUHU'
+        ];
+        hook_one("user_jpush_reg", $udata);
+
+        if ($pic != '' &&  strpos($pic,'http') === false) {
+            $pic = '/www/wwwroot/yanzhi/public' .$pic;
+        } else {//将网络文件放到临时目录
+            $fPath = "/www/wwwroot/yanzhi/public/upload/head";
+            $fName = "tmp.jpg";
+            if(file_exists($fPath.'/'.$fName))unlink($fPath.'/'.$fName);
+            $tmp = $this->getFile($pic,$fPath,$fName);
+            $pic = $tmp['save_path'];
+        }
+
+        $param = [
+            'type'      => "image",
+            'url'       => $pic
+        ];
+        $result = hook_one("upload_jpush", $param);
+
+        if ($result['http_code'] == 200) {//图片上传成功
+            $mediaId= $result['body']['media_id'];
+            //var_dump($uResult);
+            $pData = [
+                "name"  => 'QY_'.$id,
+                "data"  => [
+                    "avatar"    => $mediaId,
+                    "nickname"  => $name,
+                    'gender'    => $sex,
+                    'extras'    => ['vip_type'  => 2 ]
+                ]
+            ];
+            hook_one("user_jpush_edit", $pData);
+        }
+    }
+
 
     //话术类型
-    private $messageType = ['请选择','消息','照片','视频','打招呼','关注','来访'];//,'视频通话'
+    private $messageType = ['请选择','消息','照片','视频'];//,'视频通话'
     /**
      * 话术管理
      */
@@ -383,50 +412,36 @@ class VirtualController extends AdminBaseController
     public function messageSave()
     {
         $data = $this->request->post();
-        switch ($data['type'])
-        {
-            case 1:
-                if ($data['message'] == '')
-                    $this->error("请填写消息内容");
-                break;
-            case 2:
-            case 3:
-                $file = $this->request->file('file');
-                if ($data['id'] == 0 && !$file)
-                    $this->error("请上传文件");
-                //上传文件到环信
-                if (!empty($file))
-                {
-                    $result = hook_one("fiels_easemob", $file);
-                    $data['message'] = json_encode($result);
-                } else {
-                    unset($data['message']);
+        if ($data['message'] == '')
+            $this->error("请填写消息内容");
+        if (in_array($data['type'],[2,3])) {
+            $path = $data['message'];
+            if (strpos($path,'http://') === false) {
+                if (strpos($path,'/upload') === false) {
+                    $data['message'] = '/upload/' .$path;
                 }
-                unset($data['file']);
-                break;
-            case 4:
-            case 5:
-            case 6:
-            case 7:
-                $data['message'] = $this->messageType[$data['type']];
-                break;
-            default:
-                $this->error("请选择话术类型");
+                $path =  '/www/wwwroot/yanzhi/public' . $data['message'];
+            }
+
+            $param = [
+                'type'      => $data['type'] == 2 ? "image" : "file",
+                'url'       => $path
+            ];
+            $result = hook_one("upload_jpush", $param);
+            if ($result['http_code'] == 200) {//jpush上传成功
+                $data['jpush_media'] = json_encode($result['body']);
+            }
         }
         $data['second'] = (int)$data['second'];
 
-        if ($data['id'] == 0)
-        {
+        if ($data['id'] == 0) {
             unset($data['id']);
             $re = Db::name('live_message')->insert($data);
-        }
-        else
-        {
+        } else {
             $re = Db::name('live_message')->update($data);
         }
 
-        if ($re)
-        {
+        if ($re) {
             $this->success("保存成功");
         }
         $this->error("保存失败");

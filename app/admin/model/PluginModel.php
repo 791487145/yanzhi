@@ -129,7 +129,7 @@ class PluginModel extends Model
             }
 
             // 删除后台菜单
-            Db::name('admin_menu')->where([
+            Db::name('admin_menu_1')->where([
                 'app' => "plugin/{$findPlugin['name']}",
             ])->delete();
 

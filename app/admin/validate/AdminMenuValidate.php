@@ -20,7 +20,7 @@ class AdminMenuValidate extends Validate
         'app'        => 'require',
         'controller' => 'require',
         'parent_id'  => 'checkParentId',
-        'action'     => 'require|unique:AdminMenu,app^controller^action',
+        'action'     => 'require|unique:admin_menu_1,app^controller^action',
     ];
 
     protected $message = [
@@ -29,7 +29,7 @@ class AdminMenuValidate extends Validate
         'parent_id'          => '超过了4级',
         'controller.require' => '名称不能为空',
         'action.require'     => '名称不能为空',
-        'action.unique'      => '同样的记录已经存在!',
+        'action.unique'      => '同样的记录已经存在!!!',
     ];
 
     protected $scene = [
@@ -41,12 +41,12 @@ class AdminMenuValidate extends Validate
     // 自定义验证规则
     protected function checkParentId($value)
     {
-        $find = Db::name('AdminMenu')->where(["id" => $value])->value('parent_id');
+        $find = Db::name('admin_menu_1')->where(["id" => $value])->value('parent_id');
 
         if ($find) {
-            $find2 = Db::name('AdminMenu')->where(["id" => $find])->value('parent_id');
+            $find2 = Db::name('admin_menu_1')->where(["id" => $find])->value('parent_id');
             if ($find2) {
-                $find3 = Db::name('AdminMenu')->where(["id" => $find2])->value('parent_id');
+                $find3 = Db::name('admin_menu_1')->where(["id" => $find2])->value('parent_id');
                 if ($find3) {
                     return false;
                 }

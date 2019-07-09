@@ -33,22 +33,21 @@ class OrderService
         $now = time();
         $sn = $reOrder['sn'];
 
-        if ($reOrder['add_time'] <= ( $now - 300 )){//订单信息与5分钟内上一单未支付订单信息的相同，则直接使用上一单的订单信息,否则生成新的订单
-            $data = [
-                'user_id'           => $user['id'],
-                'type'              => $data['type'],
-                'pay_mode'          => $data['mode'],
-                'money'             => $data['money'],
-                'coin'              => $coin,
-                'channel_id'        => $user['channel_id'],
-                'channel_statis'    => $user['channel_id'] > 0 ? 1 : 0,//有推广信息的，默认计入统计
-                'ip'                => get_client_ip(),
-                'add_time'          => $now
-            ];
-            //订单信息入库
-            $res = PayPaymentModel::create($data);
-            $reOrder = $res;
-        }
+        $data = [
+            'user_id'           => $user['id'],
+            'type'              => $data['type'],
+            'pay_mode'          => $data['mode'],
+            'money'             => $data['money'],
+            'coin'              => $coin,
+            'channel_id'        => $user['channel_id'],
+            'channel_statis'    => $user['channel_id'] > 0 ? 1 : 0,//有推广信息的，默认计入统计
+            'ip'                => get_client_ip(),
+            'add_time'          => $now
+        ];
+        //订单信息入库
+        $res = PayPaymentModel::create($data);
+        $reOrder = $res;
+
 
         return $reOrder;
     }

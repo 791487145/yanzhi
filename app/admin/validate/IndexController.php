@@ -37,6 +37,7 @@ class IndexController extends AdminBaseController
     {
         $adminMenuModel = new AdminMenuModel();
         $menus          = cache('admin_menus_1_' . cmf_get_current_admin_id(), '', null, 'admin_menus_1');
+        var_dump($menus);
 
         if (empty($menus)) {
             $menus = $adminMenuModel->menuTree();

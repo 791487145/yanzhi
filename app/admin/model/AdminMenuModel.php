@@ -10,12 +10,12 @@
 // +----------------------------------------------------------------------
 namespace app\admin\model;
 
+use think\Db;
 use think\Model;
 use think\Cache;
 
 class AdminMenuModel extends Model
 {
-    
     /**
      * 按父ID查找菜单子项
      * @param int $parentId 父菜单ID
@@ -26,10 +26,10 @@ class AdminMenuModel extends Model
     {
         //父节点ID
         $parentId = intval($parentId);
-        $result   = $this->where(['parent_id' => $parentId, 'status' => 1])->order("list_order", "ASC")->select();
+        $result   = Db::name('admin_menu_1')->where(['parent_id' => $parentId, 'status' => 1])->order("list_order", "ASC")->select();
 
         if ($withSelf) {
-            $result2[] = $this->where(['id' => $parentId])->find();
+            $result2[] = Db::name('admin_menu_1')->where(['id' => $parentId])->find();
             $result    = array_merge($result2, $result);
         }
 
@@ -157,7 +157,7 @@ class AdminMenuModel extends Model
     public function menuCache($data = null)
     {
         if (empty($data)) {
-            $data = $this->order("list_order", "ASC")->column('');
+            $data = Db::name('admin_menu_1')->order("list_order", "ASC")->column('');
             Cache::set('Menu', $data, 0);
         } else {
             Cache::set('Menu', $data, 0);
@@ -169,9 +169,9 @@ class AdminMenuModel extends Model
     {
         //父节点ID
         $parentId = (int)$parentId;
-        $result   = $this->where(['parent_id' => $parentId])->select();
+        $result   = Db::name('admin_menu_1')->where(['parent_id' => $parentId])->select();
         if ($with_self) {
-            $result2[] = $this->where(['id' => $parentId])->find();
+            $result2[] = Db::name('admin_menu_1')->where(['id' => $parentId])->find();
             $result    = array_merge($result2, $result);
         }
         return $result;
@@ -184,7 +184,7 @@ class AdminMenuModel extends Model
      */
     public function getMenuTree($parentId = 0)
     {
-        $menus = $this->where(["parent_id" => $parentId])->order(["list_order" => "ASC"])->select();
+        $menus = Db::name('admin_menu_1')->where(["parent_id" => $parentId])->order(["list_order" => "ASC"])->select();
 
         if ($menus) {
             foreach ($menus as $key => $menu) {
