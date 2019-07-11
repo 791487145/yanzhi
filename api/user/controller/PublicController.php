@@ -72,6 +72,7 @@ class PublicController extends RestBaseController
         $user['user_nickname']  = $this->randNickName();
         $user['last_login_time']= $user['create_time'];
         $user['last_login_ip']  = $user['create_ip'];
+        $user['avatar']         = "/upload/head/default.png";
 
         Db::startTrans();
         try
@@ -95,6 +96,8 @@ class PublicController extends RestBaseController
             //将用户TOMEN写入user->more
             $more['token'] = $token;
             Db::name('user')->where('id',$userId)->update(['more'=>json_encode($more)]);
+
+            $this->curlGet('http://'.$_SERVER['HTTP_HOST'] . "/api/user/temp/jpushInfo?id=".$userId);
 
             //发送话术
             //$this->createMsg($userId,$data['device_type'],$user['create_time']);
@@ -163,11 +166,13 @@ class PublicController extends RestBaseController
 
         $findUser['last_login_ip']  = get_client_ip(0, true);
         $findUser['last_login_time']= time();
+        $findUser['login_state']= 1;
 
         $this->userRedis($token,$findUser['id'],$findUser);
 
+        $cdnSettings    = cmf_get_option('cdn_settings');
         if ($findUser['avatar'] != '' &&  strpos($findUser['avatar'],'http://') === false){
-            $findUser['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$findUser['avatar'];
+            $findUser['avatar'] = 'http://'.$cdnSettings['cdn_static_url'] .$findUser['avatar'];
         }
         $more = json_decode($findUser['more'],true);
         if (isset($more['token']))
@@ -253,11 +258,15 @@ class PublicController extends RestBaseController
             $user['last_login_time']= $user['create_time'];
             $user['last_login_ip']  = $user['create_ip'];
 
+            $user['vip'] = 0;
+
             $userId = $userQuery->insertGetId($user);
             $user['id'] = $userId;
 
             //发放注册奖励
             $rePrice = $this->regPrice($userId);
+
+            $this->curlGet('http://'.$_SERVER['HTTP_HOST'] . "/api/user/temp/jpushInfo?id=".$userId);
 
             //记录下载数据
             $downId = $this->request->post('down_id', 0, 'intval');
@@ -275,8 +284,9 @@ class PublicController extends RestBaseController
 
             $user['last_login_time']= time();
             $user['last_login_ip']  = get_client_ip(0, true);
+            $user['login_state']= 1;
         }
-      
+
         if ($user['vip'] < $user['last_login_time']) {//非VIP用户，发送话术
             $this->createMsg($userId,$data['device_type'],$user['last_login_time']);
             $this->createVideo($userId,$user['last_login_time']);
@@ -302,8 +312,9 @@ class PublicController extends RestBaseController
         }
         //第一次登录的，修改more-token，再次登录的修改时间
         Db::name('user')->update($user);
+        $cdnSettings    = cmf_get_option('cdn_settings');
         if ($findUser['avatar'] != '' &&  strpos($findUser['avatar'],'http://') === false){
-            $findUser['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$findUser['avatar'];
+            $findUser['avatar'] = 'http://'.$cdnSettings['cdn_static_url'] .$findUser['avatar'];
         }
         $url = "http://appstore.le8le8.cn/apptab/list.html?"
             . "otheruid=" . $findUser['id']//."_".$data['device_type']
@@ -421,6 +432,7 @@ class PublicController extends RestBaseController
         if ($down)//有未注册记录的，记录注册信息
         {
             $re = $db->where('id',$downId)->update(['is_reg'=>1,'reg_time'=>$user['create_time'],'user_id'=>$userId]);
+            Db::name('user')->where('id',$userId)->update(['channel_id'=>$down['channel_id']]);
             return $re;
         }
         return true;
@@ -460,7 +472,7 @@ class PublicController extends RestBaseController
      */
     public function createMsg($userId, $device, $time)//$userId, $device, $time
     {
-        $arrTimes = [60, 90,90,120,120, 90,90,120,120, 90,90,120,120, 90,90,120,120, 90,90,120,120];//30秒后发送第一个，再过60秒发送第二个
+        $arrTimes = [30,60,90,120,120,90,90,120,120,90,90,120,120,90,90,120,120,90,90,120,120];//30秒后发送第一个，再过60秒发送第二个
         //发送话术的虚拟用户数
         if ($device == 'iphone') {
             $num = rand(3,5);
@@ -471,13 +483,9 @@ class PublicController extends RestBaseController
         //读取已发送话术记录
         $sendLogUrl = CMF_ROOT . 'data/huashu_log/'.$userId;
         if(!file_exists($sendLogUrl)) {//没有发送记录，从最后一条开始发送
-            $fdata = [
-                'user_id'       => '',
-                'lasttime'  => 0
-            ];
+            $fdata = [ 'user_id' => '' , 'lasttime' => 0 ];
         } else {
-            $fdata = file_get_contents($sendLogUrl);
-            $fdata = json_decode($fdata,true);
+            $fdata = json_decode(file_get_contents($sendLogUrl),true);
         }
 
         if ($fdata['lasttime'] > $time) {//最后一条尚未发送，则不再增加记录
@@ -491,13 +499,13 @@ class PublicController extends RestBaseController
         $list = Db::name('live_message')->alias('m')
             ->join('yz_user u','m.user_id=u.id')
             ->field('u.*,m.*')
-            ->whereIn('type',['1','2','3'])
             ->where($where)
             ->order('m.user_id desc,m.id')
             ->select();
 
         $id = $i = $t = 0;//当前发送的用户ID、序号//发送消息的时间戳
         foreach ($list as $value) {
+            if ($fdata['user_id'] != '' && $value['user_id'] >= $fdata['user_id']) continue;
             if ($id != $value['user_id']) {
                 $time = $time + $arrTimes[$i];      //当前用户第一条消息的发送时间
                 $i++;                               //序号递增
@@ -533,19 +541,21 @@ class PublicController extends RestBaseController
 
             //更新当前用户下一条的时间
             if ($value['second'] == 0) {
-                $t+=rand(60,90);
+                $t+=rand(45,90);
             } else {
                 $t+=$value['second'];
             }
         }
 
-        $fdata = [
-            'lasttime'      => $t,
-            'user_id'       => $id
-        ];
-        $sendLog = fopen($sendLogUrl,"w");
-        fwrite($sendLog, json_encode($fdata));
-        fclose($sendLog);
+        if ($t > 0) {
+            $fdata = [
+                'lasttime'      => $t,
+                'user_id'       => $id
+            ];
+            $sendLog = fopen($sendLogUrl,"w");
+            fwrite($sendLog, json_encode($fdata));
+            fclose($sendLog);
+        }
     }
 
     /**
@@ -578,12 +588,16 @@ class PublicController extends RestBaseController
             ->where(['send_order'=>['>',$fdata['order']]])
             ->order('v.send_order asc')
             ->find();
+        if (!$info) {
+            return false;
+        }
 
+        $cdnSettings    = cmf_get_option('cdn_settings');
         if ($info['avatar'] != '' &&  strpos($info['avatar'],'http://') === false){
-            $info['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$info['avatar'];
+            $info['avatar'] = 'http://'.$cdnSettings['cdn_static_url'] .$info['avatar'];
         }
         if ($info['url'] != '' &&  strpos($info['url'],'http://') === false){
-            $info['url'] = 'http://'.$_SERVER['HTTP_HOST'] .$info['url'];
+            $info['url'] = 'http://'.$cdnSettings['cdn_static_url'] .$info['url'];
         }
 
         //视频邀请写入文件
@@ -608,7 +622,8 @@ class PublicController extends RestBaseController
         //关闭文件
         fclose($file);
 
-        //视频邀请消息写入文件
+        //视频邀请消息写入文件,视频推送3秒后推送消息
+        $mName = ($time+3)."_".$userId;
         $pushData = [
             'from_id'       => 'QY_'.$data['anchor_id'],
             'target_id'     => 'QY_'.$data['user_id'],
@@ -663,14 +678,15 @@ class PublicController extends RestBaseController
         $info = array_merge($info,$more);
         unset($info['more']);
 
+        $cdnSettings    = cmf_get_option('cdn_settings');
         if ($info['avatar'] != '' &&  strpos($info['avatar'],'http://') === false){
-            $info['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$info['avatar'];
+            $info['avatar'] = 'http://'.$cdnSettings['cdn_static_url'] .$info['avatar'];
         }
         if ($info['photo'] != '' &&  strpos($info['photo'],'http://') === false){
-            $info['photo'] = 'http://'.$_SERVER['HTTP_HOST'] .$info['photo'];
+            $info['photo'] = 'http://'.$cdnSettings['cdn_static_url'] .$info['photo'];
         }
         if ($info['video_url'] != '' &&  strpos($info['video_url'],'http://') === false){
-            $info['video_url'] = 'http://'.$_SERVER['HTTP_HOST'] .$info['video_url'];
+            $info['video_url'] = 'http://'.$cdnSettings['cdn_static_url'] .$info['video_url'];
         }
         return [
             'ret'   => true,
@@ -678,7 +694,7 @@ class PublicController extends RestBaseController
             'data'  => $info
         ];
     }
-    
+
     /**
      * 用户退出
      * @throws \think\Exception
@@ -761,6 +777,7 @@ class PublicController extends RestBaseController
         }
 
         $reData = [];
+        $cdnSettings    = cmf_get_option('cdn_settings');
         foreach ($list as $value)
         {
             $more = json_decode($value['more'],true);
@@ -772,7 +789,7 @@ class PublicController extends RestBaseController
                 'vip_type'  => empty($more['vip_type']) ? 2 : $more['vip_type'],
             ];
             if ($value['avatar'] != '' &&  strpos($value['avatar'],'http://') === false){
-                $tmp['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$value['avatar'];
+                $tmp['avatar'] = 'http://'.$cdnSettings['cdn_static_url'] .$value['avatar'];
             } else {
                 $tmp['avatar'] = $value['avatar'];
             }
@@ -804,6 +821,33 @@ class PublicController extends RestBaseController
         curl_setopt($ch, CURLOPT_HEADER, false); // 不返回头信息
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $ret = curl_exec($ch);
+        if (false == $ret) {
+            $result = curl_error(  $ch);
+        } else {
+            $rsp = curl_getinfo( $ch, CURLINFO_HTTP_CODE);
+            if (200 != $rsp) {
+                $result = "请求状态 ". $rsp . " " . curl_error($ch);
+            } else {
+                $result = $ret;
+            }
+        }
+        curl_close ( $ch );
+        return $result;
+    }
+
+    /**
+     * 通过CURL发送HTTP请求
+     * @param string $url  //请求URL
+     * @param array $postFields //请求参数
+     * @return mixed
+     */
+    private function curlGet($url, $header = array( 'Content-Type: application/json; charset=utf-8' ) )
+    {
+        $ch = curl_init ();
+        curl_setopt( $ch, CURLOPT_URL, $url );
+        curl_setopt( $ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+        $ret = curl_exec ( $ch );
         if (false == $ret) {
             $result = curl_error(  $ch);
         } else {

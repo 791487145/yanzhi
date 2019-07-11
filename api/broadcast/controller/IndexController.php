@@ -72,6 +72,57 @@ class IndexController extends RestBaseController
         $address = json_decode($this->curlGet($url),true);
         return $address['result']['addressComponent'];
     }
+    private function getAnchorOnline($start,$pageSize,$debug) {
+        $sql = "SELECT "
+            ."`a`.`user_id`,`a`.`single_coin`,`a`.`gift_total`,`a`.`level`,"
+            ."`u`.`user_nickname`,`u`.`sex`,`u`.`avatar`,`u`.`signature`,`u`.`birthday`,`u`.`more`,`u`.`city`,`u`.`province` "
+            ."FROM `yz_live_anchor` `a` "
+            ."INNER JOIN `yz_user` `u` ON `a`.`user_id` = `u`.`id` "
+            ."LEFT JOIN `yz_live_room` `r` ON `r`.`user_id` = a.user_id AND r.live_state = 1 "
+            ."WHERE `a`.`status` = 1 AND `u`.`login_state` = 1 AND `r`.`id` IS NULL "
+            ."AND(`a`.`video_state` = 1 OR(`u`.`is_zombie` = 0 AND `u`.`zombie_id` = 0)) "
+            ."ORDER BY u.is_virtual ASC,a.video_recom DESC,u.id DESC LIMIT ".$start.", ".$pageSize;
+        $list = Db::query($sql);
+      if ($debug == 1) {
+        var_dump(Db::name("live_anchor")->getLastSql());
+        exit();
+      }
+        $reData = [];
+        $cdnSettings    = cmf_get_option('cdn_settings');
+        foreach ($list as $value){
+            if ($value['avatar'] != '' &&  strpos($value['avatar'],'http://') === false){
+                $value['avatar'] = 'http://'.$cdnSettings['cdn_static_url'] .$value['avatar'];
+            }
+            $age = floor( ( time() - $value['birthday'] ) / 86400 / 365 );
+            $more = json_decode($value['more'],true);
+
+            $tmp = [
+                'user_id'       => $value['user_id'],
+                'title'         => '',
+                'start'         => 0,
+                'audience'      => 0,
+                'sex'           => $value['sex'],
+                'nickname'      => $value['user_nickname'],
+                'avatar'        => $value['avatar'],
+                'signature'     => $value['signature'],
+                'level'         => $value['level'],
+                'votestotal'   => $value['gift_total'],
+                'type'          => 6,
+                'type_val'      => $value['single_coin'],
+                'age'           => $age,
+                'job'           => empty($more['job'])?'':$more['job'],
+                'province'     => empty($value['province'])?'':$value['province'],
+                'city'          => empty($value['city'])?'':$value['city'],
+                'tag'           => ''
+            ];
+            if ($tmp['tag'] != ''){
+                $tmp['tag'] = 'http://' . $cdnSettings['cdn_static_url'] . '/upload/tag/' . $tmp['tag'] . '.png';
+            }
+
+            $reData[] = $tmp;
+        }
+        $this->success("succ",$reData);
+    }
 
     /**
      * 直播间列表
@@ -79,6 +130,11 @@ class IndexController extends RestBaseController
     public function rooms()
     {
         $type = $this->request->post("type");
+        $page = $this->request->post('page', 1, 'intval');
+        $debug = $this->request->post('debug', 0, 'intval');
+        $pageSize = 10;
+        $start = ( $page - 1 ) * $pageSize;
+
         $where = ['r.live_state' => '1'];//只获取直播中的
         $order = "r.id desc";
         switch ($type){
@@ -92,7 +148,10 @@ class IndexController extends RestBaseController
                 $where['a.recommend'] = 1;
                 $order = 'r.live_tag desc,a.recom_time desc';
                 break;
-            case "priv": //私播
+            case "priv": //私播//改为视频聊天主播列表//通过主播认证，则显示
+                //改为调用视频聊天列表
+                $this->getAnchorOnline($start,$pageSize,$debug);
+                exit();
                 $where['r.live_type'] = 6;
                 $where['a.video_recom'] = 1;
                 break;
@@ -107,13 +166,7 @@ class IndexController extends RestBaseController
                 break;
             default:
                 $this->error('参数错误');
-
         }
-
-        $page = $this->request->post('page', 1, 'intval');
-        $pageSize = 10;
-        $start = ( $page - 1 ) * $pageSize;
-
         $list = Db::name('live_room')->alias("r")
             ->field('r.*,a.single_coin,a.gift_total,a.level,u.user_nickname,u.sex,u.avatar,u.signature,u.birthday,u.more,u.city,u.province')
             ->join('__USER__ u', 'r.user_id =u.id')
@@ -123,9 +176,10 @@ class IndexController extends RestBaseController
             $this->error('暂无数据');
         }
         $reData = [];
+        $cdnSettings    = cmf_get_option('cdn_settings');
         foreach ($list as $value){
             if ($value['avatar'] != '' &&  strpos($value['avatar'],'http://') === false){
-                $value['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$value['avatar'];
+                $value['avatar'] = 'http://'.$cdnSettings['cdn_static_url'] .$value['avatar'];
             }
             $age = floor( ( time() - $value['birthday'] ) / 86400 / 365 );
             $more = json_decode($value['more'],true);
@@ -150,14 +204,13 @@ class IndexController extends RestBaseController
                 'tag'           => $value['live_tag']
             ];
             if ($tmp['tag'] != ''){
-                $tmp['tag'] = 'http://' . $_SERVER['HTTP_HOST'] . '/upload/tag/' . $tmp['tag'] . '.png';
+                $tmp['tag'] = 'http://' . $cdnSettings['cdn_static_url'] . '/upload/tag/' . $tmp['tag'] . '.png';
             }
 
             $reData[] = $tmp;
         }
         $this->success("succ",$reData);
     }
-
     /**
      * 获取礼物列表
      */
@@ -166,8 +219,9 @@ class IndexController extends RestBaseController
         $page = $this->request->get('page', 1, 'intval');
         $pageSize = 10;//每次加载10条记录
         $start = ( $page - 1 ) * $pageSize;
+        $cdnSettings    = cmf_get_option('cdn_settings');
         $list = Db::name("gift")
-            ->field("id,name,concat('http://".$_SERVER['HTTP_HOST'] ."',pic) pic,coin")
+            ->field("id,name,concat('http://" . $cdnSettings['cdn_static_url'] ."',pic) pic,coin")
             ->where(['status' => 1])
             ->order("mark,id")
             ->limit($start,$pageSize)

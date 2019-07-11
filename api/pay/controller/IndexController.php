@@ -97,7 +97,7 @@ class IndexController extends RestUserBaseController
         if(!$this->pay_status){
             $data['mode'] = PayPaymentModel::PAY_MODE_WECHAT_H5;
         }
-
+        Log::alert('param_data'.print_r($data,true));
         $result = $this->validate($data,OrderRequest::class);
         Log::alert('validate_res'.print_r($result,true));
         if(!empty($result)){
@@ -302,16 +302,19 @@ class IndexController extends RestUserBaseController
      */
     public function extraction()
     {
-        $coin = $this->request->post('coin', 0, 'intval');
+        if ($this->user['true_status'] != 1) {
+            $this->error("请先申请主播");
+        }
+        $coin_get = $this->request->post('coin', 0, 'intval');
         $base = 100;
-        if ( $coin % $base > 0){
+        if ( $coin_get % $base > 0){
             $this->error('提现平台币应为'.$base.'的倍数');
         }
         $minCoin = 1000;
-        if ($coin < $minCoin){
+        if ($coin_get < $minCoin){
             $this->error('最低提现数量为'.$minCoin."平台币");
         }
-        $money = $coin / 10;
+        $money = $coin_get / 10;
         //用户当前收益余额
         $profit = 0;
         $coin = Db::name('pay_profit')->field('sum(coin) coin')->group('user_id')->where(['user_id'=>$this->userId])->find();
@@ -324,16 +327,16 @@ class IndexController extends RestUserBaseController
         {
             $profit = $profit - $extraction['coin'];
         }
-        if ($coin > $profit)
+        if ($coin_get > $profit)
         {
             $this->error("收益余额不足");
         }
         $now = time();
-        $sn = $this->createSn($now,'pay_extraction');
+        $sn = create_sn($now,'pay_extraction');
         $re = Db::name('pay_extraction')->insert([
             'sn'            => $sn,
             'user_id'       => $this->userId,
-            'coin'          => $coin,
+            'coin'          => $coin_get,
             'money'         => $money,
             'add_time'      => $now,
             'status'        => 0,

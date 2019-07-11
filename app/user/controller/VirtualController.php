@@ -301,41 +301,7 @@ class VirtualController extends AdminBaseController
         $online  = input('online', 0, 'intval');
         $str = $online == 1 ? '1V1上线' : '1V1下线';
 
-        $re = Db::name("live_anchor")->where('user_id',$id)->update(['video_recom'=>$online]);
-        $now = time();
-        $roomDB = Db::name("live_room")->where('user_id',$id)->where('live_type',6)->where('live_state',1);
-        if ($online == 1){
-            //上线时，判断是否存在直播间
-            $check = $roomDB->find();
-            if ($check){
-                $editData = [
-                    'id'             => $check['id'],
-                    'live_state'    => 2,
-                    'live_end'      => $now
-                ];
-                Db::name("live_room")->update($editData);
-            }
-            $user = Db::name("user")->where('id',$id)->find();
-            //直播间信息入库
-            $saveData = [
-                'user_id'       => $user['id'],
-                'live_type'     => 6,
-                'live_title'    => $user['user_nickname'],
-                'live_create'   => $now,
-                'live_start'    => $now,//暂时创建即开播，后续改为创建后，主播点击开播
-                'live_end'      => 0,
-                'live_state'    => 1,
-                'live_code'     => ""
-            ];
-            $re = Db::name('live_room')->insert($saveData);
-        }else
-        {
-            $editData = [
-                'live_state'    => 2,
-                'live_end'      => $now
-            ];
-            $roomDB->update($editData);
-        }
+        $re = Db::name("live_anchor")->where('user_id',$id)->update(['video_state'=>$online,'video_recom'=>$online]);
         if ($re)
         {
             $this->success($str."成功");

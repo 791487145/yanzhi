@@ -20,7 +20,7 @@ class LiveController extends RestUserBaseController
     /**
      * 申请成为主播
      */
-    public function apply(){
+    public function apply() {
         $user = $this->user;
         //判断主播审核状态
         $anchor = Db::name('live_anchor')->where(['user_id'=>$user['id']])->find();
@@ -33,36 +33,20 @@ class LiveController extends RestUserBaseController
                 $this->error("您已通过审核");
             }
         }
-        $validate = new Validate([
-            'name'      => 'require|min:2|max:4',
-            'idnum'     => 'require|length:18',
-            'photo'     => 'require',
-        ]);
-        $validate->message([
-            'name.require'     => '请输入您的姓名!',
-            'name.max'         => '姓名不能超过4个字',
-            'name.min'         => '姓名不能小于2个字',
-            'idnum.require'    => '请输入您的身份证号!',
-            'idnum.length'     => '请输入18位身份证号',
-            'photo.require'    => '请上传相册照片!',
-        ]);
+        if ($user['true_status'] != 1) {
+            $this->error("您尚未通过实名认证");
+        }
+        //获取相册照片、视频数
+        $countPhoto = Db::name('user_photo')->where('user_id',$this->userId)->count('id');
+        if ($countPhoto < 4) {
+            $this->error("至少上传4张照片");
+        }
+        $countVideo = Db::name('user_video')->where('user_id',$this->userId)->count('id');
+        if ($countVideo < 1){
+            $this->error("至少上传1个视频");
+        }
 
         $data = $this->request->post();
-        if (!$validate->check($data)) {
-            $this->error($validate->getError());
-        }
-        if (!$this->checkIdCard($data['idnum'])){
-            $this->error("身份证号错误");
-        }
-
-        $idUrl = $this->getIdUrl($this->userId);
-        $cardPic = ROOT_PATH . 'public' . DS . 'upload' . DS . 'card' . DS . $idUrl[0] . DS . $idUrl[1] . DS . $idUrl[2] . '.jpg';
-        if(!file_exists($cardPic)){
-            $this->error("请上传手持身份证照片");
-        }
-        if (count($data['photo']) < 2){
-            $this->error("请上传至少两张生活照片");
-        }
 
         $guideId = 0;
         if (isset($data['guide']) && $data['guide'] != '')//判断工会信息
@@ -77,61 +61,21 @@ class LiveController extends RestUserBaseController
             $guideId = $guide['id'];
         }
 
-        $time = time();
-        //主播相册处理
-        $userPhoto = Db::name('user_photo')->where(['user_id'=>$this->userId])->select();
-        //用户上传过的图片
-        $userPic = Db::name('asset')->where(['user_id'=>$this->userId])->select();
-
-        $insertPhoto = $arrUserPic = [];
-
-        foreach ($userPic as $item) {
-            $arrUserPic[] = $item['file_path'];
-        }
-
-        foreach ($data['photo'] as $i => $purl){
-            if(!in_array($purl,$arrUserPic)){
-                $this->error("相册图片信息错误，".$purl);
-            }
-            if (isset($userPhoto[$i])){//已有排序的照片信息
-                if ($purl != $userPhoto[$i]['url']){//照片信息变更
-                    Db::name('user_photo')->where(['id'=>$userPhoto[$i]['id']])->update([
-                        'url'       => $purl,
-                        'add_time'   => $time,
-                        'is_vip'    => 0
-                    ]);
-                }
-            }else{//没有排序的新增
-                $insertPhoto[] = [
-                    'user_id'   => $this->userId,
-                    'url'       => $purl,
-                    'add_time'   => $time,
-                    'is_vip'    => 0
-                ];
-            }
-        }
-        if (count($insertPhoto) > 0){
-            Db::name('user_photo')->insertAll($insertPhoto);
-        }
-
         if ($anchor){//已有主播申请，修改申请信息
             $updateData = [
                 'guide_id'      => $guideId,
-                'add_time'      => $time,
+                'add_time'      => time(),
                 'audit_time'    => 0,
                 'status'        => 0,
             ];
-            Db::name('live_anchor')->where(['user_id'=>$anchor['user_id']])->update($updateData);
+            Db::name('live_anchor')->where('id',$anchor['id'])->update($updateData);
         }else{//添加主播申请记录
             Db::name('live_anchor')->insert([
                 'user_id'       => $this->userId,
                 'guide_id'      => $guideId,
-                'add_time'      => $time,
+                'add_time'      => time(),
             ]);
         }
-
-        //更新用户实名信息
-        Db::name('user')->where(['id'=>$user['id']])->update(['truename'=>$data['name'],'idnum'=>$data['idnum']]);
 
         $this->success("提交成功，请等待管理员审核");
     }
@@ -360,9 +304,10 @@ class LiveController extends RestUserBaseController
             $this->error('暂无数据');
         }
         $reData = [];
+        $cdnSettings    = cmf_get_option('cdn_settings');
         foreach ($list as $value){
             if ($value['avatar'] != '' &&  strpos($value['avatar'],'http://') === false){
-                $value['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$value['avatar'];
+                $value['avatar'] = 'http://'.$cdnSettings['cdn_static_url'] .$value['avatar'];
             }
             $age = floor( ( time() - $value['birthday'] ) / 86400 / 365 );
             $more = json_decode($value['more'],true);
@@ -385,7 +330,7 @@ class LiveController extends RestUserBaseController
                 'tag'           => $value['live_tag']
             ];
             if ($tmp['tag'] != ''){
-                $tmp['tag'] = 'http://' . $_SERVER['HTTP_HOST'] . '/upload/tag/' . $tmp['tag'] . '.png';
+                $tmp['tag'] = 'http://' . $cdnSettings['cdn_static_url'] . '/upload/tag/' . $tmp['tag'] . '.png';
             }
 
             $reData[] = $tmp;
@@ -420,10 +365,10 @@ class LiveController extends RestUserBaseController
             ])
             ->order('u.is_zombie asc,u.is_virtual asc,join_time asc')
             ->select();
-
+        $cdnSettings    = cmf_get_option('cdn_settings');
         foreach ($users as $key => $value){
             if ($value['avatar'] != '' &&  strpos($value['avatar'],'http') === false){
-                $value['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$value['avatar'];
+                $value['avatar'] = 'http://'.$cdnSettings['cdn_static_url'] .$value['avatar'];
                 $users[$key] = $value;
             }
         }
@@ -627,21 +572,32 @@ class LiveController extends RestUserBaseController
         }
         //主播信息
         $anchor = Db::name("live_anchor")->where('user_id',$userId)->find();
+        if (!$anchor) {
+            $appSetting = cmf_get_option('app_settings');
+            $anchor = [
+                'guide_id'      => 0,
+                'ratio'         => $appSetting['single_reward'],
+                'ratio_gift'    => $appSetting['live_reward'],
+                'guide_gift'    => 0,
+                'ratio_guide'   => 0
+            ];
+        }
 
         $pModel = new PayConsumeModel();
         $re = $pModel->consume($data, $anchor, $this->user['balance']);
         if (!$re['ret']) {
             $this->error("赠送失败");
-           // $this->error("赠送失败:".$re['message']);
+            //$this->error("赠送失败:".$re['message']);
         }
         //=========== 交易订单处理 end ================
 
         $giftToken = "gift_".$sn;
         //=========== redis信息处理 start ================直播间送礼物需要将数据写入redis
         if ($longlink == 1) {
+            $cdnSettings    = cmf_get_option('cdn_settings');
             $avatar = $this->user['avatar'];
             if ($avatar != '' &&  strpos($avatar,'http://') === false) {
-                $avatar = 'http://'.$_SERVER['HTTP_HOST'] .$avatar;
+                $avatar = 'http://'.$cdnSettings['cdn_static_url'] .$avatar;
             }
 
             $redisData = [
@@ -654,7 +610,7 @@ class LiveController extends RestUserBaseController
                 "addtime"    => $now,
                 "gifttoken"    => $giftToken,
                 "giftname"    => $giftInfo['name'],
-                "gifticon"    => 'http://'.$_SERVER['HTTP_HOST'] .$giftInfo['pic'],
+                "gifticon"    => 'http://'.$cdnSettings['cdn_static_url'].$giftInfo['pic'],
                 "nicename"=> $this->user['user_nickname'],
                 "avatar"=> $avatar,
                 "type"=> "1",                              // 测试数据
@@ -744,7 +700,8 @@ class LiveController extends RestUserBaseController
         //=========== redis信息处理 start ================
         $avatar = $this->user['avatar'];
         if ($avatar != '' &&  strpos($avatar,'http://') === false){
-            $avatar = 'http://'.$_SERVER['HTTP_HOST'] .$avatar;
+            $cdnSettings    = cmf_get_option('cdn_settings');
+            $avatar = 'http://'.$cdnSettings['cdn_static_url'].$avatar;
         }
 
         $barrageToken = "barrage_".$sn;

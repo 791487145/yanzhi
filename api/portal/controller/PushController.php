@@ -124,14 +124,15 @@ class PushController extends RestBaseController
         $info = array_merge($info,$more);
         unset($info['more']);
 
+        $cdnSettings    = cmf_get_option('cdn_settings');
         if ($info['avatar'] != '' &&  strpos($info['avatar'],'http://') === false){
-            $info['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$info['avatar'];
+            $info['avatar'] = 'http://'.$cdnSettings['cdn_static_url'] .$info['avatar'];
         }
         if ($info['photo'] != '' &&  strpos($info['photo'],'http://') === false){
-            $info['photo'] = 'http://'.$_SERVER['HTTP_HOST'] .$info['photo'];
+            $info['photo'] = 'http://'.$cdnSettings['cdn_static_url'] .$info['photo'];
         }
         if ($info['video_url'] != '' &&  strpos($info['video_url'],'http://') === false){
-            $info['video_url'] = 'http://'.$_SERVER['HTTP_HOST'] .$info['video_url'];
+            $info['video_url'] = 'http://'.$cdnSettings['cdn_static_url'] .$info['video_url'];
         }
         return [
             'ret'   => true,
@@ -174,12 +175,11 @@ class PushController extends RestBaseController
      */
     public function hi()
     {
-        $anchorData = $this->getRecommend();
-        if (!$anchorData['ret'])
-        {
-            $this->error("no_anchor");
-        }
-        $anchorData = $anchorData['data'];
+        $anchorData = Db::name("user")->alias('u')
+            ->field('u.id uid,u.user_nickname nickname,u.avatar')
+            ->join('live_anchor a','a.user_id=u.id')
+            ->where(['a.recommend'=>1])
+            ->order('rand()')->find();
 
         $data = [
             'msg'         => $anchorData['nickname']."刚刚和你打了个招呼，快去看看吧",

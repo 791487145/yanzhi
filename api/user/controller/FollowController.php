@@ -89,9 +89,10 @@ class FollowController extends RestUserBaseController
      */
     private function avatar($list)
     {
+        $cdnSettings    = cmf_get_option('cdn_settings');
         foreach ($list as $key => $value){
             if ($value['avatar'] != '' &&  strpos($value['avatar'],'http://') === false){
-                $value['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$value['avatar'];
+                $value['avatar'] = 'http://'.$cdnSettings['cdn_static_url'].$value['avatar'];
                 $list[$key] = $value;
             }
         }

@@ -72,6 +72,14 @@ class IndexController extends RestBaseController
 
         $this->success("获取成功",$list);
     }
+    public function messageTitle() {
+        $data = Db::name('sys_message')->where( [ 'status' => 1 , 'pubtime' => ['lt',time()] ] )->order('pubtime desc')->find();
+        if (!$data) {
+            $this->error("暂无系统消息");
+        } else {
+            $this->success("获取成功",['title'=>$data['title']]);
+        }
+    }
 
     /**
      * 获取系统配置信息
@@ -85,13 +93,14 @@ class IndexController extends RestBaseController
         $device = $this->checkDevice($device);
 
         $reData = [];
+        $cdnSettings    = cmf_get_option('cdn_settings');
         
         //分享显示的信息
         $appSetting = cmf_get_option('app_settings');
         $reData['share_title'] = $appSetting['share_title'];
         $reData['share_des'] = $appSetting['share_des'];
         $reData['recommend_time'] = $appSetting['recommend_time'];
-        $reData['login_movie'] = 'http://'.$_SERVER['HTTP_HOST'] .$appSetting['login_movie'];
+        $reData['login_movie'] = 'http://'.$cdnSettings['cdn_static_url'] .$appSetting['login_movie'];
 
         //获取当前版本审核状态
         $vInfo = Db::name("version")->where(['version'=> $version])->find();
@@ -162,9 +171,9 @@ class IndexController extends RestBaseController
                 'order'  => $value['mark'],
                 'name'  => $value['name'],
                 'code'  => $value['code'],
-                'icon'  => $value['icon'] == '' ? '' : ('http://'.$_SERVER['HTTP_HOST'] .$value['icon']),
+                'icon'  => $value['icon'] == '' ? '' : ('http://'.$cdnSettings['cdn_static_url'] .$value['icon']),
                 'type'  => $value['type'],
-                'url'  => $value['url'] == '' ? '' : ('http://'.$_SERVER['HTTP_HOST'] .$value['url']),
+                'url'  => $value['url'] == '' ? '' : ('http://'.$cdnSettings['cdn_static_url'] .$value['url']),
             ];
             $tmpMenu[$value['page']][$value['group']][] = $tmp;
         }
@@ -183,7 +192,7 @@ class IndexController extends RestBaseController
             ['type'=>'hot','name'=>'热门'],
             ['type'=>'new','name'=>'最新'],
             ['type'=>'recom','name'=>'推荐'],
-            //['type'=>'priv','name'=>'私播'],
+//            ['type'=>'priv','name'=>'私播'],
             ['type'=>'third_live','name'=>'精选'],
         ];
 

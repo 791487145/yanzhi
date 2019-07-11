@@ -123,8 +123,7 @@ class ProfileController extends RestUserBaseController
     /**
      * 获取用户信息
      */
-    public function getInfo()
-    {
+    public function getInfo() {
         $more = json_decode($this->user['more'],true);
         $reData = [
             'id'            => $this->userId,
@@ -160,8 +159,9 @@ class ProfileController extends RestUserBaseController
             'sign'    => '',//未知数据???
         ];
 
+        $cdnSettings    = cmf_get_option('cdn_settings');
         if ($this->user['avatar'] != '' &&  strpos($this->user['avatar'],'http://') === false){
-            $reData['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$this->user['avatar'];
+            $reData['avatar'] = 'http://'.$cdnSettings['cdn_static_url'] .$this->user['avatar'];
         }
         else
         {
@@ -170,32 +170,37 @@ class ProfileController extends RestUserBaseController
         
         //获取主播信息
         $anchor = Db::name("live_anchor")->where('user_id',$this->userId)->find();
-        if ($anchor)
-        {
+        if ($anchor) {
+            $reData['is_anchor']    = $anchor['status'] == 1 ? 1 : 0;
+            $reData['anchor_level'] = $anchor['level'];
             $reData['private_coin'] = $anchor['single_coin'];
             $reData['video_online'] = $anchor['video_state'];
-        } else
-        {
+        } else {
+            $reData['is_anchor']    = 0;
+            $reData['anchor_level'] = 0;
             $reData['private_coin'] = 0;
             $reData['video_online'] = 0;
         }
       
         //获取关注数
-        $follow = Db::name('user_follow')->whereOr(['user_id|fans_id'=>$this->userId])->select();
+        $follow = Db::name('user_follow')->whereOr(['user_id|fans_id'=>$this->userId])->where('status',1)->select();
         $countFoll = $countFans = 0;
-        foreach ($follow as $value)
-        {
-            if ($value['user_id'] == $this->userId)
-            {
+        foreach ($follow as $value) {
+            if ($value['user_id'] == $this->userId) {
                 $countFans++;
             }
-            if ($value['fans_id'] == $this->userId)
-            {
+            if ($value['fans_id'] == $this->userId) {
                 $countFoll++;
             }
         }
         $reData['fans_num'] = $countFans;
         $reData['follow_num'] = $countFoll;
+
+        //获取相册照片、视频数
+        $countPhoto = Db::name('user_photo')->where('user_id',$this->userId)->count('id');
+        $reData['photo_num'] = $countPhoto;
+        $countVideo = Db::name('user_video')->where('user_id',$this->userId)->count('id');
+        $reData['video_num'] = $countVideo;
 
         $this->success("获取成功",$reData);
     }
@@ -328,16 +333,15 @@ class ProfileController extends RestUserBaseController
             $this->error("保存失败");
         }
     }
-
     /**
      * 删除相册照片
      */
     public function delPhoto()
     {
         $url = trim($this->request->post('url'));
-      
         //判断相册图片是否存在
         $data = Db::name("user_photo")->where('url', $url)->where('user_id', $this->userId)->find();
+
         if (!$data)
         {
             $this->error("相册图片不存在");
@@ -365,6 +369,79 @@ class ProfileController extends RestUserBaseController
         }
         else
         {
+            $this->error("删除失败");
+        }
+    }
+    
+    /**
+     * 保存视频
+     */
+    public function saveVideo()
+    {
+        $url = $this->request->post('url');
+        $vip = $this->request->post('vip', 0, 'intval');
+        $money = $this->request->post('coin', 0, 'intval');
+
+        //判断视频是否存在
+        $check = Db::name("asset")->where('file_path', $url)->where('user_id', $this->userId)->find();
+        if (!$check) {
+            $this->error("视频不存在");
+        }
+        //判断相册图片是否存在
+        $data = Db::name("user_video")->where('url', $url)->where('user_id', $this->userId)->find();
+        if (!$data) {
+            $re = Db::name("user_video")->insert([
+                'user_id'       => $this->userId,
+                'url'           => $url,
+                'is_vip'        => $vip,
+                'money'         => $money,
+                'add_time'      => time()
+            ]);
+        } else {
+            if ($data['is_vip'] == $vip && $data['money'] == $money) {
+                $this->success("已保存成功");
+            } else {
+                $re = Db::name("user_video")->where(['id'=> $data['id']])->update([
+                    'is_vip'        => $vip,
+                    'money'         => $money
+                ]);
+            }
+        }
+        if ($re) {
+            $this->success("保存成功");
+        } else {
+            $this->error("保存失败");
+        }
+    }
+    /**
+     * 删除视频
+     */
+    public function delVideo()
+    {
+        $url = trim($this->request->post('url'));
+        //判断视频是否存在
+        $data = Db::name("user_video")->where('url', $url)->where('user_id', $this->userId)->find();
+
+        if (!$data) {
+            $this->error("视频不存在");
+        }
+        $re = Db::name("user_video")->where('id',$data['id'])->delete();
+        if ($re) {
+            $res = true;
+            if (strpos($url,'upload') !== false) {
+                $file = '..'.$url;
+            } else {
+                $file = '../upload/' . $url;
+            }
+
+            if (file_exists($file)) {
+                $res = unlink($file);
+            }
+            if ($res) {
+                Db::name('asset')->where('file_path', $url)->delete();
+            }
+            $this->success('删除成功');
+        } else {
             $this->error("删除失败");
         }
     }
@@ -507,10 +584,11 @@ class ProfileController extends RestUserBaseController
         }
 
         $reData = [];
+        $cdnSettings    = cmf_get_option('cdn_settings');
         foreach ($list as $value)
         {
             if ($value['avatar'] != '' &&  strpos($value['avatar'],'http://') === false){
-                $value['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$value['avatar'];
+                $value['avatar'] = 'http://'.$cdnSettings['cdn_static_url'] .$value['avatar'];
             }
             if (in_array($value['user_id'],$hash))
             {

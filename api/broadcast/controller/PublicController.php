@@ -8,12 +8,11 @@
 // +----------------------------------------------------------------------
 namespace api\broadcast\controller;
 
-use api\broadcast\service\PayConsumeModel;
-use api\model\PayPaymentModel;
 use think\Db;
 use think\Validate;
 use cmf\controller\RestUserBaseController;
 use think\cache\driver\Redis;
+use api\broadcast\service\PayConsumeModel;
 
 class PublicController extends RestUserBaseController
 {
@@ -122,6 +121,8 @@ class PublicController extends RestUserBaseController
             'signature'     => $userInfo['signature'],
             'vip'           => ($userInfo['vip'] > time() ? 1 : 0),
             'coin_cost'     => ($userInfo['coin'] - $userInfo['balance']),
+            'height'        => empty($more['height'])?'':$more['height'],
+            'weight'        => empty($more['weight'])?'':$more['weight'],
             'figure'        => empty($more['figure'])?'':$more['figure'],
             'job'           => empty($more['job'])?'':$more['job'],
             'topic'         => empty($more['topic'])?'':$more['topic'],
@@ -130,7 +131,8 @@ class PublicController extends RestUserBaseController
             'city'          => $userInfo['city'],
         ];
         if ($userInfo['avatar'] != '' &&  strpos($userInfo['avatar'],'http://') === false){
-            $reData['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$userInfo['avatar'];
+            $cdnSettings    = cmf_get_option('cdn_settings');
+            $reData['avatar'] = 'http://'.$cdnSettings['cdn_static_url'].$userInfo['avatar'];
         }
         else
         {
@@ -255,8 +257,10 @@ class PublicController extends RestUserBaseController
         if ($this->user['vip'] < $now){
             //生成话术
             $this->createMsg($this->userId,$now);
-            //生成视频
-            $this->createVideo($this->userId,$now,$userInfo['id']);
+            $debug = $this->request->post('debug', 0, 'intval');
+            if ($debug == 1) {
+                var_dump(Db::name("live_message")->getLastSql());
+            }
         }
 
         $this->success("获取成功",$reData);
@@ -286,11 +290,12 @@ class PublicController extends RestUserBaseController
             ->limit($start,$pageSize)
             ->select();
         $reList = [];
+        $cdnSettings    = cmf_get_option('cdn_settings');
         foreach ($list as $value)
         {
             $url = $value['url'];
             if ($url != '' &&  strpos($url,'http://') === false){
-                $url = 'http://'.$_SERVER['HTTP_HOST'] .$url;
+                $url = 'http://'.$cdnSettings['cdn_static_url'] .$url;
             }
 //            if ($value['is_vip'] == 1 && $this->user['vip'] < time())
 //            {
@@ -329,19 +334,16 @@ class PublicController extends RestUserBaseController
             ->limit($start,$pageSize)
             ->select();
         $reList = [];
+        $cdnSettings    = cmf_get_option('cdn_settings');
         foreach ($list as $value)
         {
-            $url = $value['url'];
-            if ($url != '' &&  strpos($url,'http://') === false){
-                $url = 'http://'.$_SERVER['HTTP_HOST'] .$url;
-            }
             $pic = $value['pic'];
             if ($pic != '' &&  strpos($pic,'http://') === false){
-                $pic = 'http://'.$_SERVER['HTTP_HOST'] .$pic;
+                $pic = 'http://'.$cdnSettings['cdn_static_url'].$pic;
             }
             $reList[] = [
+                'id'        => $value['id'],
                 'is_vip'    => $value['is_vip'],
-                'url'       => $url,
                 'status'    => $value['status'],
                 'pic'       => $pic,
                 'views'     => $value['views']
@@ -350,6 +352,30 @@ class PublicController extends RestUserBaseController
         $this->success("获取成功",$reList);
     }
     /**
+     * 查看视频
+     * @throws \think\Exception
+     */
+    public function getVideo() {
+        $id = $this->request->post('id', 0, 'intval');
+        $video = Db::name("user_video")->where('id',$id)->find();
+        if (!$video) {
+            $this->error("视频信息错误");
+        }
+        $now = time();
+        if ($video['is_vip'] == 1 && $this->user['vip'] < $now) {
+            $this->error("请先升级VIP用户",'',[],-2);
+        }
+        $url = $video['url'];
+        if ($url != '' &&  strpos($url,'http://') === false){
+            $cdnSettings    = cmf_get_option('cdn_settings');
+            $url = 'http://'.$cdnSettings['cdn_static_url'].$url;
+        }
+        Db::name("user_video")->where('id',$id)->setInc('views');
+
+        $this->success("获取成功",['url'=>$url]);
+    }
+
+    /**
      * 获取主页土豪榜
      */
     public function rich()
@@ -357,22 +383,36 @@ class PublicController extends RestUserBaseController
         $id = $this->request->post('id', 0, 'intval');
         $list = Db::name("pay_consume")
             ->alias("c")
-            ->field('sum(c.coin) money,u.user_nickname nickname,u.sex,u.avatar')
+            ->field('sum(c.coin) money,u.id,u.user_nickname nickname,u.sex,u.avatar')
             ->join('__USER__ u', 'c.user_id =u.id')
-            ->where(['c.anchor_id'=> $id])
+            ->where('c.anchor_id',$id)
             ->group('c.user_id')
-            ->order("money desc")
-            ->limit(10)->select();
-        foreach ($list as $k => $v){
-            if ($v['avatar'] != '' &&  strpos($v['avatar'],'http://') === false){
-                $v['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$v['avatar'];
-                $list[$k] = $v;
+            ->order("money desc")->select();
+        $reList = [];
+        $reUser = [
+            'coin'  => 0,
+            'rank'  => 0
+        ];
+        $cdnSettings    = cmf_get_option('cdn_settings');
+        foreach ($list as $k => $v){;
+            if ($k < 10) {
+                if ($v['avatar'] != '' &&  strpos($v['avatar'],'http://') === false){
+                    $v['avatar'] = 'http://'.$cdnSettings['cdn_static_url'].$v['avatar'];
+                }
+                $reList[] = $v;
+            }
+            if ($v['id'] == $this->userId) {
+                $reUser['coin'] = $v['money'];
+                $reUser['rank'] = $k + 1;
             }
         }
-        $this->success($list);
-
+        $re = [
+            'my'    => $reUser,
+            'list'  => $reList
+        ];
+        $this->success('获取成功',$re);
     }
-  
+
     /**
      * 打招呼
      */
@@ -381,8 +421,32 @@ class PublicController extends RestUserBaseController
         if ($id == 0) {
             $this->error("操作错误");
         }
-        
-//        $arrMsg = [
+
+        //保存打招呼日志文件
+        $logPath = "/www/wwwroot/yanzhi/data/hi_log/".$this->userId."-".$id;
+        //判断是否已经打招呼
+        if (file_exists($logPath)) {
+            $this->error("您已经打过招呼了");
+        }
+        $arrMsg = [
+            '你发的照片很不错，我很喜欢',
+            '我一直很关注你',
+            '觉得你是一个有内涵的人，我想跟这样的人交流',
+            '你的头像不错哟，很真实，我喜欢和真实的人交流',
+            '你头像做的很精致，发了不少时间把',
+            '你好漂亮~',
+            '在吗？',
+            '在不在？',
+            '美女，在不在？',
+            '你在干嘛？',
+            '你在干什么呢？',
+            '好无聊啊，你在干嘛？',
+            '我有事找你',
+            '收到我的私信了吗？',
+            '我给你发了消息~！',
+            '能聊聊吗？',
+            '你是哪里的？',
+            '能一起出来吃个饭吗？',
 //            '想找个贴心男友，一个人的生活实在难熬，需要一个避风港。',
 //            '我很寂寞，因为需要所以放荡，哥哥敢爱，妹妹敢受。',
 //            '我是个寂寞的女人，希望找到那个他排解我的寂寞，融化我。',
@@ -394,26 +458,21 @@ class PublicController extends RestUserBaseController
 //            '只愿做你的女人，请你把我带到快乐的巅峰。',
 //            '我喜欢泡吧，喜欢那个动感的音乐，有多么的疯狂',
 //            '嗨，今晚约吗？',
-//            '收到我的私信了吗？',
-//            '你在干嘛呢？',
-//            '我给你发了消息~！',
 //            '今晚干嘛呢?',
 //            '晚上一起吧！'
-//        ];
-//
-//        $num = rand(1,count($arrMsg)) - 1;
-
-        //发送消息的data
-        $data = [
-            'from_id'       => 'QY_'.$this->userId,
-            'target_id'     => 'QY_'.$id,
-            'msg_type'      => 'text',
-//            'text'          => $arrMsg[$num],
-            'text'          => '嗨~~',
         ];
-        $result = hook_one("send_jpush_msg", $data);
-        
-        $this->success("发送成功");
+        $num = rand(1,count($arrMsg)) - 1;
+        $logFile = fopen($logPath, "w");
+        fwrite($logFile, $arrMsg[$num]);
+        fclose($logFile);
+
+        $now = time();
+        //判断是否VIP用户
+        if ($this->user['vip'] < $now){
+            //生成视频
+            $this->createVideo($this->userId,$now,$id);
+        }
+        $this->success($arrMsg[$num]);
     }
 
     /**
@@ -423,7 +482,8 @@ class PublicController extends RestUserBaseController
     {
         $user = $this->user;
         if ($user['avatar'] != '' &&  strpos($user['avatar'],'http://') === false){
-            $user['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$user['avatar'];
+            $cdnSettings    = cmf_get_option('cdn_settings');
+            $user['avatar'] = 'http://'.$cdnSettings['cdn_static_url'].$user['avatar'];
         }
         $user['avatar'] = 'http://imgs.jiaoyou0.cn/uploads/photo/2018/06/5b22095eeb2de.png';
         $more = json_decode($user['more'],true);
@@ -461,8 +521,16 @@ class PublicController extends RestUserBaseController
         $anchor_id = $this->request->post('id', 0, 'intval');
         $anchor = Db::name("live_anchor")->where('user_id',$anchor_id)->find();
         if (!$anchor) {
-            $anchor = ['guide_id' => 0];
+            $appSetting = cmf_get_option('app_settings');
+            $anchor = [
+                'guide_id'      => 0,
+                'ratio'         => $appSetting['single_reward'],
+                'ratio_gift'    => $appSetting['live_reward'],
+                'guide_gift'    => 0,
+                'ratio_guide'   => 0
+            ];
         }
+
         //生成订单
         $data = [
             'user_id'       => $this->userId,
@@ -490,7 +558,7 @@ class PublicController extends RestUserBaseController
     }
 
     /**
-     * 推荐主播列表//'1'=>'附近人','2'=>'寻找结婚对象','3'=>'找个人看电影','4'=>'约个饭，见个面','5'=>'优质女生'
+     * 推荐主播列表
      */
     public function recoms()
     {
@@ -507,13 +575,13 @@ class PublicController extends RestUserBaseController
         {
             $isVip = 1;
         }
-
+      
         $recomType = [
-            ['type'=>1,'name'=>'附近人',          'brief'=>'让你轻松交往同城小伙伴',     'show' => 1],
-            ['type'=>2,'name'=>'寻找结婚对象',    'brief'=>'期望一年内结婚，非诚勿扰',  'show' => 1],
-            ['type'=>3,'name'=>'找个人看电影',    'brief'=>'找个人看电影',              'show' => 1],
-            ['type'=>4,'name'=>'约个饭，见个面',  'brief'=>'约个饭，见个面',            'show' => $isVip],
-            ['type'=>5,'name'=>'优质女生',        'brief'=>'优质女生',                   'show' => $isVip],
+            ['type'=>1,'name'=>'附近人',        'brief'=>'让你轻松交往同城小伙伴',                            'show' => 1],
+            ['type'=>2,'name'=>'颜值星秀',      'brief'=>'我的世界只有你懂',                                  'show' => 1],
+            //['type'=>3,'name'=>'找个人看电影',    'brief'=>'找个人看电影',              'show' => 1],
+            ['type'=>4,'name'=>'成熟女性',      'brief'=>'清静而不张狂，有波澜而不浮躁',                     'show' => $isVip],
+            ['type'=>5,'name'=>'优质女生',      'brief'=>'优质女人并非天生，而是来自于对生活的热爱',        'show' => $isVip],
         ];
 
         $limit = 10;
@@ -521,19 +589,25 @@ class PublicController extends RestUserBaseController
             'group' => $recomType,
             'data'  => []
         ];
+        $cdnSettings    = cmf_get_option('cdn_settings');
         foreach ($recomType as $value)
         {
+            if ($value['type'] == 1) {
+                $order = "last_login_time desc";
+            } else {
+                $order = "rand()";
+            }
             $tmp = [];
             $list = Db::name('user')->alias('u')
                 ->join('yz_live_anchor a', 'u.id =a.user_id')
                 ->field('u.*,a.level')
                 ->whereLike('u.recom_type','%"'.$value['type'].'"%')
-                ->order("rand()")->limit($limit)
+                ->order($order)->limit($limit)
                 ->select();
             foreach ($list as $item)
             {
                 if ($item['avatar'] != '' &&  strpos($item['avatar'],'http://') === false){
-                    $item['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$item['avatar'];
+                    $item['avatar'] = 'http://'.$cdnSettings['cdn_static_url'].$item['avatar'];
                 }
                 $age = floor( ( time() - $item['birthday'] ) / 86400 / 365 );
                 $more = json_decode($item['more'],true);
@@ -588,11 +662,12 @@ class PublicController extends RestUserBaseController
             ->order("c.add_time desc")
             ->limit($start,$pageSize)
             ->select();
+        $cdnSettings    = cmf_get_option('cdn_settings');
         foreach ($list as $k => $value)
         {
             $url = $value['avatar'];
             if ($url != '' &&  strpos($url,'http://') === false){
-                $value['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$url;
+                $value['avatar'] = 'http://'.$cdnSettings['cdn_static_url'].$url;
             }
             $value['add_time'] = date("Y-m-d H:i:s",$value['add_time']);
 //            $count = mb_strlen($value['nickname'],'utf-8');
@@ -628,18 +703,31 @@ class PublicController extends RestUserBaseController
             }
             $auDB->whereNotIn('u.id',$recomShow);
         }
-        $list = $auDB->order("distance asc")->limit(20)->select();
+        if ($type == 1) {
+            $order = "last_login_time desc";
+            $now = time();
+        } else {
+            $order = "distance asc";
+        }
+        $list = $auDB->order($order)->limit(20)->select();
+        $debug = $this->request->param("debug",0,'intval');//测试,0否，1是
+        if ($debug == 1) {
+            var_dump($auDB->getLastSql());
+        }
         $reData = [];
+        $cdnSettings    = cmf_get_option('cdn_settings');
         foreach ( $list as $item ) {
             $recomShow[] = $item['id'];
             if ( $item['avatar'] != '' &&  strpos( $item['avatar'] , 'http://' ) === false ) {
-                $item['avatar'] = 'http://' . $_SERVER['HTTP_HOST'] . $item['avatar'];
+                $item['avatar'] = 'http://' . $cdnSettings['cdn_static_url'] . $item['avatar'];
             }
             $age = floor( ( time() - $item['birthday'] ) / 86400 / 365 );
             $more = json_decode( $item['more'] , true );
+            $tt = rand( 5 , 7200 );//2小时以内
             if ( $type == 1 ) {
                 $item['province'] = $province;
                 $item['city'] = $city;
+                $tt = $now - $item['last_login_time'];
             }
             $dd = empty( $more['long'] ) ? rand( 50 , 5000 ) : $more['long'];
             if ( $dd < 1000 ) {
@@ -647,7 +735,6 @@ class PublicController extends RestUserBaseController
             } else {
                 $dd = round($dd/1000,1).'km';
             }
-            $tt = rand( 5 , 7200 );//2小时以内
             if ( $tt > 3600 ) {
                 $tt = round($tt / 3600).'小时前';
             } elseif( $tt > 60 ) {
@@ -734,7 +821,7 @@ class PublicController extends RestUserBaseController
      */
     private function createMsg($userId, $time)//$userId, $time
     {
-        $arrTimes = [30,90];//30秒后发送第一个，再过90秒发送第二个
+        $arrTimes = [10,60];//30秒后发送第一个，再过90秒发送第二个
         //发送话术的虚拟用户数
         $num = rand(1,2);
 
@@ -750,7 +837,7 @@ class PublicController extends RestUserBaseController
             $fdata = json_decode($fdata,true);
         }
 
-        if ( ( $fdata['lasttime'] + 300 ) > $time ){//5分钟内不再发送
+        if ( ( $fdata['lasttime'] + 180 ) > $time ){//5分钟内不再发送
             return false;
         }
         $where = ['m.is_after' => 0];
@@ -768,6 +855,7 @@ class PublicController extends RestUserBaseController
 
         $id = $i = $t = 0;//当前发送的用户ID、序号//发送消息的时间戳
         foreach ($list as $value) {
+            if ($value['user_id'] >= $fdata['user_id']) continue;
             if ($id != $value['user_id']) {
                 $time = $time + $arrTimes[$i];      //当前用户第一条消息的发送时间
                 $i++;                               //序号递增
@@ -808,14 +896,15 @@ class PublicController extends RestUserBaseController
                 $t+=$value['second'];
             }
         }
-
-        $fdata = [
-            'lasttime'      => $t,
-            'user_id'       => $id
-        ];
-        $sendLog = fopen($sendLogUrl,"w");
-        fwrite($sendLog, json_encode($fdata));
-        fclose($sendLog);
+        if ($t > 0) {
+            $fdata = [
+                'lasttime'      => $t,
+                'user_id'       => $id
+            ];
+            $sendLog = fopen($sendLogUrl,"w");
+            fwrite($sendLog, json_encode($fdata));
+            fclose($sendLog);
+        }
     }
     /**
      * 生成登录后的视频信息
@@ -848,14 +937,18 @@ class PublicController extends RestUserBaseController
             $video = Db::name("user_video")->where([ 'send_order' => [ '>' , $fdata['order'] ] ])->order("send_order asc")->find();
             $fdata['order'] = $video['send_order'];
         }
+        if (!$video) {
+            return false;
+        }
         //获取推送视频的用户信息
         $videoUser = Db::name('user')->where('id',$video['user_id'])->find();
 
         if ($videoUser['avatar'] != '' &&  strpos($videoUser['avatar'],'http://') === false){
-            $videoUser['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$videoUser['avatar'];
+            $cdnSettings    = cmf_get_option('cdn_settings');
+            $videoUser['avatar'] = 'http://'.$cdnSettings['cdn_static_url'].$videoUser['avatar'];
         }
         if ($video['url'] != '' &&  strpos($video['url'],'http://') === false){
-            $video['url'] = 'http://'.$_SERVER['HTTP_HOST'] .$video['url'];
+            $video['url'] = 'http://'.$cdnSettings['cdn_static_url'].$video['url'];
         }
         $data = [
             'msg'         => $videoUser['user_nickname']."刚刚发来了视频邀请",
@@ -879,7 +972,8 @@ class PublicController extends RestUserBaseController
         //关闭文件
         fclose($file);
 
-        //极光版本
+        //视频邀请消息写入文件,视频推送3秒后推送消息
+        $mName = ($time+3)."_".$userId;
         $pushData = [
             'from_id'       => 'QY_'.$data['anchor_id'],
             'target_id'     => 'QY_'.$data['user_id'],
@@ -927,15 +1021,16 @@ class PublicController extends RestUserBaseController
         $more = json_decode($info['more'],true);
         $info = array_merge($info,$more);
         unset($info['more']);
+        $cdnSettings    = cmf_get_option('cdn_settings');
 
         if ($info['avatar'] != '' &&  strpos($info['avatar'],'http://') === false){
-            $info['avatar'] = 'http://'.$_SERVER['HTTP_HOST'] .$info['avatar'];
+            $info['avatar'] = 'http://'.$cdnSettings['cdn_static_url'].$info['avatar'];
         }
         if ($info['photo'] != '' &&  strpos($info['photo'],'http://') === false){
-            $info['photo'] = 'http://'.$_SERVER['HTTP_HOST'] .$info['photo'];
+            $info['photo'] = 'http://'.$cdnSettings['cdn_static_url'].$info['photo'];
         }
         if ($info['video_url'] != '' &&  strpos($info['video_url'],'http://') === false){
-            $info['video_url'] = 'http://'.$_SERVER['HTTP_HOST'] .$info['video_url'];
+            $info['video_url'] = 'http://'.$cdnSettings['cdn_static_url'].$info['video_url'];
         }
         return [
             'ret'   => true,

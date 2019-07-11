@@ -69,7 +69,7 @@ class PayConsumeModel extends CommonModel
                     'user_id'       => $order['anchor_id'],
                     'table_name'    => 'pay_consume',
                     'table_id'      => $orderId,
-                    'type'          => 2,
+                    'type'          => $order['type'],
                     'coin'          => $order['coin_anchor'],//收益表中及那个人民币转换为平台币
                     'add_time'       => $order['add_time']
                 ];
@@ -119,7 +119,7 @@ class PayConsumeModel extends CommonModel
 //            var_dump($e);
             return [
                 'ret'       => false,
-                'message'   => $msg.'消费失败',
+                'message'   => $msg.'消费失败'.Db::name("pay_consume")->getLastSql(),
                 'exception' => $e->getTraceAsString()
             ];
         }

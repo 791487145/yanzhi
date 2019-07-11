@@ -12,7 +12,39 @@ use cmf\controller\RestBaseController;
 use think\Db;
 
 class TempController extends RestBaseController
-{
+{  
+    /**
+     * 判断用户在线状态
+     */
+    public function checkUserState() {
+        $id = $this->request->param( "id" , 0 , 'intval' );
+        $where = [
+            'user_type'         => 2,
+            'login_state'       => 1,
+            'is_virtual'        => 0,
+            'is_zombie'         => 0,
+            'id'                => ['>',$id]
+        ];
+        $userList = Db::name("user")->where($where)->limit(10)->select();
+        $logout = [];
+        $lastId = 0;
+        foreach ($userList as $value) {
+            $lastId = $value['id'];
+            $data = ['name'=>"QY_".$lastId];
+            $result = hook_one("user_jpush_state", $data);
+            if ($result['http_code'] == 200) {
+                if ($result['body']['login'] == false && $result['body']['online'] == false) {
+                    $logout[] = $lastId;
+                }
+            }
+        }
+        if (count($logout) > 0) {
+            Db::name("user")->whereIn('id',$logout)->update(['login_state'=>0]);
+        }
+        echo $lastId;
+        exit();
+    }
+
     /**
      * 推广、跳转域名微信检测
      */
@@ -27,13 +59,14 @@ class TempController extends RestBaseController
         }
         $reData = $this->checkWeixin($str);
         $delDomain = [];
-        $msg = "";
+        $msg = json_encode($reData)."||";
         $emailSetting = cmf_get_option('mail_setting');
+        $mailTo = explode(',',$emailSetting['domain']);
         foreach ($reData as $value) {
-            if ($value['result'] != 1) {
+            if ($value['result'] == 0) {
                 if ($value['url'] == $jumpUrl) {//推广主域名被封
                     $msg .= "推广域名被封";
-                    $result = cmf_send_email($emailSetting['domain'], "推广主域名被封", "推广主域名被封:".$value['url']);
+                    $result = cmf_send_email($mailTo, "推广主域名被封", "推广主域名被封:".$value['url']);
                     if ($result && empty($result['error'])) {
                         $msg .= 'succ；';
                     } else {
@@ -41,7 +74,7 @@ class TempController extends RestBaseController
                     }
                 } elseif ($value['url'] == $downUrl) {//跳转域名被封
                     $msg .= "跳转域名被封";
-                    $result = cmf_send_email($emailSetting['domain'], "跳转域名被封", "跳转域名被封:".$value['url']);
+                    $result = cmf_send_email($mailTo, "跳转域名被封", "跳转域名被封:".$value['url']);
                     if ($result && empty($result['error'])) {
                         $msg .= 'succ；';
                     } else {
@@ -56,7 +89,8 @@ class TempController extends RestBaseController
             $channel = Db::name("channel")->whereIn('domain',$delDomain)->column("name");
             $msg .= "渠道推广域名被封：".implode(",",$delDomain)."[渠道：".implode(",",$channel)."]";
             Db::name("channel")->whereIn('domain',$delDomain)->update(['domain'=>'']);
-            $result = cmf_send_email($emailSetting['domain'], "渠道推广域名被封", "被封渠道:".implode(",",$channel));
+            $mailTo = explode(',',$emailSetting['domain']);
+            $result = cmf_send_email($mailTo, "渠道推广域名被封", "被封渠道:".implode(",",$channel));
             if ($result && empty($result['error'])) {
                 $msg .= 'succ；';
             } else {
@@ -77,6 +111,11 @@ class TempController extends RestBaseController
         $header = ['Content-type: application/x-www-form-urlencoded'];
         $msg = $this->curlPost($url,$data,$header);
         $reData = json_decode($msg, true);
+        if ($reData[0]['result'] == '502') {
+            $emailSetting = cmf_get_option('mail_setting');
+            $mailTo = explode(',',$emailSetting['domain']);
+            $result = cmf_send_email($mailTo, "域名检测502", "超过查询限制（用户账户过期）");
+        }
         return $reData;
     }
     /**
@@ -87,13 +126,14 @@ class TempController extends RestBaseController
         $reData = $this->checkWeixin($info['land_url']);
         $delDomain = $saveDomain = [];
         foreach ($reData as $value) {
-            if ($value['result'] == 1) {
-                $saveDomain[] = $value['url'];
-            } else {
+            if ($value['result'] == 0) {
                 $delDomain[] = $value['url'];
+            } else {
+                $saveDomain[] = $value['url'];
             }
         }
-        $msg = $title = $content = "";
+        $msg = json_encode($reData)."||";
+        $title = $content = "";
         if (count($delDomain) > 0) {
             //删除后的域名入库
             Db::name("down_url")->where('id',1)->update(['land_url'=>implode(',',$saveDomain)]);
@@ -110,7 +150,8 @@ class TempController extends RestBaseController
         }
         if ($title != "") {
             $emailSetting = cmf_get_option('mail_setting');
-            $result = cmf_send_email($emailSetting['domain'], $title, $content);
+            $mailTo = explode(',',$emailSetting['domain']);
+            $result = cmf_send_email($mailTo, $title, $content);
             if ($result && empty($result['error'])) {
                 $msg .= 'succ';
             } else {

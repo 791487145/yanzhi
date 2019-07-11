@@ -61,12 +61,21 @@ class VideocallController extends RestUserBaseController
         }
 
         //推送申请消息
+        $avatar = $this->user['avatar'];
+        if ($avatar != '' &&  strpos($avatar,'http://') === false){
+            $cdnSettings    = cmf_get_option('cdn_settings');
+            $avatar = 'http://'.$cdnSettings['cdn_static_url'] .$avatar;
+        }
         $data = [
-            'msg'       => $this->user['user_nickname']."请求与您视频通话",
-            'type'      => 3,
-            'user_id'   => $id,
-            'room'      => $id."_".$this->userId
+            'msg'         => $this->user['user_nickname']."请求与您视频通话",
+            'type'        => 4,
+            'user_id'     => $id,
+            'anchor_id'   => $this->userId,
+            'url'         => '',//视频URL
+            'avatar'      => $avatar,//头像
+            'nickname'    => $this->user['user_nickname']//昵称
         ];
+
         $push = hook_one("push_msg", $data);
         if ($push)
         {
