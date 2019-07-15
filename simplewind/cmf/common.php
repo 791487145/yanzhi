@@ -624,7 +624,13 @@ function cmf_send_email($address, $subject, $message)
     // 设置邮件的字符编码，若不指定，则为'UTF-8'
     $mail->CharSet = 'UTF-8';
     // 添加收件人地址，可以多次使用来添加多个收件人
-    $mail->AddAddress($address);
+    if (is_array($address)) {
+        foreach ($address as $add) {
+            $mail->AddAddress($add);
+        }
+    }else {
+        $mail->AddAddress($address);
+    }
     // 设置邮件正文
     $mail->Body = $message;
     // 设置邮件头的From字段。

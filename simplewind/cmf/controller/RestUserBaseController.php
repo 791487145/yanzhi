@@ -25,6 +25,9 @@ class RestUserBaseController extends RestBaseController
         $re = $_REQUEST;
         $uri = $re['s'];
         unset($re['s']);
+        if ($uri == "user/upload/imgBase64") {
+            unset($re['file']);
+        }
         Db::name("api_log")->insert([
             'user_id'           => $this->userId,
             'logtime'           => time(),
