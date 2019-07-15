@@ -294,7 +294,7 @@ class VirtualController extends AdminBaseController
         }
     }
     /**
-     * 设置直播在线状态
+     * 设置1V1在线状态
      */
     public function setOnline() {
         $id         = input('id', 0, 'intval');
@@ -615,5 +615,16 @@ class VirtualController extends AdminBaseController
             $this->success("删除成功");
         }
         $this->error("删除失败");
+    }
+    public function videolist()
+    {
+        $list = Db::name("user_video")->alias('v')->join('user u','u.id=v.user_id')->field("v.*,u.user_nickname,u.avatar")->where('u.is_virtual',1)->order('send_order desc,id desc')->paginate(10);
+
+        // 获取分页显示
+        $page = $list->render();
+        $this->assign('list', $list);
+        $this->assign('page', $page);
+        // 渲染模板输出
+        return $this->fetch();
     }
 }

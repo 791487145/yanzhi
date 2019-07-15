@@ -110,8 +110,8 @@ class AnchorController extends AdminBaseController
         }
 
         $appSetting = cmf_get_option('app_settings');
-        $ratio = $anchor['ratio'] > 0 ? $anchor['ratio'] : $appSetting['single_reward'];
-        $ratio_gift = $anchor['ratio_gift'] > 0 ? $anchor['ratio_gift'] : $appSetting['live_reward'];
+        $ratio = $anchor['status'] > 0 ? $anchor['ratio'] : $appSetting['single_reward'];
+        $ratio_gift = $anchor['status'] > 0 ? $anchor['ratio_gift'] : $appSetting['live_reward'];
 
         $user = Db::name("user")->where(["id" => $id, "user_type" => 2])->find();
         if (!$user){
@@ -153,6 +153,10 @@ class AnchorController extends AdminBaseController
     public function exam(){
         $id = input('param.id', 0, 'intval');
         $status = input('param.status', 0, 'intval');
+        $level = input('param.level', 1, 'intval');
+        $coin = input('param.coin', 10, 'intval');
+        $ratio = input('param.ratio', 100, 'intval');
+        $ratio_gift = input('param.ratio_gift', 100, 'intval');
         $explain = input('param.explain');
         if ($status == 0){
             $this->error("请选择审核结果");
@@ -164,13 +168,19 @@ class AnchorController extends AdminBaseController
         if (!$info){
             $this->error("您的操作有误");
         }
-        $info['status'] = $status;
-        $info['audit_time'] = time();
-        $info['more'] .= $info['audit_time'] . "," . $status;
-        if ($explain != ""){
-            $info['more'] .= "," . $explain;
+        $info['level'] = $level;
+        $info['single_coin'] = $coin;
+        $info['ratio'] = $ratio;
+        $info['ratio_gift'] = $ratio_gift;
+        if ($info['status'] != $status) {
+            $info['status'] = $status;
+            $info['audit_time'] = time();
+            $info['more'] .= $info['audit_time'] . "," . $status;
+            if ($explain != ""){
+                $info['more'] .= "," . $explain;
+            }
+            $info['more'] .= "|";
         }
-        $info['more'] .= "|";
         Db::name('live_anchor')->where(['id'=>$id])->update($info);
         $this->success("审核成功");
     }

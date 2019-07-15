@@ -24,7 +24,7 @@ class PayPaymentModel extends Model
     const PAY_SUCCESS = 1;//支付成功
 
     public $type_name = array(
-        self::TYPE_BALANCE => "充值余额",
+        self::TYPE_BALANCE => "趣币充值",
         self::TYPE_VIP => "vip充值"
     );
 

@@ -7,9 +7,11 @@ namespace api\pay\controller;
 use api\model\ChannelModel;
 use api\model\PayPaymentModel;
 use api\pay\service\PayBeiweiService;
+use api\pay\service\WeChatPayService;
 use think\Db;
 use cmf\controller\RestBaseController;
 use think\Log;
+use Omnipay\Omnipay;
 
 class PublicController extends RestBaseController
 {
@@ -55,6 +57,7 @@ class PublicController extends RestBaseController
         }
         $this->success("已支付成功");
     }
+
 
     public function notify()
     {
@@ -159,6 +162,36 @@ class PublicController extends RestBaseController
         if ($_REQUEST["returncode"] == "00") {
             exit("success");
         }
+    }
+
+    /**
+     * 微信支付回调
+     * @param WeChatPayService $weChatPayService
+     */
+    public function wechat_notify(WeChatPayService $weChatPayService)
+    {
+        $res = $weChatPayService->notify();
+        //判断订单状态
+        //halt($res);
+        $order = PayPaymentModel::where(['sn'=> $res['out_trade_no']])->find();
+        if (!$order){
+            exit("fail");
+        }
+        if (($res['total_fee']/100) != $order['money']){
+            exit("fail");
+        }
+
+        if ($order['status'] == 0)//未支付订单
+        {
+            $update = [
+                'status'    => 1,
+                'pay_time'  => time(),
+                'pay_sn'    => $res['transaction_id'],
+                'more'      => json_encode($res)
+            ];
+            $this->updateOrder($order,$update);
+        }
+        exit("success");
     }
 
 

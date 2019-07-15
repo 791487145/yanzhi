@@ -452,11 +452,11 @@ class ProfileController extends RestUserBaseController
     public function trueName()
     {
         //判断是否上传身份证照片
-        $idUrl = $this->getIdUrl($this->userId);
-        $cardPic = ROOT_PATH . 'public' . DS . 'upload' . DS . 'card' . DS . $idUrl[0] . DS . $idUrl[1] . DS . $idUrl[2] . '.jpg';
-        if(!file_exists($cardPic)){
-            $this->error("请上传手持身份证照片");
-        }
+        //$idUrl = $this->getIdUrl($this->userId);
+        //$cardPic = ROOT_PATH . 'public' . DS . 'upload' . DS . 'card' . DS . $idUrl[0] . DS . $idUrl[1] . DS . $idUrl[2] . '.jpg';
+        //if(!file_exists($cardPic)){
+        //    $this->error("请上传手持身份证照片");
+        //}
       
         $validate = new Validate([
             'name'      => 'require',
@@ -474,11 +474,13 @@ class ProfileController extends RestUserBaseController
         {
             $this->error("请正确填写身份证号码");
         }
-        $data['truename'] = $data['name'];
-        $data['true_status'] = 1;
-        unset($data['name']);
+        $updateData = [
+            'truename'		=> $data['name'],
+            'idnum'			=> $data['idnum'],
+            'true_status'	=> 1
+        ];
 
-        $re = Db::name('user')->where(['id'=> $this->userId])->update($data);
+        $re = Db::name('user')->where(['id'=> $this->userId])->update($updateData);
         if (!$re)
         {
             $this->error("认证失败");

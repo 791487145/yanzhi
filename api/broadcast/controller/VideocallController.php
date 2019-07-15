@@ -60,6 +60,16 @@ class VideocallController extends RestUserBaseController
             $this->error($user['user_nickname']."正在视频通话");
         }
 
+        $room = $id."_".$this->userId;
+        //创建视频聊天记录
+        $re = Db::name("live_video")->insert([
+            'room'              => $room,
+            'anchor_id'         => $id,
+            'user_id'           => $this->userId,
+            'unit_coin'         => $anchor['single_coin'],
+            'create_time'        => time()
+        ]);
+
         //推送申请消息
         $avatar = $this->user['avatar'];
         if ($avatar != '' &&  strpos($avatar,'http://') === false){
@@ -67,8 +77,9 @@ class VideocallController extends RestUserBaseController
             $avatar = 'http://'.$cdnSettings['cdn_static_url'] .$avatar;
         }
         $data = [
+            'room'        => $room,
             'msg'         => $this->user['user_nickname']."请求与您视频通话",
-            'type'        => 4,
+            'type'        => 3,
             'user_id'     => $id,
             'anchor_id'   => $this->userId,
             'url'         => '',//视频URL
@@ -93,6 +104,7 @@ class VideocallController extends RestUserBaseController
     public function start()
     {
         $room = $this->request->post('room');//接收房间信息
+        $begin = $this->request->post('begin', 0, 'intval');//开始计时
         //解析用户ID
         $users = explode("_",$room);
         if ($users[0] != $this->userId)
@@ -100,26 +112,19 @@ class VideocallController extends RestUserBaseController
             $this->error("房间信息有误");
         }
 
-        //判断视频聊天房间状态-----前端进行判断
-
-        //获取用户私播单价
-        $anchor = Db::name("live_anchor")->where('user_id',$this->userId)->find();
-
-        //创建视频聊天记录
-        $re = Db::name("live_video")->insert([
-            'room'              => $room,
-            'anchor_id'         => $users[0],
-            'user_id'           => $users[1],
-            'unit_coin'         => $anchor['single_coin'],
-            'start_time'        => time()
-        ]);
-
-        if ($re)
-        {
-            $this->success("视频接通成功");
+        $checkRoom = Db::name("live_video")->where('room',$room)->where('start_time',0)->find();
+        if (!$checkRoom) {
+            $this->error("对方已挂断");
         }
-        else
-        {
+        $re = true;
+        if ($begin == 1) {
+            $re = Db::name("live_video")->where('id',$checkRoom['id'])->update(['start_time'=>time()]);
+        }
+
+        //判断视频聊天房间状态-----前端进行判断
+        if ($re) {
+            $this->success("视频接通成功");
+        } else {
             $this->error("视频接通失败");
         }
     }
@@ -135,6 +140,7 @@ class VideocallController extends RestUserBaseController
         if(!$video) {
             $this->error("房间信息错误");
         }
+
         if ($video['end_time'] > 0) {//视频通话已经结束
             $reData = [
                 "minute"    => $video['nums'],
@@ -142,12 +148,24 @@ class VideocallController extends RestUserBaseController
             ];
             $this->success("视频通话已经结束",$reData);
         }
-
-        $video['end_time'] = time();
-        $video['nums'] = ceil(($video['end_time'] - $video['start_time']) / 60);
-        $video['coin'] = $video['unit_coin'] * $video['nums'];
-
-        $reData = $this->jiesuan($video);
+        $now = time();
+        if ($video['start_time'] == 0) {
+            $video['start_time'] = $now;
+            $video['end_time'] = $now;
+            $video['nums'] = 0;
+            $video['coin'] = 0;
+            //更新视频通话表信息
+            Db::name("live_video")->update($video);
+            $reData = [
+                "minute"    => 0,
+                "coin"      => 0
+            ];
+        } else {
+            $video['end_time'] = time();
+            $video['nums'] = ceil(($video['end_time'] - $video['start_time']) / 60);
+            $video['coin'] = $video['unit_coin'] * $video['nums'];
+            $reData = $this->jiesuan($video);
+        }
         $this->success("视频通话结束",$reData);
     }
 

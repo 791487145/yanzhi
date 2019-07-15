@@ -14,32 +14,65 @@ use think\Db;
 class TempController extends RestBaseController
 {  
     /**
+     * 根据ID判断用户在线状态
+     */
+    public function checkUserById() {
+        $id = $this->request->param( "id" , 0 , 'intval' );
+        if ($id > 0) {
+            $data = ['name'=>"QY_".$id];
+        } else {
+            $data = ['name'=>["QY_2518","QY_1308","QY_7193"]];
+        }
+        $result = hook_one("user_jpush_state", $data);
+        var_dump($result);
+        exit();
+    }
+    /**
      * 判断用户在线状态
      */
     public function checkUserState() {
         $id = $this->request->param( "id" , 0 , 'intval' );
         $where = [
             'user_type'         => 2,
-            'login_state'       => 1,
+            //'login_state'       => 1,
             'is_virtual'        => 0,
             'is_zombie'         => 0,
             'id'                => ['>',$id]
         ];
         $userList = Db::name("user")->where($where)->limit(10)->select();
-        $logout = [];
+        $name = $logout = $login = [];
         $lastId = 0;
         foreach ($userList as $value) {
+            $name[] = "QY_".$lastId;
             $lastId = $value['id'];
-            $data = ['name'=>"QY_".$lastId];
-            $result = hook_one("user_jpush_state", $data);
-            if ($result['http_code'] == 200) {
-                if ($result['body']['login'] == false && $result['body']['online'] == false) {
-                    $logout[] = $lastId;
+        }
+        $data = ['name'=>$name];
+        $result = hook_one("user_jpush_state", $data);
+        if ($result['http_code'] == 200) {
+            foreach ($result['body'] as $value) {
+                $uid = substr($value['username'],3);
+                $online = false;
+                if ($value['statuscode'] == 0) {
+                    foreach ($value['devices'] as $d) {
+                        if ($d['online'] == true) {
+                            $online = true;
+                        }
+                    }
+                }
+                if ($online) {
+                    $login[] = $uid;
+                } else {
+                    $logout[] = $uid;
                 }
             }
         }
         if (count($logout) > 0) {
             Db::name("user")->whereIn('id',$logout)->update(['login_state'=>0]);
+//            var_dump(Db::name("user")->getLastSql());
+        }
+        if (count($login) > 0) {
+            Db::name("user")->whereIn('id',$login)->update(['login_state'=>1]);
+//            var_dump(Db::name("user")->getLastSql());
         }
         echo $lastId;
         exit();
@@ -168,7 +201,7 @@ class TempController extends RestBaseController
     public function addViews() {
         $count = rand(5,10);
         $num = rand(10,20);//随机增加10-20观看数
-        $ids = Db::name("user_video")->order("rand()")->limit($count)->column('id');
+        $ids = Db::name("user_video")->field("*,rand() vorder")->order("vorder")->limit($count)->column('id');
         Db::name("user_video")->whereIn('id',$ids)->setInc("views",$num);
         echo json_encode($ids)."---->".$num;
         exit();
@@ -179,7 +212,7 @@ class TempController extends RestBaseController
      * @throws \think\Exception
      */
     public function longEdit() {
-        $list = Db::name("user")->whereLike('recom_type','%"1"%')->order('rand()')->select();
+        $list = Db::name("user")->whereLike('recom_type','%"1"%')->field("*,rand() rorder")->order('rorder')->select();
         $now = time();
         foreach ( $list as $key => $value ) {
             $more = json_decode($value['more'],true);
@@ -201,7 +234,7 @@ class TempController extends RestBaseController
     public function tagEdit() {
         $tagArr = ['tag1','tag2','tag3','tag4','tag5','tag6','tag7','tag8','tag9','taga','tagb'];
         $num = count($tagArr) * 3;//每个标签设置3个直播间
-        $list = Db::name("live_room")->where('live_type',1)->where('live_state',1)->order('rand()')->limit($num)->select();
+        $list = Db::name("live_room")->where('live_type',1)->where('live_state',1)->field("*,rand() rorder")->order('rorder')->limit($num)->select();
         $n = ceil( count($list) / count($tagArr) );
         $idArr = [];
         foreach ( $list as $k => $v ) {

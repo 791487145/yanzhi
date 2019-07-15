@@ -592,15 +592,17 @@ class PublicController extends RestUserBaseController
         $cdnSettings    = cmf_get_option('cdn_settings');
         foreach ($recomType as $value)
         {
+            $field = 'u.*,a.level';
             if ($value['type'] == 1) {
                 $order = "last_login_time desc";
             } else {
-                $order = "rand()";
+                $field .= ",rand() listorder";
+                $order = "listorder";
             }
             $tmp = [];
             $list = Db::name('user')->alias('u')
                 ->join('yz_live_anchor a', 'u.id =a.user_id')
-                ->field('u.*,a.level')
+                ->field($field)
                 ->whereLike('u.recom_type','%"'.$value['type'].'"%')
                 ->order($order)->limit($limit)
                 ->select();

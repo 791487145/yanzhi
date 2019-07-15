@@ -75,12 +75,14 @@ class IndexController extends RestBaseController
     private function getAnchorOnline($start,$pageSize,$debug) {
         $sql = "SELECT "
             ."`a`.`user_id`,`a`.`single_coin`,`a`.`gift_total`,`a`.`level`,"
+            ."`v`.`id` `vid`,`u`.`is_zombie`,`u`.`is_virtual`,"
             ."`u`.`user_nickname`,`u`.`sex`,`u`.`avatar`,`u`.`signature`,`u`.`birthday`,`u`.`more`,`u`.`city`,`u`.`province` "
             ."FROM `yz_live_anchor` `a` "
             ."INNER JOIN `yz_user` `u` ON `a`.`user_id` = `u`.`id` "
             ."LEFT JOIN `yz_live_room` `r` ON `r`.`user_id` = a.user_id AND r.live_state = 1 "
+            ."LEFT JOIN `yz_live_video` `v` ON `r`.`user_id` = v.anchor_id AND v.end_time = 0 "
             ."WHERE `a`.`status` = 1 AND `u`.`login_state` = 1 AND `r`.`id` IS NULL "
-            ."AND(`a`.`video_state` = 1 OR(`u`.`is_zombie` = 0 AND `u`.`zombie_id` = 0)) "
+            ."AND (`a`.`video_state` = 1 OR (`u`.`is_zombie` = 0 AND `u`.`is_virtual` = 0)) "
             ."ORDER BY u.is_virtual ASC,a.video_recom DESC,u.id DESC LIMIT ".$start.", ".$pageSize;
         $list = Db::query($sql);
       if ($debug == 1) {
@@ -95,6 +97,14 @@ class IndexController extends RestBaseController
             }
             $age = floor( ( time() - $value['birthday'] ) / 86400 / 365 );
             $more = json_decode($value['more'],true);
+          
+            $busy = 0;
+            if ($value['vid'] > 0) {
+                $busy = 1;
+            }
+            if ($value['is_virtual'] == 1) {
+                $busy = rand(0,1);
+            }
 
             $tmp = [
                 'user_id'       => $value['user_id'],
@@ -113,7 +123,8 @@ class IndexController extends RestBaseController
                 'job'           => empty($more['job'])?'':$more['job'],
                 'province'     => empty($value['province'])?'':$value['province'],
                 'city'          => empty($value['city'])?'':$value['city'],
-                'tag'           => ''
+                'tag'           => '',
+                'busy'        => $busy
             ];
             if ($tmp['tag'] != ''){
                 $tmp['tag'] = 'http://' . $cdnSettings['cdn_static_url'] . '/upload/tag/' . $tmp['tag'] . '.png';
@@ -135,7 +146,7 @@ class IndexController extends RestBaseController
         $pageSize = 10;
         $start = ( $page - 1 ) * $pageSize;
 
-        $where = ['r.live_state' => '1'];//只获取直播中的
+        $where = ['r.live_state' => '1','u.is_zombie' => '1'];//只获取直播中的
         $order = "r.id desc";
         switch ($type){
             case "hot": //热门主播

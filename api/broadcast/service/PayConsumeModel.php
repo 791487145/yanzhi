@@ -65,11 +65,13 @@ class PayConsumeModel extends CommonModel
             //==========收益表数据 start==============
             $msg .= "收益开始--";
             if ($order['coin_anchor'] > 0) {//主播私播收益
+                $profitType = $order['type'];
+                if ($profitType == 3) $profitType = 2;//视频聊天订单类型为3，收益类型为2
                 $profit = [
                     'user_id'       => $order['anchor_id'],
                     'table_name'    => 'pay_consume',
                     'table_id'      => $orderId,
-                    'type'          => $order['type'],
+                    'type'          => $profitType,
                     'coin'          => $order['coin_anchor'],//收益表中及那个人民币转换为平台币
                     'add_time'       => $order['add_time']
                 ];

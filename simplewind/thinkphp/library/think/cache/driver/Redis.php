@@ -23,9 +23,9 @@ use think\cache\Driver;
 class Redis extends Driver
 {
     protected $options = [
-        'host'       => '127.0.0.1',//192.168.50.167
-        'port'       => 6379,//8888
-        'password'   => '123456',
+        'host'       => '127.0.0.1',
+        'port'       => 6379,
+        'password'   => '',
         'select'     => 0,
         'timeout'    => 0,
         'expire'     => 0,
@@ -70,7 +70,7 @@ class Redis extends Driver
      */
     public function has($name)
     {
-        return $this->handler->get($this->getCacheKey($name)) ? true : false;
+        return $this->handler->exists($this->getCacheKey($name));
     }
 
     /**
@@ -125,55 +125,6 @@ class Redis extends Driver
         isset($first) && $this->setTagItem($key);
         return $result;
     }
-
-    /**
-     * 写入Hash缓存
-     * @access public
-     * @param string            $name 缓存变量名
-     * @param string            $key  hash数组的key
-     * @param mixed             $value  存储数据
-     * @return boolean
-     */
-    public function hset($name, $key, $value)
-    {
-        $name = $this->getCacheKey($name);
-        return $this->handler->hSet($name, $key, $value);
-    }
-    /**
-     * 读取Hash缓存
-     * @access public
-     * @param string    $name 缓存变量名
-     * @param string    $key hash数组的key
-     * @return mixed
-     */
-    public function hget($name, $key)
-    {
-        $value = $this->handler->hGet($this->getCacheKey($name),$key);
-        if (is_null($value) || false === $value) {
-            return false;
-        }
-
-        try {
-            $result = 0 === strpos($value, 'think_serialize:') ? unserialize(substr($value, 16)) : $value;
-        } catch (\Exception $e) {
-            $result = false;
-        }
-
-        return $result;
-    }
-    /**
-     * 删除Hash缓存
-     * @access public
-     * @param string            $name 缓存变量名
-     * @param string            $key  hash数组的key
-     * @return boolean
-     */
-    public function hdel($name, $key)
-    {
-        $name = $this->getCacheKey($name);
-        return $this->handler->hDel($name, $key);
-    }
-
 
     /**
      * 自增缓存（针对数值缓存）

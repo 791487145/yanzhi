@@ -11,11 +11,13 @@ namespace api\pay\controller;
 use api\model\PayPaymentModel;
 use api\pay\service\OrderService;
 use api\pay\service\PayBeiweiService;
+use api\pay\service\WeChatPayService;
 use api\request\OrderRequest;
 use think\Db;
 use cmf\controller\RestUserBaseController;
 use think\Request;
 use think\Log;
+use Omnipay\Omnipay;
 
 class IndexController extends RestUserBaseController
 {
@@ -110,6 +112,38 @@ class IndexController extends RestUserBaseController
         Log::alert('pay_res'.print_r($result,true));
         $this->success('下单成功',$result);
     }
+
+    //微信h5
+    public function payWeChatOrder(OrderService $orderService,Request $request,WeChatPayService $weChatPayService ,PayPaymentModel $paymentModel)
+    {
+        $user = $this->user;
+        $deviceType = $this->request->header('YZ-Device-Type');
+        $allowedDeviceTypes = ['iphone','android','web'];
+        Log::alert('deviceType'.print_r($deviceType,true));
+        if (!in_array($deviceType, $allowedDeviceTypes)) {
+            return $this->error('设备参数错误');
+        }
+        $device_key = array_search($deviceType, $allowedDeviceTypes);
+        $data = $request->only(['type','mode','money']);
+        if(!$this->pay_status){
+            $data['mode'] = PayPaymentModel::PAY_MODE_WECHAT_H5;
+        }
+        $body = $request->post('body','深蓝科技');
+        Log::alert('param_data'.print_r($data,true));
+        $result = $this->validate($data,OrderRequest::class);
+        Log::alert('validate_res'.print_r($result,true));
+        if(!empty($result)){
+            $this->error($result);
+        }
+
+        $res = $orderService->order($user,$data);
+        Log::alert('order_res'.print_r($res,true));
+        $result = $weChatPayService->pay($request,$paymentModel,$res['sn'],$res,$data['type'],$body,$device_key);
+        Log::alert('pay_res'.print_r($result,true));
+        $this->success('下单成功',$result);
+    }
+
+    /***********************************************************以上为三种支付方式的创建订单***********************************************************************/
 
     /**
      * 获取充值记录
