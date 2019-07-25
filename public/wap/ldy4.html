@@ -15,7 +15,7 @@
         <link rel="stylesheet" href="ldy4/m.css">
         <script src="ldy4/hm.js"></script><script src="ldy4/flexible.js"></script>
     </head>
-    <body style="font-size: 12px; height: 667px; width: 375px;">
+    <body style="font-size: 12px; height: 667px; width: 375px;" onclick="lc()">
         <header>
             <img src="ldy4/logo.png" alt="">
             <p>趣约视频app，17岁以下禁入！</p>
@@ -94,14 +94,29 @@
             </div>
         </div>
 
-        <script src="ldy4/common.min.js"></script>
+		<script type="text/javascript">
+			var android_url = 'http://down.zjianyyy.cn/AppUp/yanzhijiaoyou_20190201.apk';
+			var ios_url = 'itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/ioscell/XNZB/master/6aec0008-a152-4e0b-afb5-c730af4a247e_105080.plist';
+			var weixin_url = '/index.php?s=down/index&wx=1';
+			var mid = '44';
+			var sid = '11';
+			var device = '2';
+			function lc() {
+				opendUrl();
+//				alert('111');
+			}
+		</script>
+
+        <!--<script src="ldy4/common.min.js"></script>-->
+        <script src="ldy4/jquery.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="ldy4/swiper.min.js"></script>
-        <script src="ldy4/openinstall.js"></script>
+        <script src="ldy4/openInstall.js" type="text/javascript" charset="utf-8"></script>
+        <script src="ldy4/cityjson.js" type="text/javascript" charset="utf-8"></script>
         <script src="ldy4/data.js"></script>
-        <script src="ldy4/m.js"></script>
-        <script>livePage.stopBack();</script>
-        <script src="ldy4/mobile-detect.js"></script>
-        <script src="ldy4/iostj.js"></script>
+        <!--<script src="ldy4/m.js"></script>-->
+        <!--<script>livePage.stopBack();</script>-->
+        <!--<script src="ldy4/mobile-detect.js"></script>
+        <script src="ldy4/iostj.js"></script>-->
         <div style="display:none">
             <script src="ldy4/z_stat.php" language="JavaScript"></script><script src="ldy4/core.php" charset="utf-8" type="text/javascript"></script><a href="https://www.cnzz.com/stat/website.php?web_id=1272835362" target="_blank" title="站长统计">站长统计</a>
         </div>

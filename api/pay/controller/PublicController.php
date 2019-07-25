@@ -172,17 +172,18 @@ class PublicController extends RestBaseController
     {
         $res = $weChatPayService->notify();
         //判断订单状态
-        //halt($res);
         $order = PayPaymentModel::where(['sn'=> $res['out_trade_no']])->find();
+        Log::alert('$order_'.print_r($order,true));
         if (!$order){
             exit("fail");
         }
         if (($res['total_fee']/100) != $order['money']){
             exit("fail");
         }
-
+        Log::alert('jindu_1');
         if ($order['status'] == 0)//未支付订单
         {
+            Log::alert('jindu_2');
             $update = [
                 'status'    => 1,
                 'pay_time'  => time(),
@@ -191,6 +192,7 @@ class PublicController extends RestBaseController
             ];
             $this->updateOrder($order,$update);
         }
+        Log::alert('jindu_3');
         exit("success");
     }
 

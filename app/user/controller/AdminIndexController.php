@@ -56,7 +56,11 @@ class AdminIndexController extends AdminBaseController
      */
     public function index()
     {
-        $where   = ['user_type'=>2];
+        $where   = [
+            'user_type'     => 2,
+            'is_virtual'    => 0,
+            'is_zombie'     => 0,
+        ];
         $request = input('request.');
 
         if (!empty($request['uid'])) {
@@ -186,5 +190,19 @@ class AdminIndexController extends AdminBaseController
         $this->assign('page', $page);
         // 渲染模板输出
         return $this->fetch();
+    }
+    /**
+     * 视频状态变更
+     */
+    public function videoStatus()
+    {
+        $id = input('param.id', 0, 'intval');
+        $status = input('param.status', 0, 'intval');
+        if ($id) {
+            Db::name("user_video")->where("id",$id)->setField('status', $status);
+            $this->success("操作成功！");
+        } else {
+            $this->error('操作失败！');
+        }
     }
 }

@@ -57,6 +57,7 @@
                     <td>{:date('Y-m-d H:i:s',$vo['pay_time'])}</td>
                     <td style="color: {$colorStatus[$vo['status']]}">{$arrStatus[$vo['status']]}</td>
                     <td><a href="{:url('pay/index/paymentInfo',array('id'=>$vo['id']))}">订单详情</a></td>
+                    
                 </tr>
             </foreach>
             </tbody>

@@ -194,8 +194,22 @@
                     </td>
                 </tr>
                 <tr><th><b>主播信息</b></th></tr>
-                <tr><td><input type="text" class="form-control" id="input-level" name="c[level]" value="{$anchor.level}" placeholder="主播等级"></td></tr>
-                <tr><td><input type="text" class="form-control" id="input-single_coin" name="c[single_coin]" value="{$anchor.single_coin}" placeholder="私播单价"></td></tr>
+                <tr><td>
+                    <p style="float: left; height: 25px; line-height: 35px; margin-right: 5px;">主播等级</p>
+                    <input type="text" class="form-control" style="width: 30%;float: left;" id="input-level" name="c[level]" value="{$anchor.level}" placeholder="主播等级">
+                </td></tr>
+                <tr><td>
+                    <p style="float: left; height: 25px; line-height: 35px; margin-right: 5px;">私播单价</p>
+                    <input type="text" class="form-control" style="width: 30%;float: left;" id="input-single_coin" name="c[single_coin]" value="{$anchor.single_coin}" placeholder="私播单价">
+                </td></tr>
+                <tr><td>
+                    <p style="float: left; height: 25px; line-height: 35px; margin-right: 5px;">身高</p>
+                    <input type="text" class="form-control" style="width: 30%;float: left;" id="input-height" name="m[height]" value="{$more.height|default='165cm'}">
+                </td></tr>
+                <tr><td>
+                    <p style="float: left; height: 25px; line-height: 35px; margin-right: 5px;">体重</p>
+                    <input type="text" class="form-control" style="width: 30%;float: left;" id="input-weight" name="m[weight]" value="{$more.weight|default='55kg'}">
+                </td></tr>
             </table>
         </div>
     </form>

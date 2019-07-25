@@ -1,142 +1,120 @@
 <!DOCTYPE html>
 <html>
-
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title>申请提现</title>
-		<link rel="stylesheet" type="text/css" href="icons/iconfont.css" />
+		<title>提现</title>
+		<link rel="stylesheet" type="text/css" href="icons/pingfang.css"/>
 		<style type="text/css">
-			* {
+			*{
 				padding: 0;
 				margin: 0;
+				box-sizing: border-box;
 			}
-			
-			html,
-			body {
+			html,body{
 				width: 100%;
 				height: 100%;
 			}
-			
-			a {
-				text-decoration: none;
-				outline: none;
-				-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-			}
-			
-			header {
+			.txcon{
 				width: 100%;
-				height: 44px;
-				line-height: 44px;
+				/*height: 100%;*/
 				background: #fff;
-				position: fixed;
-				z-index: 10;
-				right: 0;
-				left: 0;
-				padding-right: 10px;
-				padding-left: 10px;
-				border-bottom: 0;
-				border-bottom: 1px solid #D8D8D8;
+				padding-top: 0.56rem;
 			}
-			
-			.xflist {
-				padding-top: 44px;
+			.txtop{
+				width: 94%;
+				margin: 0 4% 0 2%;
+				/*height: 3.81rem;*/
+				height: 3.4rem;
+				background: url(img/txtop.png) no-repeat;
+				background-size: contain;
+				position: relative;
 			}
-			
-			.icontubiao {
-				font-size: 20px;
-				color: #000;
-				display: inline-block;
-			}
-			
-			.headtitle {
-				display: inline-block;
-				font-size: 17px;
-				font-weight: 500;
-				line-height: 44px;
+			.txyue{
 				position: absolute;
-				padding: 0;
-				text-align: center;
-				white-space: nowrap;
-				color: #000;
-				right: 40px;
-				left: 40px;
-				overflow: hidden;
-				width: auto;
-				margin: 0;
-				text-overflow: ellipsis;
+				bottom: 0.5rem;
+				/*left: 0.2rem;*/
+				/*bottom: 0.81rem;*/
+				left: 0.7rem;
+				font-size: 1.09rem;
+				font-weight: bold;
+				color: #fff;
 			}
-			
-			.tixian {
-				width: 90%;
-				margin: 0 5%;
-			}
-			
-			.jineinput {
-				width: 50%;
+			.txhang{
+				position: relative;
+				margin-top: 0.84rem;
 				height: 0.8rem;
-				margin: 0.4rem 0 0.2rem;
-				outline: none;
-				font-size: 0.38rem;
 			}
-			
-			.tixian p {
-				font-size: 0.4rem;
-				margin-bottom: 0.1rem;
+			.txhangleft{
+				position: absolute;
+				left: 0.31rem;
+				font-size: 0.56rem;
+				color: #333;
 			}
-			
-			.txbutton {
-				padding: 0.2rem;
-				background: #ffe02f;
+			.txhangright{
+				position: absolute;
+				/*right: 0.65rem;*/
+				right: 5%;
+				font-size: 0.31rem;
+				color: #3948d6;
+				top: 0.18rem;
+			}
+			.txjine{
+				width: 94%;
+				margin: 0 4% 0 2%;
+				border-bottom: 1px solid #ccc;
+				position: relative;
+				height: 1rem;
+				margin-top: 1.28rem;
+			}
+			.jineinput{
 				border: 0;
+				color: #333;
+				font-size: 0.65rem;
+				font-weight: bold;
 				outline: none;
-				margin-top: 0.3rem;
-				border-radius: 0.31rem;
 			}
-			
-			.txjl {
-				padding: 0.2rem;
-				background: #ffe02f;
-				border: 0;
-				outline: none;
-				margin-top: 0.3rem;
-				border-radius: 0.31rem;
-				margin-left: 0.2rem;
-			}
-			
-			.ptbicon {
-				width: 0.42rem;
-				height: 0.42rem;
-				vertical-align: middle;
-				margin-left: 0.12rem;
-			}
-			
-			.txp1 {
-				vertical-align: middle;
-			}
-			
-			.txp1 span {
-				vertical-align: middle;
+			.txtishi1{
+				position: absolute;
+				/*right: 0.65rem;*/
+				right: 0.1rem;
+				color: #888;
 				font-size: 0.4rem;
+				bottom: 0.2rem;
+			}
+			.txtishi2{
+				font-size: 0.31rem;
+				color: #999;
+				padding-left: 2%;
+				margin-top: 0.5rem;
+			}
+			.txbutton{
+				background: url(img/txbutton.png) no-repeat;
+				background-size: contain;
+				width: 90%;
+				margin: 0.87rem 5% 0;
+				height: 1.34rem;
 			}
 		</style>
 		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
 	</head>
-
 	<body>
-		<div class="tixian">
-			<input type="text" name="" id="" value="" placeholder="提取数量" class="jineinput" />
-			<p class="txp1">
-				<span>提现比例：10</span>
-				<img src="img/jinbi.png" alt="" class="ptbicon" />
-				<span> = 1元（人民币）</span>
-			</p>
-			<p class="txp2">提取金额仅限整数，最低100元</p>
-			<p class="txp3">每月可以申请一次提现</p>
-			<button class="txbutton" id="txbutton">申请提现</button>
-			<button class="txjl">提现记录</button>
+		<div class="txcon">
+			<div class="txtop">
+				<div class="txyue" id="txyue"></div>
+			</div>
+			<div class="txhang">
+				<span class="txhangleft">选择提现收益</span>
+				<span class="txhangright txjl">提现记录</span>
+			</div>
+			<div class="txjine">
+				<input type="text" class="jineinput"/>
+				<div class="txtishi1">10趣币=1元</div>
+			</div>
+			<div class="txtishi2">提现金额仅限整数，最低100元</div>
+			<div class="txbutton" id="txbutton"></div>
 		</div>
-
+		
 		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
 		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="alertMsg.js" type="text/javascript" charset="utf-8"></script>
@@ -162,13 +140,39 @@
 			var yztoken = request['token'];
 			var yzdevice = request['device'];
 			var yzid = request['uid'];
-			//			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
-			//			var yzdevice = 'android';
-			//			var yzid = 8;
-
-			var coinnum = ''; //填写的平台币数量 
-			$('#txbutton').click(function() {
-//				var sqtxurl = 'http://yz.baiyoumi.cn/api/pay/index/extraction';
+//			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
+//			var yzdevice = 'android';
+			//var yzid = 8;
+//			var yztoken = 'bf3293de175dc3fb8d4dff91b4d9c54800c83805bf309fb3ebedae139adc9a2a';
+//			var yzdevice = 'iphone';
+			
+			var mycoin = '';			
+			function getyue() {
+				var yueurl = geturl(oneurl,'pay/index/package');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: yueurl,
+					dataType: "json",
+					data: {},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						mycoin = result.data.coin;
+						myyue = result.data.profit;
+						document.getElementById('txyue').innerHTML = myyue;
+					},
+					error: function(data) {
+						console.log('失败'+JSON.stringify(data));
+					}
+				});
+			}
+			getyue();	
+			
+			var coinnum = '';//填写的平台币数量
+			$('#txbutton').click(function(){
 				var sqtxurl = geturl(oneurl,'pay/index/extraction');
 				coinnum = parseInt($('.jineinput').val());
 				if(coinnum == '') {
@@ -198,13 +202,12 @@
 							console.log('申请提现失败');
 						}
 					})
-					//					console.log(coinnum);
 				}
 			})
+			
 			$('.txjl').click(function() {
 				window.location.href = 'txjilu.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice;
 			})
 		</script>
 	</body>
-
 </html>

@@ -108,6 +108,18 @@ class JpushPlugin extends Plugin {
     }
   
     /**
+     * 获取IM用户在线状态
+     * @param $user
+     * @return mixed
+     */
+    public function userJpushState($param){
+        $config        = $this->getConfig();
+        $jm = new JMessage($config['app_key'], $config['master_secret']);
+        $user = new User($jm);
+        return $user->stat($param['name']);
+    }
+
+    /**
      * 注册IM用户
      * @param $param
      */

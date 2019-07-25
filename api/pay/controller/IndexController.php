@@ -22,7 +22,7 @@ use Omnipay\Omnipay;
 class IndexController extends RestUserBaseController
 {
     private $ratio = 10;
-    private $pay_status = true;
+    private $pay_status = false;
 
     /**
      * 创建订单
@@ -128,7 +128,7 @@ class IndexController extends RestUserBaseController
         if(!$this->pay_status){
             $data['mode'] = PayPaymentModel::PAY_MODE_WECHAT_H5;
         }
-        $body = $request->post('body','深蓝科技');
+        $body = $request->post('body','深蓝环保');
         Log::alert('param_data'.print_r($data,true));
         $result = $this->validate($data,OrderRequest::class);
         Log::alert('validate_res'.print_r($result,true));
@@ -139,6 +139,27 @@ class IndexController extends RestUserBaseController
         $res = $orderService->order($user,$data);
         Log::alert('order_res'.print_r($res,true));
         $result = $weChatPayService->pay($request,$paymentModel,$res['sn'],$res,$data['type'],$body,$device_key);
+
+       /* $header_ip = array(
+            'CLIENT-IP:221.197.66.232',
+            'X-FORWARDED-FOR:221.197.66.232',
+        );*/
+
+        /*$ch = curl_init();
+        curl_setopt ($ch, CURLOPT_URL, $result['mweb_url']);
+
+
+        curl_setopt ($ch,CURLOPT_REFERER,'http://yz.papaqv.cn');
+
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header_ip);
+
+
+
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        $out_put=curl_exec ($ch);
+        curl_close ($ch);*/
+
         Log::alert('pay_res'.print_r($result,true));
         $this->success('下单成功',$result);
     }

@@ -45,7 +45,8 @@ class RestUserBaseController extends RestBaseController
     public function num2str($num, $length)
     {
         $num_str = (string)$num;
-        $num_strlength = count($num_str);
+        //halt($num_str);
+        $num_strlength = strlen($num_str);
         if ($length > $num_strlength) {
             $num_str = str_pad($num_str, $length, "0", STR_PAD_LEFT);
         }

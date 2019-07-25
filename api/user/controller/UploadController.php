@@ -9,6 +9,7 @@
 namespace api\user\controller;
 
 use cmf\controller\RestUserBaseController;
+use think\Log;
 use think\Validate;
 use think\Db;
 
@@ -193,6 +194,7 @@ class UploadController extends RestUserBaseController
 
         $act = $data['act'];
         $userId = $this->getUserId();
+
         $idUrl = $this->getIdUrl($this->userId);
         $imgSrc = '/upload/' . $act . '/' . $idUrl[0] . '/' . $idUrl[1];
         $fileSrc = ROOT_PATH . 'public' . DS . 'upload' . DS . $act . DS . $idUrl[0] . DS . $idUrl[1];
@@ -234,6 +236,7 @@ class UploadController extends RestUserBaseController
                 $this->success("已上传成功!", ['url' => $findFile['file_path'], 'filename' => $findFile['filename']]);
             }
         }
+
         $info = $info->move($fileSrc, $fileName);
         if ($info) {
             $saveName = $info->getSaveName();

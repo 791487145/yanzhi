@@ -198,18 +198,9 @@
 						</div>
 						<div class="tab-pane" id="G">
 							<div class="form-group">
-								<label for="input-cdn_static_root" class="col-sm-2 control-label">静态资源cdn地址</label>
+								<label for="input-cdn_static_root" class="col-sm-2 control-label">cdn加速域名</label>
 								<div class="col-md-6 col-sm-10">
-									<input type="text" class="form-control" id="input-cdn_static_root" name="cdn_settings[cdn_static_root]" value="{$cdn_settings.cdn_static_root|default=''}">
-									<p class="help-block">
-										不能以/结尾；设置这个地址后，请将ThinkCMF下的静态资源文件放在其下面；<br>
-										ThinkCMF下的静态资源文件大致包含以下(如果你自定义后，请自行增加)：<br>
-										themes/admin_simplebootx/public/assets<br>
-										static<br>
-										themes/simplebootx/public/assets<br>
-										例如未设置cdn前：jquery的访问地址是/static/js/jquery.js, <br>
-										设置cdn是后它的访问地址就是：静态资源cdn地址/static/js/jquery.js
-									</p>
+									<input type="text" class="form-control" id="input-cdn_static_root" name="cdn_settings[cdn_static_url]" value="{$cdn_settings.cdn_static_url|default=''}">
 								</div>
 							</div>
 							<div class="form-group">

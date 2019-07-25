@@ -176,10 +176,10 @@ class PushController extends RestBaseController
     public function hi()
     {
         $anchorData = Db::name("user")->alias('u')
-            ->field('u.id uid,u.user_nickname nickname,u.avatar')
+            ->field('u.id uid,u.user_nickname nickname,u.avatar,rand() lorder')
             ->join('live_anchor a','a.user_id=u.id')
             ->where(['a.recommend'=>1])
-            ->order('rand()')->find();
+            ->order('lorder')->find();
 
         $data = [
             'msg'         => $anchorData['nickname']."刚刚和你打了个招呼，快去看看吧",

@@ -12,6 +12,7 @@ use think\Db;
 use cmf\controller\RestBaseController;
 use think\cache\driver\Redis;
 use think\Cache;
+use think\Log;
 
 class ZombieController extends RestBaseController
 {
@@ -104,6 +105,7 @@ echo "$url_cmd"
                     $room = $this->rooms[$val['zombie_id']];
                     $room['user_id'] = $userId;
                     $room['live_code']  = '31697_'.$userId.'_'.$room['live_start'];
+
                     Db::name('live_room')->insert($room);
 
                     $this->roomRedis($userId,$val,$anchor,$room);

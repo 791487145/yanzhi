@@ -1,0 +1,63 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a>视频管理</a></li>
+    </ul>
+    <php>
+        $status=array("请选择","待审核","审核通过","审核不通过");
+        $vip=array("0"=>"免费","1"=>"VIP免费","2"=>"付费");
+    </php>
+    <form class="well form-inline margin-top-20" method="post" action="{:url('user/adminIndex/video')}">
+        用户ID：
+        <select class="form-control" name="status">
+            <foreach name="status" key="k" item="v">
+                <php>
+                    $select = "";
+                    if(!empty($req['status']) && $k == $req['status'])$select= " selected";
+                </php>
+                <option value="{$k}"{$select}>{$v}</option>
+            </foreach>
+        </select>
+        <input type="submit" class="btn btn-primary" value="搜索"/>
+        <a class="btn btn-danger" href="{:url('user/adminIndex/video')}">清空</a>
+    </form>
+    <form method="post" class="js-ajax-form">
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>用户ID</th>
+                <th>视频</th>
+                <th>类型</th>
+                <th>{:lang('STATUS')}</th>
+                <th>{:lang('ACTIONS')}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <foreach name="list" item="vo">
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td>{$vo.user_id}</td>
+                    <td><a href="{$vo.url}" target="_blank"><img height="50" src="{$vo.pic}"></a></td>
+                    <td>{$vip[$vo['is_vip']]}<eq name="vo.is_vip" value="2">：{$vo.money}平台币</eq></td>
+                    <td>{$status[$vo['status']+1]}</td>
+                    <td>
+                        <neq name="vo.status" value="1">
+                            <a href="{:url('adminIndex/videoStatus',array('id'=>$vo['id'],'status'=>'1'))}" class="js-ajax-dialog-btn" data-msg="确认审核通过吗？">审核通过</a>
+                        </neq>
+                        <neq name="vo.status" value="2">
+                            <a href="{:url('adminIndex/videoStatus',array('id'=>$vo['id'],'status'=>'2'))}" class="js-ajax-dialog-btn" data-msg="确认审核不通过吗？">不通过</a>
+                        </neq>
+                    </td>
+                </tr>
+            </foreach>
+            </tbody>
+        </table>
+        <div class="pagination">{$page}</div>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

@@ -41,17 +41,18 @@
                 <td width="100px"><input type="text" class="form-control" id="second_{$vo.id}" value="{$vo.second}"></td>
                 <td>
                     <php>
-                        $show_msg = $show_file = $fmsg = '';
+                        $show = 0;
+                        $btn=" display:none";
                         if($vo['type'] == 2 || $vo['type'] == 3) {
-                            $show_msg = 'style="display: none"';
-                            $fmsg = $vo['message'];
-                            $show_file = '1';
-                            $vo['message'] = '';
+                            $show = '1';
+                            $btn="";
                         }
                     </php>
-                    <input type="text" class="form-control" id="message_{$vo.id}" value="{$vo.message}" {$show_msg}>
-                    <eq name="show_file" value="1"><a href="javascript:;" onclick="$('#file_{$vo.id}').show();$(this).hide();">重新上传</a></eq>
-                    <input type="file" class="form-control" id="file_{$vo.id}" style="display: none;">
+                    <input type="text" class="form-control" id="message_{$vo.id}" value="{$vo.message}" style="width: 80%;float: left">
+                    <a href="javascript:uploadOneImage('照片上传','#message_{$vo.id}');" class="btn btn-default btn-sm" id="up_{$vo.id}" style="float: left;height: 35px;line-height: 30px;{$btn}">重新上传</a>
+                    <eq name="show" value="1">
+                        <a id="img_{$vo.id}" href="{$vo.message}" target="_blank" style="float: left;margin-right: 2px;"><img src="{$vo.message}" height="35px"></a>
+                    </eq>
                 </td>
                 <td width="120px">
                     <select class="form-control" id="to_sex_{$vo.id}">
@@ -91,8 +92,8 @@
             </td>
             <td width="100px"><input type="text" class="form-control" id="second_0" value="0"></td>
             <td>
-                <input type="text" class="form-control" id="message_0" value="">
-                <input type="file" class="form-control" id="file_0" style="display: none">
+                <input type="text" class="form-control" id="message_0" value="" style="width: 80%;float: left">
+                <a href="javascript:uploadOneImage('照片上传','#message_0');" class="btn btn-default btn-sm" id="up_0" style="float: left;height: 35px;line-height: 30px;display: none">上传照片</a>
             </td>
             <td width="120px">
                 <select class="form-control" id="to_sex_0">
@@ -125,11 +126,10 @@
                 id = $this.data('id');
         if (this.value == 2 || this.value == 3)
         {
-            $('#message_'+id).hide();
-            $('#file_'+id).show();
+            $('#up_'+id).show();
         } else {
-            $('#file_'+id).hide();
-            $('#message_'+id).show();
+            $('#img_'+id).hide();
+            $('#up_'+id).hide();
         }
     });
     $('.ja-save-btn').on('click', function (e) {
@@ -155,7 +155,6 @@
                 return true;
             },
             ok: function () {
-                var file_obj = document.getElementById("file_"+id).files[0];
                 var fdata = new FormData();
                 fdata.append('user_id', {$uid});
                 fdata.append('id', id);
@@ -164,7 +163,6 @@
                 fdata.append('message', $("#message_"+id).val());
                 fdata.append('to_sex', $("#to_sex_"+id).val());
                 fdata.append('is_after', $("#is_after_"+id).val());
-                fdata.append('file', file_obj);
                 $.ajax({
                     url: href,
                     type: 'post',

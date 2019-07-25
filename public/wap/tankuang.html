@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>邀请好友</title>
+		<link rel="stylesheet" type="text/css" href="icons/pingfang.css"/>
+		<style type="text/css">
+			*{
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			html,body{
+				width: 100%;
+				height: 100%;
+				background: #EFEFF4;
+			}
+			.tancon{
+				width: 100%;
+				height: 100%;
+				position: relative;
+			}
+			.tandiv{
+				width: 8rem;
+				height: 6.3rem;
+				/*margin: 0 auto;*/
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				margin-top: -3.15rem;
+				margin-left: -4rem;
+			}
+			.tantop{
+				width: 100%;
+				/*height: 4rem;*/
+				height: 3.3rem;
+				background: url(img/tantop.png) no-repeat;
+				background-size: 100%;
+			}
+			/*.tanbom{
+				width: 100%;
+				height: 2rem;
+				background: url(img/tanbom.png) no-repeat pink;
+				background-size: contain;
+			}*/
+			.tanbom1,.tanbom2{
+				width: 100%;
+				text-align: center;
+				font-size: 0.37rem;
+				background: #fff;
+			}
+			.tanbom1{
+				border-bottom: 1px solid #f3f4f5;
+				height: 1.8rem;
+				line-height: 1.8rem;
+			}
+			.tanbom2{
+				height: 1.2rem;
+				line-height: 1.2rem;
+				border-bottom-left-radius: 0.31rem;
+				border-bottom-right-radius: 0.31rem;
+			}
+		</style>
+		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div class="tancon">
+			<div class="tandiv">
+				<div class="tantop"></div>
+				<div class="tanbom">
+					<div class="tanbom1">近期邀请人数过多，平台暂停此业务</div>
+					<div class="tanbom2">知道了</div>
+				</div>
+			</div>
+		</div>	
+		
+		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$('.tanbom').on('click','.tanbom2',function(){
+				window.location.href = 'phone://pop';
+//				window.location.href = 'http://www.baidu.com';
+			})
+		</script>
+	</body>
+</html>

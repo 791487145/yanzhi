@@ -22,12 +22,18 @@ class VideocallController extends RestUserBaseController
     public function create()
     {
         $id = $this->request->post('id', 0, 'intval');//接收方用户ID
+        if ($id == $this->userId) {
+            $this->error("您的操作有误");
+        }
 
         //判断对方用户状态
         $user = Db::name('user')->where('id',$id)->where('user_type',2)->where('user_status',1)->find();
         if (!$user)
         {
             $this->error("用户信息错误");
+        }
+        if ( $user['login_state'] == 0 && $user['is_virtual'] == 0 && $user['is_zombie'] == 0 ) {
+            $this->error("对方不在线");
         }
         //判断对方是否主播
         $anchor = Db::name("live_anchor")->where('user_id',$id)->where('status',1)->find();
@@ -55,19 +61,20 @@ class VideocallController extends RestUserBaseController
             $this->error($user['user_nickname']."正在直播");
         }
         //判断视频通话状态
-        $video = Db::name("live_video")->where('anchor_id',$id)->where('end_time',0)->find();
+        $video = Db::name("live_video")->whereOr(['anchor_id|user_id'=>$id])->where('end_time',0)->find();
         if($video){
             $this->error($user['user_nickname']."正在视频通话");
         }
 
         $room = $id."_".$this->userId;
+        $now = time();
         //创建视频聊天记录
         $re = Db::name("live_video")->insert([
             'room'              => $room,
             'anchor_id'         => $id,
             'user_id'           => $this->userId,
             'unit_coin'         => $anchor['single_coin'],
-            'create_time'        => time()
+            'create_time'       => $now
         ]);
 
         //推送申请消息
@@ -88,12 +95,21 @@ class VideocallController extends RestUserBaseController
         ];
 
         $push = hook_one("push_msg", $data);
-        if ($push)
-        {
+        if ($push) {
+            //视频邀请消息写入文件,视频推送时推送消息
+            $fName = $now."_".$data['user_id'];
+            $pushData = [
+                'from_id'       => 'QY_'.$data['anchor_id'],
+                'target_id'     => 'QY_'.$data['user_id'],
+                'msg_type'      => 'custom',
+                'text'          => "[视频邀请]"
+            ];
+            $plogFile = CMF_ROOT . 'data/huashu/'.$fName;
+            $pfile = fopen($plogFile,"a") or die("Unable to open file!");//创建文件
+            fwrite($pfile, json_encode($pushData));//将内容写入文件
+            fclose($pfile);//关闭文件
             $this->success("等待对方接听");
-        }
-        else
-        {
+        } else {
             $this->error("请求失败");
         }
     }
@@ -178,7 +194,10 @@ class VideocallController extends RestUserBaseController
         //判断视频通话状态
         $video = Db::name("live_video")->where('room',$room)->where('end_time',0)->find();
         if(!$video) {
-            $this->error("视频通话已经结束");
+            $this->error("视频通话已经结束",'',[],-1002);
+        }
+        if ($video['start_time'] == 0) {
+            $this->error("视频通话尚未开始",'',[],-1001);
         }
         $video['end_time'] = time();
         $video['nums'] = ceil(($video['end_time'] - $video['start_time']) / 60);

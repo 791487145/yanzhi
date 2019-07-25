@@ -29,14 +29,27 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">所属工会</label>
                 <div class="col-md-6 col-sm-10">
-                    <input type="text" class="form-control" readonly="readonly" value="{$anchor['guide_id'] == 0 ? '无' : $guide['name']}">
+                    <select class="form-control" id="guide_id" name="guide_id">
+                        <foreach name="guide" key="gid" item="gname">
+                            <php>$sel = "";if($gid == $anchor['guide_id'])$sel = ' selected="selected"';</php>
+                            <option value="{$gid}"{$sel}>{$gname}</option>
+                        </foreach>
+                    </select>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">相册</label>
-                <div class="col-md-6 col-sm-10">
+                <div class="col-md-6 col-sm-10" style="height: 170px;overflow-x:scroll;white-space:nowrap;">
                     <foreach name="photo" item="vo">
-                        <img width="49%" src="/upload/{$vo['url']}"/>
+                        <img style="height: 140px; margin: 5px; border: 2px solid;" src="{$vo['url']}"/>
+                    </foreach>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">视频</label>
+                <div class="col-md-6 col-sm-10" style="height: 170px;overflow-x:scroll;white-space:nowrap;">
+                    <foreach name="video" item="vo">
+                        <a href="{$vo.url}" target="_blank"><img style="height: 140px; width: 190px; margin: 5px; border: 2px solid;" src="{$vo['pic']|default='__TMPL__/public/assets/images/default-thumbnail.png'}"/></a>
                     </foreach>
                 </div>
             </div>
@@ -64,8 +77,7 @@
                 <tr>
                     <td>
                         <div style="text-align: center;">
-                            <img src="{:url('user/public/avatar',array('id'=>$user['id']))}" width="135"
-                                 style="cursor: pointer"/>
+                            <img src="{$user['avatar']}" width="135" style="cursor: pointer"/>
                         </div>
                     </td>
                 </tr>
@@ -103,6 +115,28 @@
                 <tr>
                     <td>
                         <input class="form-control" type="text" id="explain" name="explain" value="" placeholder="未通过说明">
+                    </td>
+                </tr>
+                <tr><th><b>主播信息</b></th></tr>
+                <tr><td>
+                    <p style="float: left; height: 25px; line-height: 35px; margin-right: 5px;">主播等级</p>
+                    <input type="text" class="form-control" style="width: 30%;float: left;" id="level" name="level" value="{$anchor['level']}" placeholder="主播等级">
+                </td></tr>
+                <tr><td>
+                    <p style="float: left; height: 25px; line-height: 35px; margin-right: 5px;">私播单价</p>
+                    <input type="text" class="form-control" style="width: 30%;float: left;" id="coin" name="coin" value="{$anchor['single_coin']}" placeholder="私播单价">
+                </td></tr>
+                <tr> <th><b>提成设置</b></th></tr>
+                <tr>
+                    <td>
+                        <php>
+                            $ratio_c = 100 - $ratio;
+                            $ratio_gift_c = 100 - $ratio_gift;
+                        </php>
+                        <input type="text" class="form-control" id="ratio" name="ratio" value="{$ratio}">
+                        <p>视频通话平台提成，即主播收入<a id="ratio_c">{$ratio_c}</a>%</p>
+                        <input type="text" class="form-control" id="ratio_gift" name="ratio_gift" value="{$ratio_gift}">
+                        <p>收到礼物平台提成，即主播收入<a id="ratio_gift_c">{$ratio_gift_c}</a>%</p>
                     </td>
                 </tr>
                 <tr>

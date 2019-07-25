@@ -86,16 +86,12 @@
 		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
 		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="alertMsg.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript">
-
-			//			获取token device
-			//			传值:window.location.href = 'RegOk.htm?email='+email+'&name='+username+''; 
+		<script type="text/javascript"> 
 			function GetRequest() {
 				var url = location.search; //获取url中"?"符后的字串
 				var theRequest = new Object();
 				if(url.indexOf("?") != -1) {
 					var str = url.substr(1);
-					//					alert(str);
 					strs = str.split("&");
 					for(var i = 0; i < strs.length; i++) {
 						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
@@ -106,17 +102,12 @@
 
 			var request = new Object();
 			request = GetRequest();
-			//token device
 			var yztoken = request['token'];
 			var yzdevice = request['device'];
 			var yzid = request['uid'];
 //			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
 //			var yzdevice = 'android';
-
-
-
 			function getinfo() {
-//				var getinfourl = 'http://yz.baiyoumi.cn/api/user/profile/getinfo';
 				var getinfourl = geturl(oneurl,'user/profile/getinfo');
 				$.ajax({
 					headers: {
@@ -140,7 +131,6 @@
 			}
 			getinfo();
 
-
 			$('.qminput').on('input',function(){
 				var textlength = $(".qminput")[0].value.length;
 				$('#nownum').text(textlength);
@@ -148,7 +138,6 @@
 			$('.bcbutton').click(function(){
 				var textinput = $('.qminput')[0].value;
 				console.log(textinput);
-//				var editinfourl = 'http://yz.baiyoumi.cn/api/user/profile/editInfo';
 				var editinfourl = geturl(oneurl,'user/profile/editInfo');
 				$.ajax({
 					headers: {
@@ -166,9 +155,7 @@
 						console.log(JSON.stringify(data));
 						if(data.code == 1){
 							alertMsg(data.msg);
-//							window.history.back();
-//							window.location.href = 'editdata.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
-//							window.location.href = 'bianji.html?uid='+yzid+'&token='+yztoken+'&device='+yzdevice;
+							window.location.href = 'bianji.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice;
 						}
 					},
 					error: function() {

@@ -23,7 +23,6 @@
 			.swiper-slide {
 				text-align: center;
 				font-size: 18px;
-				/*background: rgba(0,0,0,0.8);*/
 				display: -webkit-box;
 				display: -ms-flexbox;
 				display: -webkit-flex;
@@ -45,19 +44,16 @@
 			.bigdiv{
 				width: 100%;
 				height: 100%;
-				/*background: rgba(0,0,0,0.8);*/
 				background: #000;
 			}
 			.spanindex{
 				display: block;
 			    position: absolute;
 			    bottom: 20px;
-			    /*background: rgba(0,0,0,0.4);*/
 			    width: 80%;
 			    left: 50%;
 			    margin-left: -40%;
 			    z-index: 100;
-			    /*margin: 0 auto;*/
 			    text-align: center;
 			    color: #fff;
 			    font-size: 16px;
@@ -74,35 +70,14 @@
 				<!--<div class="swiper-slide">
 					<img src="img/01.jpg"/>
 					<span class="spanindex">1/5</span>
-				</div>
-				<div class="swiper-slide">
-					<img src="img/02.jpg"/>
-					<span class="spanindex">2/5</span>
-				</div>
-				<div class="swiper-slide">
-					<img src="img/03.jpg"/>
-					<span class="spanindex">3/5</span>
-				</div>
-				<div class="swiper-slide">
-					<img src="img/04.jpg"/>
-					<span class="spanindex">4/5</span>
-				</div>
-				<div class="swiper-slide">
-					<img src="img/05.jpg"/>
-					<span class="spanindex">5/5</span>
 				</div>-->
 			</div>
 			<span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span></div>
 		</div>
-		
-
-
 		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
 		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="swiper-4.3.3.min.js" type="text/javascript" charset="utf-8"></script>
 		<script>
-			//获取token device
-			//传值:window.location.href = 'RegOk.htm?email='+email+'&name='+username+''; 
 			function GetRequest() {
 				var url = location.search; //获取url中"?"符后的字串
 				var theRequest = new Object();
@@ -118,17 +93,18 @@
 
 			var request = new Object();
 			request = GetRequest();
-			//token device
 			var yztoken = request['token'];
 			var yzdevice = request['device'];
 			var yzid = request['uid'];
 			var sbindex = request['sburl'];
+			var dlidvip = request['dlidvip'];
 //			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
 //			var yzdevice = 'android';
 //			var yzid = 8;
 			var sbpichtml = '';
 			var sz0 = [];
 			var sz0length = '';
+			console.log(sbindex);
 
 			function getxiangce() {
 				var xcurl = geturl(oneurl, 'broadcast/public/photo');
@@ -148,39 +124,57 @@
 						console.log(JSON.stringify(result));
 						result.data.sort(function(a, b) {
 							return a.is_vip - b.is_vip
-						})
-						
-						var indextotal = result.data.length;
-						//得到url循环显示到页面
-						for(var i = 0; i < result.data.length; i++) {
-							if(result.data[i].is_vip == 0){
-								sz0.push(i);
-							}							
-						}	
-						for(var j = 0; j < sz0.length; j++){
-							sbpichtml += '<div class="swiper-slide">' +
-							'<img src=' + result.data[j]['url'] + ' class="cover"/>' +
-							'<span class="spanindex">'+(j+1)+'/'+sz0.length+'</span>'+
-							'</div>';
-							document.getElementById('ulimg').innerHTML = sbpichtml;
+						})	
+//						$('.swiper-slide').click(function() {
+//							window.location.href = 'sbzhuyemy.html';
+//						})
+
+//						var swiper = new Swiper('.swiper-container');
+//						swiper.slideTo(sbindex,0,false);
+//						swiper.slideTo(sbindex);
+						if(dlidvip == 0){
+							//得到url循环显示到页面
+							for(var i = 0; i < result.data.length; i++) {
+								if(result.data[i].is_vip == 0){
+									sz0.push(i);
+								}							
+							}	
+							for(var j = 0; j < sz0.length; j++){
+								sbpichtml += '<div class="swiper-slide">' +
+								'<img src=' + result.data[j]['url'] + ' class="cover"/>' +
+								'<span class="spanindex">'+(j+1)+'/'+sz0.length+'</span>'+
+								'</div>';
+								document.getElementById('ulimg').innerHTML = sbpichtml;
+							}
+							$('.swiper-slide').click(function() {
+								window.location.href = 'sbzhuyemy.html';
+							})
+							var swiper = new Swiper('.swiper-container');
+							swiper.slideTo(sbindex,0,false);
+						}else{
+							for(var i = 0; i < result.data.length; i++) {
+								sbpichtml += '<div class="swiper-slide">' +
+								'<img src=' + result.data[i]['url'] + ' class="cover"/>' +
+								'<span class="spanindex">'+(i+1)+'/'+result.data.length+'</span>'+
+								'</div>';
+								document.getElementById('ulimg').innerHTML = sbpichtml;						
+							}		
+							$('.swiper-slide').click(function() {
+								window.location.href = 'sbzhuyemy.html';
+							})
+							var swiper = new Swiper('.swiper-container');
+							swiper.slideTo(sbindex,0,false);
 						}
 						
-						$('.swiper-slide').click(function() {
-							window.location.href = 'sbzhuyemy.html';
-						})
-
-						var swiper = new Swiper('.swiper-container');
-						swiper.slideTo(sbindex,0,false);
-//						swiper.slideTo(sbindex);
+						
+						
 					},
 					error: function() {
 						console.log('获取私播相册失败');
 					}
 				});
 			}
-			getxiangce();
-			
-			
+			getxiangce();		
 		</script>
 	</body>
 

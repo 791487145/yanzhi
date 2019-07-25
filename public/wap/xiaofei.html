@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 
@@ -97,6 +98,21 @@
 				vertical-align: middle;
 				margin-left: 0.15rem;
 			}
+			/*.morebutton{
+				width: 200px;
+				height: 100px;
+				text-align: center;
+				background: pink;
+				display: none;
+			}*/
+			.morebutton{
+				width: 100%;
+				height: 1.2rem;
+				text-align: center;
+				line-height: 1.2rem;
+				/*background: pink;*/
+				display: none;
+			}
 		</style>
 		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
 	</head>
@@ -117,11 +133,13 @@
 			<div class="nojilu" id="nojilu">
 				<img src="img/nogift.png" />
 				<div class="notishi">还没有送出礼物，快去给主播送礼吧！</div>
-			</div>
+			</div>			
 		</div>
+		<div class="morebutton" id="morebutton">没有更多了</div>
 
 		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
 		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="alertMsg.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			function GetRequest() {
 				var url = location.search; //获取url中"?"符后的字串
@@ -141,15 +159,20 @@
 			var yztoken = request['token'];
 			var yzdevice = request['device'];
 			var yzid = request['uid'];
-//			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
+
+//			var yztoken = '9e35234627d90b7098b2a7553d722d6cfcac3c6ca67dc9be9eba9b9587457d1a';
 //			var yzdevice = 'android';
-//			var yzid = 8;
+//			var yzid = 7806;
+//			var yztoken = '3de74cfd5e58e66f5817e2e520d2b43d269aa52ae521011e19a6f32a4cb57ca7';
+//			var yzdevice = 'iphone';
+//			var yzid = 1264;
 
 			var xfjlhtml = '';
 			var xftime = '';
+			var lastid;
+			var listlength;
 
 			function getxiaofei() {
-//				var xiaofeiurl = 'xiaofei.json';
 				var xiaofeiurl = geturl(oneurl,'pay/index/cosList');
 				$.ajax({
 					headers: {
@@ -159,21 +182,28 @@
 					type: "post",
 					url: xiaofeiurl,
 					dataType: "json",
-					data: {
-						"id": yzid
-					},
+					async:false,
+					data: {},
 					success: function(result) {
 						console.log(JSON.stringify(result));
-						if(result.msg == '暂无数据') {
+						if(result.code == 0) {
 							document.getElementById('nojilu').style.display = 'block';
 						} else {
 							for(var i = 0; i < result.data.length; i++) {
+								listlength = result.data.length;
+								lastid = result.data[result.data.length-1]['id'];
 								//消费类型
 								var text = result.data[i]['type'];
 								if(text == 2) {
 									text = '私播';
 								} else if(text == 1) {
-									text = '赠送礼物'
+									text = '赠送礼物';
+								} else if(text == 3){
+									text = '视频聊天';
+								} else if(text == 4){
+									text = '弹幕';
+								} else if(text == 5){
+									text = '其他';
 								}
 								//时间戳
 								xftime = result.data[i]['time'];
@@ -185,7 +215,6 @@
 								h = change(date.getHours()) + ':';
 								m = change(date.getMinutes()) + ':';
 								s = change(date.getSeconds());
-								console.log(Y + M + D + h + m + s);
 
 								function change(t) {
 									if(t < 10) {
@@ -207,15 +236,110 @@
 							}
 							document.getElementById('xflist').innerHTML = xfjlhtml;
 						}
-
 					},
 					error: function(result) {
 						console.log('获取消费记录出错');
 						console.log(JSON.stringify(result))
 					}
-				});
+				});			
 			}
 			getxiaofei();
+			
+			var newlistlength = '';
+			var newlastid = '';
+			$(window).scroll(function(){
+				//获取当前浏览器滚动条高度
+				var scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+				document.getElementById('morebutton').innerHTML = '正在加载中';
+				//判断当前浏览器滚动条高度是否已到达浏览器底部，如果到达底部加载下一页信息
+				if(scrollHeight <= ($(window).scrollTop() + $(window).height())){					
+					if(listlength == 10){
+						getxiaofeimore(lastid);	
+						lastid = newlastid;
+						listlength = newlistlength;	
+						console.log(lastid);
+						console.log(listlength);
+					}else{
+						document.getElementById('morebutton').style.display = 'block';
+						document.getElementById('morebutton').innerHTML = '没有更多了';
+					}
+				}
+			})
+			
+			function getxiaofeimore(lastid) {
+				var xiaofeiurl = geturl(oneurl,'pay/index/cosList');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: xiaofeiurl,
+					dataType: "json",
+					async:false,
+					data: {
+						"id": lastid
+					},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						if(result.code == 0) {
+							document.getElementById('morebutton').style.display = 'block';
+							document.getElementById('morebutton').innerHTML = '没有更多了';
+						} else {
+							for(var i = 0; i < result.data.length; i++) {
+								newlistlength = result.data.length;
+								newlastid = result.data[result.data.length-1]['id'];
+								//消费类型
+								var text = result.data[i]['type'];
+								if(text == 2) {
+									text = '私播';
+								} else if(text == 1) {
+									text = '赠送礼物';
+								} else if(text == 3){
+									text = '视频聊天';
+								} else if(text == 4){
+									text = '弹幕';
+								} else if(text == 5){
+									text = '其他';
+								}
+								//时间戳
+								xftime = result.data[i]['time'];
+								//获取时间
+								var date = new Date(xftime * 1000);
+								Y = date.getFullYear() + '-';
+								M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+								D = change(date.getDate()) + ' ';
+								h = change(date.getHours()) + ':';
+								m = change(date.getMinutes()) + ':';
+								s = change(date.getSeconds());
+
+								function change(t) {
+									if(t < 10) {
+										return "0" + t;
+									} else {
+										return t;
+									}
+								}
+								xfjlhtml += '<li>' +
+									'<div class="lileft">' +
+									'<p class="leftp1" id="leftp1">' + text + '</p>' +
+									'<p class="leftp2">' + Y + M + D + h + m + s + '</p>' +
+									'</div>' +
+									'<div class="liright">' +
+									'<span class="rightp1">' + result.data[i].coin + '</span>' +
+									'<img src="img/jinbi.png" alt="" class="ptbicon"/>'+
+									'</div>' +
+									'</li>';
+							}
+							document.getElementById('xflist').innerHTML = xfjlhtml;
+						}
+					},
+					error: function(result) {
+						console.log('获取消费记录出错');
+						console.log(JSON.stringify(result))
+					}
+				});			
+			}
 		</script>
 	</body>
 

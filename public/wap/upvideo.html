@@ -1,33 +1,41 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title>形象视频</title>
 		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
-			*{
+			* {
 				padding: 0;
 				margin: 0;
 				box-sizing: border-box;
 			}
-			html,body{
+			
+			html,
+			body {
 				width: 100%;
 				height: 100%;
+				background: #f5f5f5;
 			}
-			.spcon{
+			
+			.spcon {
 				width: 100%;
-				/*height: 100%;*/
+			    /*height: 100%;*/
+			    overflow-y: scroll;
+			    padding-bottom: 1.5rem;
 			}
+			
 			.livideo {
 				float: left;
 				width: 32%;
-				/*background: #fff;*/
 				height: 4rem;
 				margin: 0.66%;
 				overflow: hidden;
 				vertical-align: middle;
 				position: relative;
+				border-radius: 0.12rem;
 			}
 			
 			.livideo .picimg {
@@ -41,23 +49,74 @@
 				object-fit: cover;
 			}
 			
-			.img-jia {
-				width: 1.28rem;
-				height: 1.28rem;
+			.livideo {
+				width: 49%;
+				height: 7rem;
+				display: inline-block;
+				position: relative;
+				margin: 0.2rem 0.5% 0;
+			}
+			
+			.livideo video {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.videocover {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-size: cover;
+				z-index: 100;
+				border-radius: 0.12rem;
+			}
+			
+			.del {
+				position: absolute;
+				right: 0.2rem;
+				top: 0.2rem;
+				display: none;
+				width: 1.1rem;
+				height: 1.1rem;
+				z-index: 1000;
+			}
+			
+			.isvip {
+				position: absolute;
+				left: 0.2rem;
+				top: 0.2rem;
+				display: none;
+				/*width: 0.88rem;
+				height: 0.88rem;*/
+				width: 1.1rem;
+				height: 1.1rem;
+				z-index: 1000;
+			}
+			
+			.picbom {
+				width: 100%;
+				height: 1.5rem;
+				/*position: absolute;*/
 				position: fixed;
-				right: 0.8rem;
-				bottom: 0.8rem;
-				border-radius: 50%;
-				background-color: #fd698d;
-				z-index: 1;
+				bottom: 0;
+				background: rgb(255, 255, 255);
+				display: flex;
+				z-index: 100;
+			}
+			
+			.piczuo {
+				width: 33.3%;
+				text-align: center;
 			}
 			
 			.img-jia a {
 				display: inline-block;
-				width: 1.28rem;
-				height: 1.28rem;
-				background: url(img/img-jia.png) no-repeat;
-				background-size: 1.28rem 1.28rem;
+				width: 2.5rem;
+				height: 1.5rem;
+				background: url(img/jiavideo.png) no-repeat center center;
+				background-size: 1.1rem 1.1rem;
 			}
 			
 			.img-jia input {
@@ -73,41 +132,395 @@
 				width: 100%;
 				height: 100%;
 			}
-			video{
-				width: 100%;
-				height: 100%;
+			
+			.img-edit a {
+				display: inline-block;
+				width: 2.5rem;
+				height: 1.5rem;
+				background: url(img/shanvideo.png) no-repeat center center;
+				background-size: 1.1rem 1.1rem;
+			}
+			
+			.img-vip a {
+				display: inline-block;
+				width: 2.5rem;
+				height: 1.5rem;
+				background: url(img/jiavip.png) no-repeat center center;
+				background-size: 1.1rem 1.1rem;
+			}
+			.viptab{
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				margin-top: -0.75rem;
+				margin-left: -0.75rem;
+				width: 1.5rem;
+				height: 1.5rem;
+				z-index: 100;
 			}
 		</style>
 	</head>
+
 	<body>
 		<div class="spcon">
 			<ul class="ulimg" id="ulimg">
-				<li class="livideo">
-					<video src="img/vyi.mp4"></video>
-				</li>
-				<li class="livideo">
-					<video src="img/ver.mp4"></video>
-				</li>
-				<li class="livideo">
-					<video src="img/vsan.mp4"></video>
-				</li>
-				<li class="livideo">
-					<video src="img/vsi.mp4"></video>
-				</li>
+				
 			</ul>
 		</div>
-		<div class="img-jia">
-			<a><input type="file" id="file" class="filepath" onchange="changepic(this)" accept="video/*"></a>
+		<div class="picbom">
+			<div class="img-vip piczuo">
+				<a></a>
+			</div>
+			<div class="img-jia piczuo">
+				<a><input type="file" id="fileToUpload" class="filepath" onchange="changevideo(this)" accept="video/*" style="cursor:pointer"></a>
+			</div>
+			<div class="img-edit piczuo">
+				<a></a>
+			</div>
 		</div>
-		
+
 		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
 		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="alertMsg.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-//			接口地址
-			var upvideourl = geturl(oneurl,'');
-			function upvideo(){
-				
+			function GetRequest() {
+				var url = location.search; //获取url中"?"符后的字串
+				var theRequest = new Object();
+				if(url.indexOf("?") != -1) {
+					var str = url.substr(1);
+					strs = str.split("&");
+					for(var i = 0; i < strs.length; i++) {
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+					}
+				}
+				return theRequest;
+			}
+
+			var request = new Object();
+			request = GetRequest();
+			//token device
+			var yztoken = request['token'];
+			var yzdevice = request['device'];
+			var yzid = request['uid'];
+			var shouisvip = request['shouisvip'];
+			console.log(shouisvip);
+
+			var okurl = '';
+//			var videoshtml = '';
+			var videovip = 0;
+			var videocover = '';
+			var videoid = '';
+
+			function getvideos() {
+				var videosurl = geturl(oneurl, 'broadcast/public/video');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "POST",
+					url: videosurl,
+					dataType: "json",
+					data: {},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						var videosshtml = '';
+						for(var i = 0; i < result.data.length; i++) {
+							isvippic = result.data[i]['is_vip'];
+							videocover = result.data[i]['pic'];
+							if(videocover == null) {
+								videocover = 'img/zhanwei1.png';
+							}
+							videoid = result.data[i]['id'];	
+							if(isvippic == 0){
+								videosshtml += '<li class="livideo" id="' + videoid + '_' + isvippic + '">' +
+								'<img class="isvip" src="img/suo.png" alt="" />' +
+								'<img class="del" src="img/del.png" alt="" />' +
+								'<div class="videocover" style="background-image: url(' + videocover + ');"></div>' +
+								'<video src=""></video>' +
+								'</li>';
+							}else if(isvippic == 1){
+								videosshtml += '<li class="livideo" id="' + videoid + '_' + isvippic + '">' +
+								'<img class="isvip" src="img/suo.png" alt="" />' +
+								'<img class="del" src="img/del.png" alt="" />' +
+								'<div class="videocover" style="background-image: url(' + videocover + ');"></div>' +
+								'<video src=""></video>' +
+								'<img src="img/suo.png" alt="" class="viptab" />'+
+								'</li>';
+							}							
+							document.getElementById('ulimg').innerHTML = videosshtml;
+						}
+						$('.livideo').click(function() {
+							var thisbigid = $(this).attr('id');
+							var thisshuzu = thisbigid.split("_");
+							var thisid = thisshuzu[0];
+							console.log(thisid);
+							var thisvip = thisshuzu[1];
+							console.log(thisvip);
+							if(shouisvip == 1) {
+								var getidurl = getvideourl(thisid);
+								console.log(getidurl);
+								window.location.href = 'updownhua1.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&getidurl=' + getidurl;
+							} else {
+								if(thisvip == 0) {
+									var getidurl = getvideourl(thisid);
+									console.log(getidurl);
+									window.location.href = 'updownhua1.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&getidurl=' + getidurl;
+								} else {
+									alertMsg('VIP用户才能查看');
+								}
+							}
+						})
+					},
+					error: function(data) {
+						console.log('获取视频列表出错');
+					}
+				});
+			}
+			getvideos();
+
+			//将base64转换为文件
+			function dataURLtoFile(dataurl, filename) {
+				var arr = dataurl.split(','),
+					mime = arr[0].match(/:(.*?);/)[1],
+					bstr = atob(arr[1]),
+					n = bstr.length,
+					u8arr = new Uint8Array(n);
+				while(n--) {
+					u8arr[n] = bstr.charCodeAt(n);
+				}
+				return new File([u8arr], filename, {
+					type: mime
+				});
+			};
+
+			function changevideo(aa) {
+				console.log('点击没效果');
+				var fileVideo = document.getElementById('fileToUpload').files[0];
+//				console.log(fileVideo);
+								console.log(fileVideo.type);
+								console.log(fileVideo.size);
+								console.log(fileVideo.name);
+				var maxvideoSize = 1024 * 1024 * 10;
+				if(fileVideo > maxvideoSize) {
+					alert('文件大小不超过10M');
+				}
+				//				if(fileVideo){
+				//					var url = window.URL.createObjectURL(fileVideo);
+				//					console.log(url);
+				////					blobToDataURL(url);
+				//					upvideo(url);
+				//
+				//				}
+
+				var reader = new FileReader(); //声明一个FileReader实例
+				reader.readAsDataURL(fileVideo); //调用redsAsDataURL方法读取选中的文件
+				reader.onload = function(e) {
+					//					console.log('size');
+					var videosrc = e.target.result;
+					//					console.log(videosrc);
+					var fd = new FormData();
+					fd.append("act", "video");
+					fd.append("file", dataURLtoFile(videosrc, "videos.mp4"));
+					//fd.get('file');
+					//console.log(fd.get('file'));
+					upvideo(fd);
+					//					upvideo(videosrc);
+				}
+			}
+
+			function upvideo(fd) {
+				var videourl = geturl(oneurl, 'user/upload/video');
+				//				var videourl = geturl(oneurl, 'user/upload/videoBase64');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					url: videourl,
+					type: "post",
+					datatype: "json",
+					data: fd,
+					cache: false,
+					traditional: true,
+					contentType: false,
+					processData: false,
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						if(result.code == 1) {
+							console.log(result.data.url);
+							okurl = 'http://img.miyueba.cn' + result.data.url;
+							videocover = result.data.pic;
+							//							console.log(videocover);
+							savevideo(result.data.url, videovip);
+							//savevideo(result.data.url, videovip,videocover);
+						}
+					},
+					error: function(data) {
+						console.log('上传视频接口失败' + data.responseText);
+					}
+				});
+			}
+
+			function savevideo(videourl, videovip) {
+				var saveurl = geturl(oneurl, 'user/profile/saveVideo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: saveurl,
+					dataType: "json",
+					data: {
+						"url": videourl,
+						"vip": videovip
+					},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						alertMsg(result.msg);
+						var videoshtml = '';
+						if(result.code == 1) {
+							if(videovip == 0){
+								videoshtml += '<li class="livideo">' +
+								//								'<div class="videocover" style="background-image: url(' + videocover + ');"></div>' +
+								'<div class="videocover" style="background-image: url(img/zhanwei1.png);"></div>' +
+								'<video src=""></video>' +
+								'</li>';
+							}else{
+								videoshtml += '<li class="livideo">' +
+								//'<div class="videocover" style="background-image: url(' + videocover + ');"></div>' +
+								'<div class="videocover" style="background-image: url(img/zhanwei1.png);"></div>' +
+								'<video src=""></video>' +
+								'<img src="img/suo.png" alt="" class="viptab" />'+
+								'</li>';
+							}							
+							document.getElementById('ulimg').innerHTML = videoshtml;
+							getvideos();
+						} else {
+							alertMsg('上传失败');
+						}
+					},
+					error: function(data) {
+						console.log("保存接口错误" + data.responseText);
+					}
+				});
+			}
+
+			var idvideourl;
+			//通过id获取视频url
+			function getvideourl(delid) {
+				var getvideourl = geturl(oneurl, 'broadcast/public/getVideo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: getvideourl,
+					async: false,
+					dataType: 'json',
+					data: {
+						"id": delid
+					},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						idvideourl = result.data.url;
+					},
+					error: function() {
+						console.log('获取视频url接口错误');
+					}
+				});
+				return idvideourl;
+			}
+
+			//删除图片
+			var delcount = 0;
+			$('.img-edit').click(function() {
+				if(delcount == 0) {
+					var picsli = $('.del');
+					$.each(picsli, function(i) {
+						picsli[i].style.display = 'block';
+					});
+					$('.livideo .del').click(function() {
+						//						var delimgurl = $(this).next().attr('src');
+						//						console.log(delimgurl);
+						var delid = $(this).parent().attr('id');
+						console.log(delid);
+						//						getvideourl(delid)						
+						var spidurl = getvideourl(delid);
+						//						console.log(spidurl);
+						var delurl = spidurl.replace("http://img.miyueba.cn", "");
+						//						console.log(delurl);
+						delpic(delurl);
+						$(this).parent().remove();
+					})
+					delcount++;
+				} else {
+					var picsli = $('.del');
+					$.each(picsli, function(i) {
+						picsli[i].style.display = 'none';
+					});
+					delcount--;
+				}
+			})
+
+			//设置vip图片
+			var vipcount = 0;
+			$('.img-vip').click(function(e) {
+				e.stopPropagation();
+				if(vipcount == 0) {
+					var picvip = $('.isvip');
+					$.each(picvip, function(i) {
+						picvip[i].style.display = 'block';
+					});
+					$('.livideo .isvip').click(function() {
+						//						var vipimgurl = $(this).next().next().attr('src');
+						var vipid = $(this).parent().attr('id');
+						console.log(vipid);
+						//						getvideourl(vipid);
+						var spidvipurl = getvideourl(vipid);
+						//						console.log(spidvipurl);
+						var vipurl = spidvipurl.replace("http://img.miyueba.cn", "");
+						//						console.log(vipurl);
+						//						console.log(vipimgurl);
+						//						var vipurl = vipimgurl.replace("http://" + yuming, "");
+						savevideo(vipurl, 1);
+					})
+					vipcount++;
+				} else {
+					vipcount--;
+					var picvip = $('.isvip');
+					$.each(picvip, function(i) {
+						picvip[i].style.display = 'none';
+					});
+				}
+			})
+
+			function delpic(delurl) {
+				//var delpic = 'http://yz.baiyoumi.cn/api/user/profile/delPhoto';
+				var delpic = geturl(oneurl, 'user/profile/delVideo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: delpic,
+					dataType: "json",
+					data: {
+						"url": delurl
+					},
+					success: function(result) {
+						//console.log(JSON.stringify(result));
+					},
+					error: function(data) {
+						//						console.log('删除失败' + JSON.stringify(data));
+						console.log("删除接口错误" + data.responseText);
+					}
+				});
 			}
 		</script>
 	</body>
+
 </html>

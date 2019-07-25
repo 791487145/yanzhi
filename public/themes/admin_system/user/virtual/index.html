@@ -5,6 +5,7 @@
     <ul class="nav nav-tabs">
         <li class="active"><a>虚拟用户管理</a></li>
         <li><a href="{:url('user/virtual/add')}">添加虚拟用户</a></li>
+        <li><a href="{:url('user/virtual/videolist')}">视频列表</a></li>
     </ul>
     <form class="well form-inline margin-top-20" method="post" action="{:url('user/virtual/index')}">
         用户ID：
@@ -34,12 +35,12 @@
             <php>
                 $user_statuses=array("0"=>lang('USER_STATUS_BLOCKED'),"1"=>lang('USER_STATUS_ACTIVATED'),"2"=>lang('USER_STATUS_UNVERIFIED'));
                 $recommendArr = array(
-                "0" => array("status"=>"未推荐","view"=>"推荐主播","to"=>"1","msg"=>"确定推荐主播吗？"),
-                "1" => array("status"=>"已推荐","view"=>"取消推荐","to"=>"0","msg"=>"确定取消推荐吗？")
+                "0" => array("status"=>"未推荐","view"=>"推荐主播","to"=>"1","msg"=>"确定推荐主播吗？","color"=>"gray"),
+                "1" => array("status"=>"已推荐","view"=>"取消推荐","to"=>"0","msg"=>"确定取消推荐吗？","color"=>"blue")
                 );
                 $vRecomArr = array(
-                "0" => array("status"=>"下线","view"=>"1V1上线","to"=>"1","msg"=>"确定1V1上线吗？"),
-                "1" => array("status"=>"在线","view"=>"1V1下线","to"=>"0","msg"=>"确定1V1下线吗？")
+                "0" => array("status"=>"下线","view"=>"1V1上线","to"=>"1","msg"=>"确定1V1上线吗？","color"=>"gray"),
+                "1" => array("status"=>"在线","view"=>"1V1下线","to"=>"0","msg"=>"确定1V1下线吗？","color"=>"green")
                 );
             </php>
             <foreach name="list" item="vo">
@@ -61,7 +62,7 @@
                             <gt name="rk" value="0"> | </gt>
                             {$recomType[$rc]}
                         </foreach></td>
-                    <td>{$user_statuses[$vo['user_status']]} / {$recomS.status} / {$vRecom.status} </td>
+                    <td>{$user_statuses[$vo['user_status']]} / <font color="{$recomS.color}">{$recomS.status}</font> / <font color="{$vRecom.color}">{$vRecom.status} </font></td>
                     <td>
                         {$vo['connect_per']}%
                         <a href="{:url('user/virtual/autoConnect',array('id'=>$vo['id']))}" class="js-ajax-dialog-btn" data-msg="确定更换接通率吗？">

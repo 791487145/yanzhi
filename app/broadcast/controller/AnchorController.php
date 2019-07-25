@@ -70,10 +70,14 @@ class AnchorController extends AdminBaseController
         $page = $list->render();
 
         $guide = Db::name('guide')->order('code asc')->select();
+        $hashGuide = [0=>'无'];
+        foreach ($guide as $value) {
+            $hashGuide[$value['id']] = $value['code'].'|'.$value['name'];
+        }
 
         $this->assign('list', $list);
         $this->assign('page', $page);
-        $this->assign('guide', $guide);
+        $this->assign('guide', $hashGuide);
         // 渲染模板输出
         return $this->fetch();
     }
@@ -119,10 +123,10 @@ class AnchorController extends AdminBaseController
         }
         $photo = Db::name('user_photo')->where(["user_id" => $id])->select();
         $video = Db::name('user_video')->where(["user_id" => $id])->select();
-        $guideId = $anchor['guide_id'];
-        if ($guideId > 0){
-            $guide = Db::name('guide')->where(['id'=>$guideId])->find();
-            $this->assign('guide', $guide);
+        $guideHash = [0=>"无"];
+        $guide = Db::name('guide')->where(['status'=>1])->select();
+        foreach ($guide as $v) {
+            $guideHash[$v['id']] = $v['code']."|".$v['name'];
         }
         $exam = explode("|",$anchor['more']);
 
@@ -133,6 +137,7 @@ class AnchorController extends AdminBaseController
         $this->assign('photo', $photo);
         $this->assign('video', $video);
         $this->assign('exam', $exam);
+        $this->assign('guide', $guideHash);
         // 渲染模板输出
         return $this->fetch();
     }
@@ -157,6 +162,7 @@ class AnchorController extends AdminBaseController
         $coin = input('param.coin', 10, 'intval');
         $ratio = input('param.ratio', 100, 'intval');
         $ratio_gift = input('param.ratio_gift', 100, 'intval');
+        $guide_id = input('param.guide_id', 0, 'intval');
         $explain = input('param.explain');
         if ($status == 0){
             $this->error("请选择审核结果");
@@ -172,6 +178,16 @@ class AnchorController extends AdminBaseController
         $info['single_coin'] = $coin;
         $info['ratio'] = $ratio;
         $info['ratio_gift'] = $ratio_gift;
+        if ($info['guide_id'] != $guide_id) {//公会变更时，修改公会提成比例
+            $info['guide_id'] = $guide_id;
+            $info['ratio_guide'] = 0;
+            $info['guide_gift'] = 0;
+            if ($guide_id > 0) {
+                $guide = Db::name('guide')->where('id',$guide_id)->find();
+                $info['ratio_guide'] = $guide['ratio'];
+                $info['guide_gift'] = $guide['ratio'];
+            }
+        }
         if ($info['status'] != $status) {
             $info['status'] = $status;
             $info['audit_time'] = time();
@@ -182,6 +198,10 @@ class AnchorController extends AdminBaseController
             $info['more'] .= "|";
         }
         Db::name('live_anchor')->where(['id'=>$id])->update($info);
+        if ($status == 1) {
+            Db::name('user_photo')->where('user_id',$info['user_id'])->update(['status'=>1]);
+            Db::name('user_video')->where('user_id',$info['user_id'])->update(['status'=>1]);
+        }
         $this->success("审核成功");
     }
 

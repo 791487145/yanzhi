@@ -1,0 +1,71 @@
+<include file="public@header"/>
+</head>
+<php>
+    $arrStatus=['待审核','审核通过','已打款','审核拒绝'];
+    $colorStatus=["#483D8B","#228B22","#aaaaaa","#B22222"];
+</php>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a>提现管理</a></li>
+    </ul>
+    <form class="well form-inline margin-top-20" method="post" action="{:url('pay/index/extraction')}">
+        订单号：
+        <input class="form-control" type="text" name="sn" style="width: 200px;" value="{:input('request.sn')}" placeholder="请填写订单号">
+        昵称：
+        <input class="form-control" type="text" name="nickname" style="width: 200px;" value="{:input('request.nickname')}" placeholder="请填写提现用户昵称">
+        <input type="submit" class="btn btn-primary" value="搜索"/>
+        <a class="btn btn-danger" href="{:url('pay/index/extraction')}">清空</a>
+    </form>
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>订单号</th>
+                <th>提现用户</th>
+                <th>提现金额</th>
+                <th>订单时间</th>
+                <th>收款信息</th>
+                <th>{:lang('STATUS')}</th>
+                <th>{:lang('ACTIONS')}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <foreach name="list" item="vo">
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td>{$vo['sn']}</td>
+                    <td>{$vo['user_nickname']?$vo['user_nickname']:lang('NOT_FILLED')}</td>
+                    <td>
+                        提取：{$vo.coin}币<br>
+                        兑换：{$vo.money}元
+                    </td>
+                    <td>
+                        申请时间：{:date('Y-m-d H:i:s',$vo['add_time'])}<br>
+                        审核时间：<eq name="vo.exam_time" value="0">-<else/>{:date('Y-m-d H:i:s',$vo['exam_time'])}</eq><br>
+                        申请时间：<eq name="vo.send_time" value="0">-<else/>{:date('Y-m-d H:i:s',$vo['send_time'])}</eq>
+                    </td>
+                    <td>
+                        收款人：{$vo['pay_name']}<br>
+                        收款类型：{$vo['pay_type']}<br>
+                        收款账户：{$vo['pay_account']}
+                    </td>
+                    <td style="color: {$colorStatus[$vo['status']]}">{$arrStatus[$vo['status']]}</td>
+                    <td>
+                        <eq name="vo.status" value="0">
+                            <a href="{:url('pay/index/extractionStatus',array('id'=>$vo['id'],'status'=>'1'))}" class="js-ajax-dialog-btn" data-msg="确定审核通过吗？">审核通过</a>
+                            <a href="{:url('pay/index/extractionStatus',array('id'=>$vo['id'],'status'=>'3'))}" class="js-ajax-dialog-btn" data-msg="确定审核拒绝吗？">审核拒绝</a>
+                        </eq>
+                        <eq name="vo.status" value="1">
+                            <a href="{:url('pay/index/extractionStatus',array('id'=>$vo['id'],'status'=>'2'))}" class="js-ajax-dialog-btn" data-msg="确定已经打款吗？">打款</a>
+                        </eq>
+                    </td>
+                </tr>
+            </foreach>
+            </tbody>
+        </table>
+        <div class="pagination">{$page}</div>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

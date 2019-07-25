@@ -1,0 +1,46 @@
+<include file="public@header" />
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('pay/gift/index')}">礼物管理</a></li>
+        <li class="active"><a>添加礼物</a></li>
+    </ul>
+    <form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('pay/gift/addpost')}">
+        <div class="form-group">
+            <label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>礼物名称</label>
+            <div class="col-md-6 col-sm-10">
+                <input type="text" class="form-control" id="input-name" name="name">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input-pic" class="col-sm-2 control-label"><span class="form-required">*</span>图片</label>
+            <div class="col-md-6 col-sm-10">
+                <input type="text" class="form-control" id="input-pic" name="pic" value="">
+                <img src="__TMPL__/public/assets/images/default-thumbnail.png" id="input-pic-preview" width="35" height="35"/>
+                <a href="javascript:uploadOneImage('图片上传','#input-pic');" class="btn btn-default btn-sm" id="up_pic" style="height: 35px;line-height: 30px;">上传图片</a>
+                建议图片尺寸：256*256
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input-coin" class="col-sm-2 control-label"><span class="form-required">*</span>价格</label>
+            <div class="col-md-6 col-sm-10">
+                <input type="text" class="form-control" id="input-coin" name="coin">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input-mark" class="col-sm-2 control-label"><span class="form-required">*</span>排序</label>
+            <div class="col-md-6 col-sm-10">
+                <input type="text" class="form-control" id="input-mark" name="mark">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('ADD')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

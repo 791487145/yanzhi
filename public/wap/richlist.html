@@ -198,16 +198,16 @@
 				<div class="mypaiming">
 					<div class="pmtitle">我的排名</div>
 					<div class="myimgdiv">
-						<img src="img/01.jpg" alt="" class="mypmimg"/>
+						<img src="" alt="" class="mypmimg" id="userhead"/>
 					</div>
 				</div>
 				<div class="myname">
-					<div class="wodepm">未上榜</div>
-					<div class="mypmname">不知道的事</div>
+					<div class="wodepm" id="userpaiming"></div>
+					<div class="mypmname" id="username"></div>
 				</div>
 				<div class="mygxdiv">
 					<span class="gxtitle">贡献</span>
-					<span class="gxnum">0</span>
+					<span class="gxnum" id="userqubi"></span>
 					<span class="gxqubi">趣币</span>
 				</div>
 			</div>
@@ -257,10 +257,16 @@
 			var yztoken = request['token'];
 			var yzdevice = request['device'];
 			var yzid = request['uid'];
+			var yzdlid = request['dlid'];
+//			var yzdlid = 2518;
 //			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
 //			var yzdevice = 'android';
-//			var yzid = 1252;
+//			var yzid = 5327;
+//var yzid = 7112;
 
+
+			var userhead = '';
+			var username = '';
 //			获取我的信息
 			function getmyxinxi(){
 				var myxinxiurl = geturl(oneurl,'user/public/getNameById');
@@ -273,20 +279,26 @@
 					url: myxinxiurl,
 					dataType: "json",
 					data: {
-						"id": yzid
+						"id": yzdlid
 					},
 					success: function(result) {
 						console.log(JSON.stringify(result.data));
+						userhead = result.data[0].avatar;
+						username = result.data[0].nickname;
+						document.getElementById('username').innerHTML = username;
+						document.getElementById('userhead').src = userhead;
 					},
 					error: function() {
-						console.log('获取土豪榜列表失败');
+						console.log('获取当前用户失败');
 					}
 				});
 			}
-//			getmyxinxi();
+			getmyxinxi();
 
 			var thtophtml = '';
 			var thlisthtml = '';
+			var userpaiming = '';
+			var userqubi = '';
 
 			function getrichlist() {
 //				var richlisturl = 'tuhao.json';
@@ -304,42 +316,49 @@
 					},
 					success: function(result) {
 						console.log(JSON.stringify(result));
-//						console.log(result.msg.length);
-						if(result.msg.length == 0) {
+//						console.log(result.data.length);
+						userpaiming = result.data.my.rank;
+						userqubi = result.data.my.coin;
+						if(userpaiming == 0){
+							userpaiming = '未上榜';
+						}
+						document.getElementById('userpaiming').innerHTML = userpaiming;
+						document.getElementById('userqubi').innerHTML = userqubi;
+						if(result.data.list.length == 0) {
 							document.getElementById('thbang').style.border = 0;
 							document.getElementById('thtishi').style.display = 'block';
-						}else if(result.msg.length == 1){
+						}else if(result.data.list.length == 1){
 							thtophtml += '<li class="tuhaoli oneli">' +
 								'<div class="thnumber">' +
 								'<img src="img/oneimg.png" alt="" class="oneimg" />' +
 								'</div>' +
 								'<div class="imgdiv">' +
 								'<div class="imgimg">' +
-								'<img src="' + result.msg[0]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'<img src="' + result.data.list[0]['avatar'] + '" alt="" class="thheadimg cover" />' +
 								'</div>' +
-								'<div class="thname">' + result.msg[0]['nickname'] + '</div>' +
+								'<div class="thname">' + result.data.list[0]['nickname'] + '</div>' +
 								'</div>' +
 								'<div class="thxf">'+
 										'<span class="thgx">贡献</span>'+
-										'<span class="thnum">' + result.msg[0]['money'] + '</span>'+
+										'<span class="thnum">' + result.data.list[0]['money'] + '</span>'+
 										'<span class="thqubi">趣币</span>'+
 									'</div>'+
 								'</li>';
-							document.getElementById('thtop').innerHTML = thtophtml;	
-						}else if(result.msg.length == 2){
+							document.getElementById('thtop').innerHTML = thtophtml;
+						}else if(result.data.list.length == 2){
 							thtophtml += '<li class="tuhaoli oneli">' +
 								'<div class="thnumber">' +
 								'<img src="img/oneimg.png" alt="" class="oneimg" />' +
 								'</div>' +
 								'<div class="imgdiv">' +
 								'<div class="imgimg">' +
-								'<img src="' + result.msg[0]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'<img src="' + result.data.list[0]['avatar'] + '" alt="" class="thheadimg cover" />' +
 								'</div>' +
-								'<div class="thname">' + result.msg[0]['nickname'] + '</div>' +
+								'<div class="thname">' + result.data.list[0]['nickname'] + '</div>' +
 								'</div>' +
 								'<div class="thxf">'+
 										'<span class="thgx">贡献</span>'+
-										'<span class="thnum">' + result.msg[0]['money'] + '</span>'+
+										'<span class="thnum">' + result.data.list[0]['money'] + '</span>'+
 										'<span class="thqubi">趣币</span>'+
 									'</div>'+
 								'</li>' + '<li class="tuhaoli oneli">' +
@@ -348,31 +367,31 @@
 								'</div>' +
 								'<div class="imgdiv">' +
 								'<div class="imgimg">' +
-								'<img src="' + result.msg[1]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'<img src="' + result.data.list[1]['avatar'] + '" alt="" class="thheadimg cover" />' +
 								'</div>' +
-								'<div class="thname">' + result.msg[1]['nickname'] + '</div>' +
+								'<div class="thname">' + result.data.list[1]['nickname'] + '</div>' +
 								'</div>' +
 								'<div class="thxf">'+
 										'<span class="thgx">贡献</span>'+
-										'<span class="thnum">' + result.msg[1]['money'] + '</span>'+
+										'<span class="thnum">' + result.data.list[1]['money'] + '</span>'+
 										'<span class="thqubi">趣币</span>'+
 									'</div>'+
 								'</li>';
 								document.getElementById('thtop').innerHTML = thtophtml;
-						}else if(result.msg.length == 3){
+						}else if(result.data.list.length == 3){
 							thtophtml += '<li class="tuhaoli oneli">' +
 								'<div class="thnumber">' +
 								'<img src="img/oneimg.png" alt="" class="oneimg" />' +
 								'</div>' +
 								'<div class="imgdiv">' +
 								'<div class="imgimg">' +
-								'<img src="' + result.msg[0]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'<img src="' + result.data.list[0]['avatar'] + '" alt="" class="thheadimg cover" />' +
 								'</div>' +
-								'<div class="thname">' + result.msg[0]['nickname'] + '</div>' +
+								'<div class="thname">' + result.data.list[0]['nickname'] + '</div>' +
 								'</div>' +
 								'<div class="thxf">'+
 										'<span class="thgx">贡献</span>'+
-										'<span class="thnum">' + result.msg[0]['money'] + '</span>'+
+										'<span class="thnum">' + result.data.list[0]['money'] + '</span>'+
 										'<span class="thqubi">趣币</span>'+
 									'</div>'+
 								'</li>' + '<li class="tuhaoli oneli">' +
@@ -381,13 +400,13 @@
 								'</div>' +
 								'<div class="imgdiv">' +
 								'<div class="imgimg">' +
-								'<img src="' + result.msg[1]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'<img src="' + result.data.list[1]['avatar'] + '" alt="" class="thheadimg cover" />' +
 								'</div>' +
-								'<div class="thname">' + result.msg[1]['nickname'] + '</div>' +
+								'<div class="thname">' + result.data.list[1]['nickname'] + '</div>' +
 								'</div>' +
 								'<div class="thxf">'+
 										'<span class="thgx">贡献</span>'+
-										'<span class="thnum">' + result.msg[1]['money'] + '</span>'+
+										'<span class="thnum">' + result.data.list[1]['money'] + '</span>'+
 										'<span class="thqubi">趣币</span>'+
 									'</div>'+
 								'</li>' + '<li class="tuhaoli oneli">' +
@@ -396,13 +415,13 @@
 								'</div>' +
 								'<div class="imgdiv">' +
 								'<div class="imgimg">' +
-								'<img src="' + result.msg[2]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'<img src="' + result.data.list[2]['avatar'] + '" alt="" class="thheadimg cover" />' +
 								'</div>' +
-								'<div class="thname">' + result.msg[2]['nickname'] + '</div>' +
+								'<div class="thname">' + result.data.list[2]['nickname'] + '</div>' +
 								'</div>' +
 								'<div class="thxf">'+
 										'<span class="thgx">贡献</span>'+
-										'<span class="thnum">' + result.msg[2]['money'] + '</span>'+
+										'<span class="thnum">' + result.data.list[2]['money'] + '</span>'+
 										'<span class="thqubi">趣币</span>'+
 									'</div>'+
 								'</li>';
@@ -414,13 +433,13 @@
 								'</div>' +
 								'<div class="imgdiv">' +
 								'<div class="imgimg">' +
-								'<img src="' + result.msg[0]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'<img src="' + result.data.list[0]['avatar'] + '" alt="" class="thheadimg cover" />' +
 								'</div>' +
-								'<div class="thname">' + result.msg[0]['nickname'] + '</div>' +
+								'<div class="thname">' + result.data.list[0]['nickname'] + '</div>' +
 								'</div>' +
 								'<div class="thxf">'+
 										'<span class="thgx">贡献</span>'+
-										'<span class="thnum">' + result.msg[0]['money'] + '</span>'+
+										'<span class="thnum">' + result.data.list[0]['money'] + '</span>'+
 										'<span class="thqubi">趣币</span>'+
 									'</div>'+
 								'</li>' + '<li class="tuhaoli oneli">' +
@@ -429,13 +448,13 @@
 								'</div>' +
 								'<div class="imgdiv">' +
 								'<div class="imgimg">' +
-								'<img src="' + result.msg[1]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'<img src="' + result.data.list[1]['avatar'] + '" alt="" class="thheadimg cover" />' +
 								'</div>' +
-								'<div class="thname">' + result.msg[1]['nickname'] + '</div>' +
+								'<div class="thname">' + result.data.list[1]['nickname'] + '</div>' +
 								'</div>' +
 								'<div class="thxf">'+
 										'<span class="thgx">贡献</span>'+
-										'<span class="thnum">' + result.msg[1]['money'] + '</span>'+
+										'<span class="thnum">' + result.data.list[1]['money'] + '</span>'+
 										'<span class="thqubi">趣币</span>'+
 									'</div>'+
 								'</li>' + '<li class="tuhaoli oneli">' +
@@ -444,19 +463,19 @@
 								'</div>' +
 								'<div class="imgdiv">' +
 								'<div class="imgimg">' +
-								'<img src="' + result.msg[2]['avatar'] + '" alt="" class="thheadimg cover" />' +
+								'<img src="' + result.data.list[2]['avatar'] + '" alt="" class="thheadimg cover" />' +
 								'</div>' +
-								'<div class="thname">' + result.msg[2]['nickname'] + '</div>' +
+								'<div class="thname">' + result.data.list[2]['nickname'] + '</div>' +
 								'</div>' +
 								'<div class="thxf">'+
 										'<span class="thgx">贡献</span>'+
-										'<span class="thnum">' + result.msg[2]['money'] + '</span>'+
+										'<span class="thnum">' + result.data.list[2]['money'] + '</span>'+
 										'<span class="thqubi">趣币</span>'+
 									'</div>'+
 								'</li>';
 							document.getElementById('thtop').innerHTML = thtophtml;
-							var arr = result.msg;
-							arr = arr.splice(3, result.msg.length);
+							var arr = result.data.list;
+							arr = arr.splice(3, result.data.list.length);
 							console.log(JSON.stringify(arr));
 							console.log(arr.length);
 							for(var i = 0; i < arr.length; i++) {
@@ -477,7 +496,7 @@
 
 								document.getElementById('thbang').innerHTML = thlisthtml;
 							}
-						}
+						}						
 					},
 					error: function() {
 						console.log('获取土豪榜列表失败');

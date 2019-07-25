@@ -94,7 +94,9 @@ class WeChatPayService
     public function notify()
     {
         $postStr = file_get_contents('php://input');
+        Log::alert('$postStr_'.print_r($postStr,true));
         $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+        Log::alert('$postObj_'.print_r($postObj,true));
         if ($postObj === false) die('parse xml error');
         if ($postObj->return_code != 'SUCCESS') die($postObj->return_msg);
         if ($postObj->result_code != 'SUCCESS') die($postObj->err_code);

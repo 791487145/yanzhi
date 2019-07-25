@@ -1,0 +1,41 @@
+<include file="theme/functions"/>
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap">
+    <form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('appmenu/downEditPost')}">
+        <input type="hidden" name="id" value="{$data.id}">
+        <div class="form-group">
+            <label for="input-name" class="col-sm-2 control-label">名称<span class="form-required">*</span></label>
+            <div class="col-md-6 col-sm-10">
+                <input type="text" class="form-control" id="input-name" name="name" value="{$data.name}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input-jump_url" class="col-sm-2 control-label">推广主域名<span class="form-required">*</span></label>
+            <div class="col-md-6 col-sm-10">
+                <input type="text" class="form-control" id="input-jump_url" name="jump_url" value="{$data.jump_url}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input-down_url" class="col-sm-2 control-label">中间跳转域名<span class="form-required">*</span></label>
+            <div class="col-md-6 col-sm-10">
+                <input type="text" class="form-control" id="input-down_url" name="down_url" value="{$data.down_url}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input-land_url" class="col-sm-2 control-label">落地页域名<span class="form-required">*</span></label>
+            <div class="col-md-6 col-sm-10">
+                <input type="text" class="form-control" id="input-land_url" name="land_url" value="{$data.land_url}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('SAVE')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

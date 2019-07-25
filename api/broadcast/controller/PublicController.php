@@ -151,7 +151,7 @@ class PublicController extends RestUserBaseController
             $reData['anchor_level']     = $anchor['level'];
             $reData['anchor_coin']      = $anchor['single_coin'];
             $reData['anchor_gift']      = $anchor['gift_total'];
-            $reData['video_online']     = $anchor['video_state'];//0不在线，1在线
+            $reData['video_online']     = $userInfo['login_state'];//0：不在线，1：空闲，2：直播中，3：视频聊天中
             $reData['connect_per']      = $anchor['connect_per'];//视频聊天接通率
 
             //获取直播间信息
@@ -175,6 +175,9 @@ class PublicController extends RestUserBaseController
             if ($video)
             {
                 $reData['video_online'] = 3;//直播间开启时，在线状态改为忙碌
+            }
+            if ($userInfo['is_zombie'] == 1 || $userInfo['is_virtual'] == 1) {
+                $reData['video_online'] = rand(1,3);
             }
         }
 
@@ -934,7 +937,7 @@ class PublicController extends RestUserBaseController
         $fdata['lasttime'] = $time;
 
         //判断用户是否有视频，有则直接推送
-        $video = Db::name("user_video")->where(['user_id' => $anchorId , 'send_order' => [ '>' , 0 ] ])->order("rand()")->find();
+        $video = Db::name("user_video")->field("*,rand() as lorder")->where(['user_id' => $anchorId , 'send_order' => [ '>' , 0 ] ])->order("lorder")->find();
         if (!$video) {//主播无视频，按照顺序继续推送，更新播放序号
             $video = Db::name("user_video")->where([ 'send_order' => [ '>' , $fdata['order'] ] ])->order("send_order asc")->find();
             $fdata['order'] = $video['send_order'];
@@ -992,7 +995,7 @@ class PublicController extends RestUserBaseController
         fclose($videoLog);
     }
     /**
-     * 极光推送 - 随机获取一个推荐主播
+     * 极光推送 - 随机获取一个推荐主播--暂时不用
      */
     private function getAnchor($anchorId)
     {

@@ -6,7 +6,7 @@
         <li class="active"><a>消费管理</a></li>
     </ul>
     <php>
-        $arrType = ['不限','礼物','私播','视频'];
+        $arrType = ['不限','礼物','私播','视频','弹幕','发消息'];
     </php>
     <form class="well form-inline margin-top-20" method="post" action="{:url('pay/index/consume')}">
         订单号：
@@ -38,7 +38,7 @@
                 <td>{$vo.id}</td>
                 <td>{$vo['sn']}</td>
                 <td>{$vo['user_nickname']?$vo['user_nickname']:lang('NOT_FILLED')}</td>
-                <td>{$arrType[$vo['type']]}</td>
+                <td>{$arrType[$vo['type']] ?  $arrType[$vo['type']] :  "类型有误"}</td>
                 <td>{$vo.coin}</td>
                 <td>{:date('Y-m-d H:i:s',$vo['add_time'])}</td>
                 <td><a href="{:url('pay/index/consumeInfo',array('id'=>$vo['id']))}">订单详情</a></td>

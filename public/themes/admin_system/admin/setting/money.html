@@ -8,6 +8,7 @@
 			<li><a href="{:url('setting/vip')}">VIP设置</a></li>
 			<li><a href="{:url('setting/broadcast')}">直播设置</a></li>
 			<li><a href="{:url('appmenu/index')}">菜单设置</a></li>
+			<li><a href="{:url('appmenu/down')}">下载设置</a></li>
 		</ul>
 		<form method="post" class="form-horizontal js-ajax-form margin-top-20" role="form" action="{:url('setting/moneyPost')}">
 			<div class="form-group">
@@ -44,13 +45,13 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="input-live_reward" class="col-sm-2 control-label">工会主播礼物-平台提成</label>
+				<label for="input-live_reward" class="col-sm-2 control-label">主播礼物-平台提成</label>
 				<div class="col-md-6 col-sm-10">
 					<input type="text" class="form-control" id="input-live_reward" name="live_reward" value="{$live_reward|default=70}">
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="input-single_reward" class="col-sm-2 control-label">工会私播消费-平台提成</label>
+				<label for="input-single_reward" class="col-sm-2 control-label">视频通话-平台提成</label>
 				<div class="col-md-6 col-sm-10">
 					<input type="text" class="form-control" id="input-single_reward" name="single_reward" value="{$single_reward|default=50}">
 				</div>

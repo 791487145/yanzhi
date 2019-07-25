@@ -34,8 +34,13 @@ class User extends IM {
     }
 
     public function stat($username) {
-        $uri = self::BASE_URI . $username . '/userstat';
-        $response = $this->get($uri);
+        if (is_array($username)) {
+            $uri = 'https://api.im.jpush.cn/v2/users/statuser';
+            $response = $this->post($uri, $username);
+        } else {
+            $uri = self::BASE_URI . $username . '/userstat';
+            $response = $this->get($uri);
+        }
         return $response;
     }
 

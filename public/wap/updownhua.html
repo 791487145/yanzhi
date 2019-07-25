@@ -4,49 +4,31 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title></title>
-		<link rel="stylesheet" type="text/css" href="swiper-4.3.3.min.css" />
+		<title>播放页</title>
 		<script src="flexible.min.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
 			* {
-				margin: 0;
 				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
 			}
 			
 			html,
 			body {
-				height: 100%;
-			}
-			
-			.swiper-container {
-				height: 100%;
-			}
-			/*.slide1{
-				background-color: red;
-			}
-			.slide2{
-				background-color: blue;
-			}
-			.slide3{
-				background-color: green;
-			}
-			.slide4{
-				background-color: orange;
-			}*/
-			
-			.swiper-slide {
 				width: 100%;
 				height: 100%;
-				background: #000;
+			}
+			
+			.bfbox {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.bfcon {
+				width: 100%;
+				height: 100%;
 				position: relative;
-				top: 0;
-				left: 0;
-				bottom: 0;
-			}
-			
-			video {
-				width: 100%;
-				height: 100%;
+				background: #000;
 			}
 			
 			.dffhicon {
@@ -58,7 +40,12 @@
 				z-index: 200;
 			}
 			
-			.play-icon {
+			.dfvideo {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.zticon {
 				width: 1rem;
 				height: 1rem;
 				position: absolute;
@@ -68,84 +55,31 @@
 				margin-left: -0.5rem;
 				display: none;
 			}
-			/*右侧*/
-			
-			.rightcon {
-				width: 2rem;
-				height: 100%;
-				position: absolute;
-				top: 0;
-				right: 0;
-				/*background: pink;*/
-				text-align: center;
-			}
-			
-			.headcon {
-				position: relative;
-				top: 8rem;
-				margin: 0 auto;
-				width: 100%;
-			}
-			
-			.sphead {
-				width: 1.37rem;
-				height: 1.37rem;
-				border-radius: 100%;
-			}
-			
-			.spjia {
-				width: 0.54rem;
-				height: 0.54rem;
-				position: absolute;
-				right: 0.7rem;
-				bottom: -0.1rem;
-			}
-			
-			.zancon {
-				width: 100%;
-				text-align: center;
-				position: relative;
-				top: 8.8rem;
-			}
-			
-			.spzan {
-				width: 1rem;
-				height: 1rem;
-			}
-			
-			.zannum {
-				color: #fff;
-			}
 		</style>
 	</head>
 
 	<body>
-		<div class="swiper-container">
-			<div class="swiper-wrapper" id="ulvideo">
-				<!--<div class="swiper-slide slide1 videodiv">
-					<img src="img/fhicon.png" alt="" class="dffhicon" />
-					<video class="videoli" id="video1">
-						<source src="img/vyi.mp4"/>
-					</video>
-					<img src="img/zanting.png" alt="" class="play-icon" />
-					<div class="rightcon">
-						<div class="headcon">
-							<img src="img/01.jpg" class="sphead" />
-							<img src="img/jia.png" class="spjia" />
-						</div>
-						<div class="zancon">
-							<img src="img/xinzan.png" alt="" class="spzan" />
-							<p class="zannum">10</p>
-						</div>
-					</div>
-				</div>-->
+		<div class="bfbox">
+			<div class="bfcon">
+				<img src="img/fhicon.png" alt="" class="dffhicon" />
+				<video src="" class="dfvideo" id="bfvideo" loop="loop" playsinline webkit-playsinline autoplay></video>
+				<img src="img/zanting.png" alt="" class="zticon" />
 			</div>
 		</div>
+
 		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="yuming.js" type="text/javascript" charset="utf-8"></script>
-		<script src="swiper-4.3.3.min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="alertMsg.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
+			//接收一个值
+			//			function oneValues() {
+			//				var result;
+			//				var url = window.location.search; //获取url中"?"符后的字串  
+			//				if(url.indexOf("?") != -1) {
+			//					result = url.substr(url.indexOf("=") + 1);
+			//				}
+			//				return result;
+			//			}
+			//			var result = oneValues();
+			//			console.log(result);
 			function GetRequest() {
 				var url = location.search; //获取url中"?"符后的字串
 				var theRequest = new Object();
@@ -158,148 +92,43 @@
 				}
 				return theRequest;
 			}
-
 			var request = new Object();
 			request = GetRequest();
 			var yztoken = request['token'];
 			var yzdevice = request['device'];
 			var yzid = request['uid'];
-			var sbindex = request['sbindex'];
-			var endindex = ''; //滑动结束后当前的index
-			var videoid = Number(sbindex) + 1;
-			var currentid = 'video' + videoid;
-			var video_divs = document.getElementsByClassName('videodiv');
-//			var ptvideo_divs = document.getElementsByClassName('ptvideodiv');
-//			var vipvideo_divs = document.getElementsByClassName('vvideodiv');
-			var videos = document.getElementsByClassName('videoli');
-			// var play_images = document.getElementsByClassName('dffhicon');
-			var play_images = document.getElementsByClassName('play-icon');
-			var videohtml = '';
-//			var ptvideohtml = '';
-//			var vipvideohtml = '';
-			var indexend = '';
-			var currentindex = '';
-			var val = '';
-			var bfvideo = '';
-			
-			var isvipvideo = '';//是否是vip视频
-			var ptvideos = [];
-			var vipvideos = [];
-			
-			//获取视频
-			function getvideo() {
-				var videourl = geturl(oneurl, 'broadcast/public/video');
-//				var videourl = 'video.json';
-				$.ajax({
-					headers: {
-						'YZ-Token': yztoken,
-						'YZ-Device-Type': yzdevice
-					},
-					type: "post",
-					url: videourl,
-					dataType: "json",
-					data: {
-						"id": yzid
-					},
-					success: function(result) {
-						console.log(JSON.stringify(result));
-						for(var i=0;i<result.data.length;i++){
-							if(result.data[i].is_vip == 0){
-								ptvideos.push(i);
-							}
-						}
-						for(var i=0;i<ptvideos.length;i++){
-							videohtml += '<div class="swiper-slide videodiv">' +
-								'<img src="img/fhicon.png" alt="" class="dffhicon" />' +
-								'<video class="videoli" webkit-playsinline playsinline x5-playsinline x-webkit-airplay="allow">' +
-								'<source src="' + result.data[i]['url'] + '"/>' +
-								'</video>' +
-								'<img src="img/zanting.png" alt="" class="play-icon" />' +
-								'</div>';
-							document.getElementById('ulvideo').innerHTML = videohtml;
-						}
-//						// 监听点击事件
-						for(var video_box_i = 0, len = video_divs.length; video_box_i < len; video_box_i++) {
-							(function(i) {
-								video_divs[i].onclick = function() {
-									buhuaVideoIndex(i);
-									console.log(isvipvideo);
-								};
-							})(video_box_i);
-						}
-
-						for(var videos_i = 0, len = videos.length; videos_i < len; videos_i++) {
-							(function(i) {
-								videos[i].onended = function() {
-									play_images[i].style.display = 'block';
-								};
-								videos[i].onpause = function() {
-									play_images[i].style.display = 'block';
-								};
-								videos[i].onplay = function() {
-									play_images[i].style.display = 'none';
-								};
-							})(videos_i);
-						}
-
-						function pauseVideo() {
-							for(var i = 0, len = videos.length; i < len; i++) {
-								videos[i].pause();
-								play_images[i].style.display = 'block';
-							}
-						}
-
-						function isvip() {
-							for(var i = 0, len = videos.length; i < len; i++) {
-								videos[i].pause();
-								play_images[i].style.display = 'block';
-								videos[i].onclick = function() {
-									window.location.href = 'https://www.baidu.com';
-								}
-							}
-						}
-
-						function handleVideoIndex(index) { //获取到滑过之后的index
-							if(videos[index].paused) {
-								videos[index].play();
-								videos[index].currentTime = 0;
-							} else {
-								videos[index].pause();
-							}
-						}
-						//滑动结束播放时间为0,如果没有滑动,继续播放
-						function buhuaVideoIndex(index) {
-							if(videos[index].paused) {
-								videos[index].play();
-							} else {
-								videos[index].pause();
-							}
-						}
-
-						var swiper = new Swiper(".swiper-container", {
-							direction: "vertical",
-							on: {
-								slideChangeTransitionEnd: function() { //滑动事件
-									endindex = this.activeIndex;
-									pauseVideo();
-									handleVideoIndex(endindex);
-								}
-							}
-						});
-						swiper.slideTo(sbindex, 0, false);
-						buhuaVideoIndex(sbindex);
-						$('.dffhicon').click(function(e) {
-							window.location.href = 'sbzhuyemy.html';
-							$('.play-icon').css('display', 'none');
-							e.stopPropagation();
-						})
-					},
-					error: function() {
-						console.log('获取视频列表失败');
-					}
-				});
-			}
-			getvideo();
+			var getidurl = request['getidurl'];
+			//			var yztoken = '3de74cfd5e58e66f5817e2e520d2b43d269aa52ae521011e19a6f32a4cb57ca7';
+			//			var yzdevice = 'iphone';
+			//			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
+			//			var yzdevice = 'android';
+			//			var yzid = 8;
+			//			document.getElementById('bfvideo').src = result;
+			document.getElementById('bfvideo').src = getidurl;
+			$('.dffhicon').click(function() {
+//				window.location.href = 'sbzhuyemy.html';
+				window.location.href = 'sbzhuyemy.html?uid='+ yzid + '&token=' + yztoken + '&device='+ yzdevice;
+//				window.history.go(-1);
+			})
+			var bfvideo = document.getElementById('bfvideo');
+			$('#bfvideo').click(function() {
+				if(bfvideo.paused) {
+					bfvideo.play();
+					$('.zticon').css('display', 'none');
+				} else if(bfvideo.played) {
+					bfvideo.pause();
+					$('.zticon').css('display', 'block');
+				}
+			})
+			$('.zticon').click(function() {
+				if(bfvideo.paused) {
+					bfvideo.play();
+					$('.zticon').css('display', 'none');
+				} else if(bfvideo.played) {
+					bfvideo.pause();
+					$('.zticon').css('display', 'block');
+				}
+			})
 		</script>
 	</body>
 

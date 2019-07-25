@@ -72,6 +72,7 @@ class MessageController extends AdminBaseController
             'content'   => $data['content'],
             'status'    => $data['status'],
             'addtime'   => time(),
+            'pubtime'   => 0,
         ];
         if ($data['send'] == 1)//立即推送
         {

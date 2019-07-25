@@ -74,16 +74,16 @@ class IndexController extends RestBaseController
     }
     private function getAnchorOnline($start,$pageSize,$debug) {
         $sql = "SELECT "
-            ."`a`.`user_id`,`a`.`single_coin`,`a`.`gift_total`,`a`.`level`,"
+            ."`a`.`user_id`,`a`.`single_coin`,`a`.`gift_total`,`a`.`level`,`a`.`video_state`,"
             ."`v`.`id` `vid`,`u`.`is_zombie`,`u`.`is_virtual`,"
-            ."`u`.`user_nickname`,`u`.`sex`,`u`.`avatar`,`u`.`signature`,`u`.`birthday`,`u`.`more`,`u`.`city`,`u`.`province` "
+            ."`u`.`user_nickname`,`u`.`sex`,`u`.`avatar`,`u`.`signature`,`u`.`birthday`,`u`.`more`,`u`.`city`,`u`.`province`,`u`.`login_state` "
             ."FROM `yz_live_anchor` `a` "
             ."INNER JOIN `yz_user` `u` ON `a`.`user_id` = `u`.`id` "
             ."LEFT JOIN `yz_live_room` `r` ON `r`.`user_id` = a.user_id AND r.live_state = 1 "
             ."LEFT JOIN `yz_live_video` `v` ON `r`.`user_id` = v.anchor_id AND v.end_time = 0 "
-            ."WHERE `a`.`status` = 1 AND `u`.`login_state` = 1 AND `r`.`id` IS NULL "
+            ."WHERE `a`.`status` = 1 AND `r`.`id` IS NULL "// AND `u`.`login_state` = 1
             ."AND (`a`.`video_state` = 1 OR (`u`.`is_zombie` = 0 AND `u`.`is_virtual` = 0)) "
-            ."ORDER BY u.is_virtual ASC,a.video_recom DESC,u.id DESC LIMIT ".$start.", ".$pageSize;
+            ."ORDER BY u.login_state desc,u.is_virtual ASC,a.video_recom DESC,u.id DESC LIMIT ".$start.", ".$pageSize;
         $list = Db::query($sql);
       if ($debug == 1) {
         var_dump(Db::name("live_anchor")->getLastSql());
@@ -95,15 +95,16 @@ class IndexController extends RestBaseController
             if ($value['avatar'] != '' &&  strpos($value['avatar'],'http://') === false){
                 $value['avatar'] = 'http://'.$cdnSettings['cdn_static_url'] .$value['avatar'];
             }
-            $age = floor( ( time() - $value['birthday'] ) / 86400 / 365 );
+            halt()
+            $age = $value['birthday'];
             $more = json_decode($value['more'],true);
           
-            $busy = 0;
+            $busy = $value['login_state'];
             if ($value['vid'] > 0) {
-                $busy = 1;
+                $busy = 3;
             }
-            if ($value['is_virtual'] == 1) {
-                $busy = rand(0,1);
+            if ($value['is_zombie'] == 1 || $value['is_virtual'] == 1) {
+                $busy = rand(1,3);
             }
 
             $tmp = [
@@ -124,7 +125,7 @@ class IndexController extends RestBaseController
                 'province'     => empty($value['province'])?'':$value['province'],
                 'city'          => empty($value['city'])?'':$value['city'],
                 'tag'           => '',
-                'busy'        => $busy
+                'video_online'        => $busy
             ];
             if ($tmp['tag'] != ''){
                 $tmp['tag'] = 'http://' . $cdnSettings['cdn_static_url'] . '/upload/tag/' . $tmp['tag'] . '.png';

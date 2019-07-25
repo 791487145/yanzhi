@@ -1,0 +1,94 @@
+<include file="public@header" />
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('broadcast/guide/index')}">公会管理</a></li>
+        <li class="active"><a>添加公会</a></li>
+    </ul>
+    <form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('broadcast/guide/addPost')}">
+        <div class="col-md-9">
+            <div class="form-group">
+                <label for="input-code" class="col-sm-2 control-label">代码</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-code" name="code">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-name" class="col-sm-2 control-label">名称</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-name" name="name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-ratio" class="col-sm-2 control-label">公会提成</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-ratio" name="ratio" value="50">
+                    <p>如平台提成70%，公会提成60%，则用户消费100币时，平台收入70币，公会收入18币，主播收入12币</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" style="color: maroon">打款信息</label>
+            </div>
+            <div class="form-group">
+                <label for="input-pay_name" class="col-sm-2 control-label">收款人姓名</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-pay_name" name="pay_name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">账户类型</label>
+                <div class="col-md-6 col-sm-10">
+                    <label class="control-label" style="font-weight: normal; margin-left: 2px;"><input type="radio" name="pay_type" value="1" checked="checked">银行转账</label>
+                    <label class="control-label" style="font-weight: normal; margin-left: 2px;"><input type="radio" name="pay_type" style="margin-left: 20px;" value="2">支付宝转账</label>
+                    <label class="control-label" style="font-weight: normal; margin-left: 2px;"><input type="radio" name="pay_type" style="margin-left: 20px;" value="3">微信转账</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-pay_account" class="col-sm-2 control-label">收款账户</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-pay_account" name="pay_account">
+                    <p>如使用银行转账，请填写：**银行|账号</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('ADD')}</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <table class="table table-bordered">
+                <tr><th><b>登录信息</b></th></tr>
+                <tr><td>
+                    <p>账号</p>
+                    <input type="text" class="form-control" id="input-user_login" name="u[user_login]">
+                </td></tr>
+                <tr><td>
+                    <p>密码</p>
+                    <input type="text" class="form-control" id="input-user_pass" name="u[user_pass]">
+                </td></tr>
+                <tr><th><b>会长信息</b></th></tr>
+                <tr><td>
+                    <p>姓名</p>
+                    <input type="text" class="form-control" id="input-cdr" name="cdr">
+                </td></tr>
+                <tr><td>
+                    <p>手机号码</p>
+                    <input type="text" class="form-control" id="input-mobile" name="mobile">
+                </td></tr>
+                <tr><td>
+                    <p>QQ号码</p>
+                    <input type="text" class="form-control" id="input-qq" name="qq">
+                </td></tr>
+                <tr><td>
+                    <p>微信账号</p>
+                    <input type="text" class="form-control" id="input-weixin" name="weixin">
+                </td></tr>
+            </table>
+        </div>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

@@ -307,13 +307,31 @@
 			}
 			.mui-pciker-list li{
 				font-size: 20px;
-				color: #333;
+				/*color: #333;*/
 			}
 			.margindiv{
 				width: 100%;
 				height: 0.2rem;
 				background: #e4e4e4;
 			}
+			.jsdiv {
+				float: right;
+				margin-right: 0.73rem;
+				text-align: right;
+			}
+			.qianmingdiv{
+				width: 65%;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.jsname {
+				font-size: 0.43rem;
+				color: #333;
+			}
+			.noborder {
+				border: 0;
+			}	
 		</style>
 	</head>
 
@@ -380,12 +398,12 @@
 					</div>
 				</div>
 				<!--身高-->
-				<!--<div class="divli poli" id="editheight">
+				<div class="divli poli" id="editheight">
 					<div class="edittitle">身高</div>
 					<div class="namediv">
 						<span class="myname" id="height"></span>
 					</div>
-				</div>-->
+				</div>
 				<!--体重-->
 				<div class="divli poli" id="editweight">
 					<div class="edittitle">体重</div>
@@ -419,6 +437,13 @@
 					<div class="edittitle">擅长话题</div>
 					<div class="namediv">
 						<span class="myname" id="huati"></span>
+					</div>
+				</div>
+				<!--个性签名-->
+				<div class="divli poli noborder" id="editsign">
+					<div class="edittitle">个性签名</div>
+					<div class="jsdiv qianmingdiv">
+						<span class="jsname" id="sign"></span>
 					</div>
 				</div>
 			</div>
@@ -457,6 +482,9 @@
 //			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
 //			var yzdevice = 'android';
 //			var yzid = 8;
+//			var yztoken = '2ce090b0ece64178b11abe5a4f7c146bd1209ad3d047db03c938b62df87af1b0';
+//			var yzdevice = 'iphone';
+//			var yzid = 7348;
 
 			//			获取个人信息
 			var myname = document.getElementById('myname');
@@ -486,10 +514,11 @@
 //							editheight = '未填写';
 //						}
 						document.getElementById('shencai').innerHTML = data.data.figure;
-//						document.getElementById('height').innerHTML = data.data.height;
+						document.getElementById('height').innerHTML = data.data.height;
 						document.getElementById('weight').innerHTML = data.data.weight;
 						document.getElementById('work').innerHTML = data.data.job;
 						document.getElementById('huati').innerHTML = data.data.topic;
+						document.getElementById('sign').innerHTML = data.data.signature;
 						var editcity = data.data.domicile;
 						if(editcity == ''){
 							editcity = '未填写';
@@ -735,119 +764,119 @@
 				})
 			}, false);
 			
-//			var heightPicker = new mui.PopPicker();
-//			heightPicker.setData([{
-//				text: '保密'
-//			},{
-//				text: '150CM'
-//			}, {
-//				text: '151CM'
-//			}, {
-//				text: '152CM'
-//			}, {
-//				text: '153CM'
-//			}, {
-//				text: '154CM'
-//			}, {
-//				text: '155CM'
-//			}, {
-//				text: '156CM'
-//			}, {
-//				text: '157CM'
-//			}, {
-//				text: '158CM'
-//			}, {
-//				text: '159CM'
-//			}, {
-//				text: '160CM'
-//			}, {
-//				text: '161CM'
-//			}, {
-//				text: '162CM'
-//			}, {
-//				text: '163CM'
-//			}, {
-//				text: '164CM'
-//			}, {
-//				text: '165CM'
-//			}, {
-//				text: '166CM'
-//			}, {
-//				text: '167CM'
-//			}, {
-//				text: '168CM'
-//			}, {
-//				text: '169CM'
-//			}, {
-//				text: '170CM'
-//			}, {
-//				text: '171CM'
-//			}, {
-//				text: '172CM'
-//			}, {
-//				text: '173CM'
-//			}, {
-//				text: '174CM'
-//			}, {
-//				text: '175CM'
-//			}, {
-//				text: '176CM'
-//			}, {
-//				text: '177CM'
-//			}, {
-//				text: '178CM'
-//			}, {
-//				text: '179CM'
-//			}, {
-//				text: '180CM'
-//			}, {
-//				text: '181CM'
-//			}, {
-//				text: '182CM'
-//			}, {
-//				text: '183CM'
-//			}, {
-//				text: '184CM'
-//			}, {
-//				text: '185CM'
-//			}, {
-//				text: '186CM'
-//			}, {
-//				text: '187CM'
-//			}, {
-//				text: '188CM'
-//			}, {
-//				text: '189CM'
-//			}, {
-//				text: '190CM'
-//			}, {
-//				text: '191CM'
-//			}, {
-//				text: '192CM'
-//			}, {
-//				text: '193CM'
-//			}, {
-//				text: '194CM'
-//			}, {
-//				text: '195CM'
-//			}, {
-//				text: '196CM'
-//			}, {
-//				text: '197CM'
-//			}, {
-//				text: '198CM'
-//			}, {
-//				text: '200CM'
-//			}]);
-//			var heightClick = document.getElementById('editheight');
-//			var heightResult = document.getElementById('height');
-//			heightClick.addEventListener('click', function(event) {
-//				heightPicker.show(function(items) {
-//					heightResult.innerText = items[0].text;
-//					var height = heightResult.innerHTML;
-//					editinfo('height', height);
-//				})
-//			}, false);
+			var heightPicker = new mui.PopPicker();
+			heightPicker.setData([{
+				text: '保密'
+			},{
+				text: '150CM'
+			}, {
+				text: '151CM'
+			}, {
+				text: '152CM'
+			}, {
+				text: '153CM'
+			}, {
+				text: '154CM'
+			}, {
+				text: '155CM'
+			}, {
+				text: '156CM'
+			}, {
+				text: '157CM'
+			}, {
+				text: '158CM'
+			}, {
+				text: '159CM'
+			}, {
+				text: '160CM'
+			}, {
+				text: '161CM'
+			}, {
+				text: '162CM'
+			}, {
+				text: '163CM'
+			}, {
+				text: '164CM'
+			}, {
+				text: '165CM'
+			}, {
+				text: '166CM'
+			}, {
+				text: '167CM'
+			}, {
+				text: '168CM'
+			}, {
+				text: '169CM'
+			}, {
+				text: '170CM'
+			}, {
+				text: '171CM'
+			}, {
+				text: '172CM'
+			}, {
+				text: '173CM'
+			}, {
+				text: '174CM'
+			}, {
+				text: '175CM'
+			}, {
+				text: '176CM'
+			}, {
+				text: '177CM'
+			}, {
+				text: '178CM'
+			}, {
+				text: '179CM'
+			}, {
+				text: '180CM'
+			}, {
+				text: '181CM'
+			}, {
+				text: '182CM'
+			}, {
+				text: '183CM'
+			}, {
+				text: '184CM'
+			}, {
+				text: '185CM'
+			}, {
+				text: '186CM'
+			}, {
+				text: '187CM'
+			}, {
+				text: '188CM'
+			}, {
+				text: '189CM'
+			}, {
+				text: '190CM'
+			}, {
+				text: '191CM'
+			}, {
+				text: '192CM'
+			}, {
+				text: '193CM'
+			}, {
+				text: '194CM'
+			}, {
+				text: '195CM'
+			}, {
+				text: '196CM'
+			}, {
+				text: '197CM'
+			}, {
+				text: '198CM'
+			}, {
+				text: '200CM'
+			}]);
+			var heightClick = document.getElementById('editheight');
+			var heightResult = document.getElementById('height');
+			heightClick.addEventListener('click', function(event) {
+				heightPicker.show(function(items) {
+					heightResult.innerText = items[0].text;
+					var height = heightResult.innerHTML;
+					editinfo('height', height);
+				})
+			}, false);
 			
 			var weightPicker = new mui.PopPicker();
 			weightPicker.setData([{
@@ -938,6 +967,11 @@
 					editinfo('domicile', Position);
 				});
 			}, false);
+			
+			//修改签名
+			$('#editsign').click(function() {
+				window.location.href = 'qianming.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice;
+			})
 		</script>
 	</body>
 

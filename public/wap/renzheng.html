@@ -131,15 +131,15 @@
 					<input type="text" name="" id="" value="" placeholder="请输入身份证号" class="idnuminput" />
 				</div>
 			</div>
-			<div class="cardtishi">上传一张手持身份证照片</div>
-			<div class="cardpic">
+			<!--<div class="cardtishi">上传一张手持身份证照片</div>-->
+			<!--<div class="cardpic">
 				<div class="sfzpic">
 					<img src="img/sfzpic.png" alt="" id="show1" class="cover" />
 					<form action="" enctype="multipart/form-data" class="formimg">
 						<input type="file" id="file" img-id="show1" class="filepath" onchange="changepic(this)" accept="image/*">
 					</form>
 				</div>
-			</div>
+			</div>-->
 			<div class="buttondiv">
 				<button class="rzbutton">开始认证</button>
 			</div>
@@ -149,8 +149,6 @@
 		<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="alertMsg.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			//			获取token device
-			//			传值:window.location.href = 'RegOk.htm?email='+email+'&name='+username+''; 
 			function GetRequest() {
 				var url = location.search; //获取url中"?"符后的字串
 				var theRequest = new Object();
@@ -166,7 +164,6 @@
 
 			var request = new Object();
 			request = GetRequest();
-			//token device
 			var yztoken = request['token'];
 			var yzdevice = request['device'];
 			var yzid = request['uid'];
@@ -194,7 +191,6 @@
 					alertMsg('身份证号输入有误');
 					return false;
 				} else {
-//					var rzurl = 'http://yz.baiyoumi.cn/api/user/profile/trueName';
 					var rzurl = geturl(oneurl,'user/profile/trueName');
 					$.ajax({
 						headers: {
@@ -211,6 +207,9 @@
 						success: function(result) {
 							console.log(JSON.stringify(result));
 							alertMsg(result.msg);
+							if(result.msg == '认证成功'){
+								window.location.href = 'phone://pop';
+							}
 						},
 						error: function(result) {
 							console.log('实名认证失败');
@@ -218,104 +217,6 @@
 					});
 				}
 			})
-
-			//将base64转换为文件
-			function dataURLtoFile(dataurl, filename) {
-				var arr = dataurl.split(','),
-					mime = arr[0].match(/:(.*?);/)[1],
-					bstr = atob(arr[1]),
-					n = bstr.length,
-					u8arr = new Uint8Array(n);
-				while(n--) {
-					u8arr[n] = bstr.charCodeAt(n);
-				}
-				return new File([u8arr], filename, {
-					type: mime
-				});
-			};
-
-			function changepic(aa) {
-				if(typeof FileReader == "undefined") {
-					alert("您的浏览器不支持FileReader对象！");
-				}
-
-				var fileimg = document.getElementById('file').files[0]; //获取file对象
-				//判断file类型是否为图片
-				if(!fileimg) {
-					return
-				}
-
-				var imgtype = fileimg.type.substring(fileimg.type.lastIndexOf("/") + 1).toLowerCase();
-				//				console.log(imgtype);
-				if(imgtype != "jpg" && imgtype != 'jpeg' && imgtype != 'png') {
-					console.log(imgtype);
-					console.log('图片格式不对');
-				}
-
-				//设置限制图像的大小为2M
-				var maximgsize = 1024 * 1024 * 2;
-				if(fileimg.size > maximgsize) {
-					//					alert('文件大小不超过2M');
-					//					return
-				}
-				var reader = new FileReader(); //声明一个FileReader实例
-				reader.readAsDataURL(fileimg); //调用redsAsDataURL方法读取选中的文件
-				reader.onload = function(e) { //利用onload事件中获取到成功读取的选中的图像文件，并以插入一个img方式来显示读取的图像文件
-					var img = new Image();
-					img.src = e.target.result;
-					img.onload = function() {
-						var w = this.width,
-							h = this.height,
-							scale = w / h;
-						if(w > 600) {
-							w = 600;
-						}
-						h = w / scale;
-						var canvas = document.createElement('canvas');
-						var ctx = canvas.getContext('2d');
-						$(canvas).attr({
-							width: w,
-							height: h
-						});
-						ctx.drawImage(this, 0, 0, w, h);
-						var base64 = canvas.toDataURL('image/jpeg', 1 || 0.8);
-						console.log(base64);
-						var fd = new FormData();
-						fd.append("act", "card");
-						fd.append("file", dataURLtoFile(base64, "card.jpg")); //加入文件对象
-						upcard(fd);
-					}
-
-				};
-			}
-
-			function upcard(fd) {
-//				var headurl = 'http://yz.baiyoumi.cn/api/user/upload/img';
-				var headurl = geturl(oneurl,'user/upload/img');
-				$.ajax({
-					headers: {
-						'YZ-Token': yztoken,
-						'YZ-Device-Type': yzdevice
-					},
-					url: headurl,
-					type: 'POST',
-					datatype: 'json',
-					data: fd,
-					cache: false,
-					traditional: true,
-					contentType: false,
-					processData: false,
-					success: function(result) {
-						console.log(JSON.stringify(result));
-						if(result.code == 1) {
-							document.getElementById('show1').src = 'http://'+ yuming + result.data.url;
-						}
-					},
-					error: function(data) {
-						console.log(data.responseText);
-					}
-				})
-			}
 		</script>
 	</body>
 

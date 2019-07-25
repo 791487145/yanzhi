@@ -9,9 +9,9 @@
         工会：
         <select class="form-control" name="gid" style="width: 200px;">
             <option value="0">请选择</option>
-            <foreach name="guide"  item="vo">
-                <php> $selected = ($vo['id'] == $gid) ? " selected" : "";</php>
-                <option value="{$vo['id']}"{$selected}>{$vo['code']} {$vo['name']}</option>
+            <foreach name="guide" key="k" item="vo">
+                <php> $selected = ($k == $gid) ? " selected" : "";</php>
+                <option value="{$k}"{$selected}>{$vo}</option>
             </foreach>
         </select>
         关键字：
@@ -23,12 +23,16 @@
         <table class="table table-hover table-bordered">
             <thead>
             <tr>
-                <th>{:lang('REALNAME')}</th>
+                <th>公会</th>
                 <th>{:lang('NICENAME')}</th>
-                <th>{:lang('AVATAR')}</th>
+                <th>实名信息</th>
                 <th>{:lang('MOBILE')}</th>
                 <th>{:lang('APPLY_TIME')}</th>
                 <th>{:lang('EXAMINE_TIME')}</th>
+                <th>主播等级</th>
+                <th>私播单价</th>
+                <th>平台提成()</th>
+                <th>公会提成</th>
                 <th>{:lang('STATUS')}</th>
                 <th>{:lang('ACTIONS')}</th>
             </tr>
@@ -40,12 +44,16 @@
             </php>
             <foreach name="list" item="vo">
                 <tr>
+                    <td>{$guide[$vo['guide_id']]}</td>
+                    <td><img width="25" height="25" src="{$vo.avatar}"/>{$vo['user_nickname']?$vo['user_nickname']:lang('NOT_FILLED')}</td>
                     <td>{$vo['truename']}【{$vo['idnum']}】</td>
-                    <td>{$vo['user_nickname']?$vo['user_nickname']:lang('NOT_FILLED')}</td>
-                    <td><img width="25" height="25" src="{:url('user/public/avatar',array('id'=>$vo['id']))}"/></td>
                     <td>{$vo.mobile}</td>
                     <td>{:date('Y-m-d H:i:s',$vo['add_time'])}</td>
                     <td>{:date('Y-m-d H:i:s',$vo['audit_time'])}</td>
+                    <td>{$vo.level}</td>
+                    <td>{$vo.single_coin}</td>
+                    <td>聊:{$vo.ratio}%|礼:{$vo.ratio_gift}%</td>
+                    <td>聊:{$vo.ratio_guide}%|礼:{$vo.guide_gift}%</td>
                     <td style="color: {$colorStatuses[$vo['status']]}">{$anchorStatuses[$vo['status']]}</td>
                     <td><a href="{:url('broadcast/anchor/info',array('id'=>$vo['user_id']))}">{:lang('SHOW_INFO')}</a></td>
                 </tr>

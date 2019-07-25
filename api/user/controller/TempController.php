@@ -21,7 +21,7 @@ class TempController extends RestBaseController
         if ($id > 0) {
             $data = ['name'=>"QY_".$id];
         } else {
-            $data = ['name'=>["QY_2518","QY_1308","QY_7193"]];
+            $data = ['name'=>["QY_2518","QY_1308","QY_7193","QY_6931"]];
         }
         $result = hook_one("user_jpush_state", $data);
         var_dump($result);
@@ -216,7 +216,7 @@ class TempController extends RestBaseController
         $now = time();
         foreach ( $list as $key => $value ) {
             $more = json_decode($value['more'],true);
-            $more['long'] = rand(50,3000);
+            $more['long'] = rand(1,30)*100;
             $now = $now - rand(10,600);
             $data = [
                 'more'                  => json_encode($more),

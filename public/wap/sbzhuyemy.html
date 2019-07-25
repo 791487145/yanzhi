@@ -977,11 +977,11 @@
 			.blur {
 				filter: url(blur.svg#blur);
 				/* FireFox, Chrome, Opera */
-				-webkit-filter: blur(4px);
+				-webkit-filter: blur(7px);
 				/* Chrome, Opera */
-				-moz-filter: blur(4px);
-				-ms-filter: blur(4px);
-				filter: blur(4px);
+				-moz-filter: blur(7px);
+				-ms-filter: blur(7px);
+				filter: blur(7px);
 				filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=10, MakeShadow=false);
 				/* IE6~IE9 */
 			}
@@ -1191,7 +1191,6 @@
 				z-index: 101;
 				width: 0.5rem;
 				height: 0.5rem;
-				/*width: 93p;*/
 			}
 			
 			.videozhezhao {
@@ -1294,7 +1293,7 @@
 							<div class="tuhaocon" id="tuhaocon">
 								<div class="thdiv">
 									<img class="thicon" src="img/iconth.png" alt="" />
-									<span>主播守护榜</span>
+									<span>守护榜</span>
 								</div>
 								<div class="thuser" id="thuser"></div>
 							</div>
@@ -1307,6 +1306,10 @@
 								<li class="zlli">
 									<span class="lititle" id="shencaititle">身材</span>
 									<span class="floatr" id="zbshencai"></span>
+								</li>
+								<li class="zlli">
+									<span class="lititle">身高</span>
+									<span class="floatr" id="zbheight"></span>
 								</li>
 								<li class="zlli" id="zbweightli">
 									<span class="lititle">体重</span>
@@ -1375,15 +1378,55 @@
 			var yztoken = request['token'];
 			var yzdevice = request['device'];
 			var yzid = request['uid'];
+			var yzdlid = request['ID'];
 //			var yztoken = 'e6d60e2923f3bdfc997692f73d32e8e656ea806ca5846c828d0b7f86591a2b99';
 //			var yzdevice = 'android';
-//			var yztoken = '3de74cfd5e58e66f5817e2e520d2b43d269aa52ae521011e19a6f32a4cb57ca7';
-//			var yzdevice = 'iphone';
-//			var yztoken = 'bf3293de175dc3fb8d4dff91b4d9c54800c83805bf309fb3ebedae139adc9a2a';
+//						var yztoken = '3de74cfd5e58e66f5817e2e520d2b43d269aa52ae521011e19a6f32a4cb57ca7';
+//						var yzdevice = 'iphone';
+//						var yztoken = 'bf3293de175dc3fb8d4dff91b4d9c54800c83805bf309fb3ebedae139adc9a2a';
+//						var yzdevice = 'iphone';
+//			var yzid = 5327;
+//						var yzid = 7181;
+//						var yzid = 8;
+			//			1940-2144年龄是时间戳
+//			var yzdlid = 8;
+//var yztoken = '2ce090b0ece64178b11abe5a4f7c146bd1209ad3d047db03c938b62df87af1b0';
 //			var yzdevice = 'iphone';
 //			var yzid = 5327;
-//			var yzid = 2143;
-//			1940-2144年龄是时间戳
+//			var yztoken = '275e4fcd5fdacc16a3639158ca1e575baf5857d8064eae9f8a1227a676127ae1';
+//			var yzdevice = 'android';
+//			var yzid = 5327;
+//			var yzdlid = 1264;
+
+			var dlidvip;
+
+			function getdluser() {
+				var userurl = geturl(oneurl, 'user/public/getNameById');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "get",
+					url: userurl,
+					async: false,
+					dataType: "json",
+					data: {
+						"id": yzdlid
+					},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						dlidvip = result.data[0].vip;
+						//						console.log(dlid);
+					},
+					error: function() {
+						console.log('获取当前登录用户信息失败');
+					}
+				});
+				return dlidvip;
+			}
+			getdluser();
+
 			// 获取导航栏到屏幕顶部的距离
 			var oTop = $(".contop").offset().top;
 			//获取导航栏的高度，此高度用于保证内容的平滑过渡
@@ -1456,7 +1499,7 @@
 						"id": yzid
 					},
 					success: function(result) {
-						console.log(JSON.stringify(result));
+//						console.log(JSON.stringify(result));
 						sbname = result.data.nickname;
 						sbid = result.data.id;
 						sbage = result.data.birthday;
@@ -1513,20 +1556,9 @@
 							}
 						}
 						document.getElementById('zbyx').innerHTML = sbyxhtml;
-						sbfigure = result.data.figure;
-						var figurezhi = sbfigure.indexOf("cm") != -1;
-						if(figurezhi == true) {
-							var sbfigurenew = sbfigure.split(',');
-							for(var i = 0; i < sbfigurenew.length; i++) {
-								document.getElementById('zbshencai').innerHTML = sbfigurenew[0];
-								document.getElementById('zbweight').innerHTML = sbfigurenew[1];
-							}
-							document.getElementById('shencaititle').innerHTML = '身高';
-						} else {
-							document.getElementById('zbshencai').innerHTML = result.data.figure;
-							//document.getElementById('zbweightli').style.display = 'none';
-						}
-						//document.getElementById('zbshencai').innerHTML = result.data.figure;
+						document.getElementById('zbheight').innerHTML = result.data.height;
+						document.getElementById('zbweight').innerHTML = result.data.weight;
+						document.getElementById('zbshencai').innerHTML = result.data.figure;
 						document.getElementById('zbworker').innerHTML = result.data.job;
 						document.getElementById('zbtopic').innerHTML = result.data.topic;
 						document.getElementById('xinggezb').innerHTML = result.data.character;
@@ -1535,7 +1567,10 @@
 						console.log('获取私播用户信息出错了');
 					}
 				});
-				var chuaninfo = {'name':sbname,'headimg':sbhead};
+				var chuaninfo = {
+					'name': sbname,
+					'headimg': sbhead
+				};
 				return chuaninfo;
 			}
 			getxinxi();
@@ -1627,6 +1662,8 @@
 			var iii = 0;
 			var videos0 = [];
 			var videos1 = [];
+			var shouisvip = getdluser();
+//			console.log(shouisvip);
 
 			function getxiangce() {
 				var xcurl = geturl(oneurl, 'broadcast/public/photo');
@@ -1644,38 +1681,67 @@
 					success: function(result) {
 						//console.log(JSON.stringify(result));
 						//console.log(JSON.stringify(result.data.length));
-						if(result.data.length == 0) {
-							document.getElementById('sbxctishi').style.display = 'block';
-						} else {
-							result.data.sort(function(a, b) {
-								return a.is_vip - b.is_vip
-							})
-							//得到url循环显示到页面
-							for(var i = 0; i < result.data.length; i++) {
-								if(result.data[i].is_vip == 0) {
-									sz0.push(i);
-									sbpichtml += '<div class="sbpic">' +
-										'<a href="###" class="picsa"><img src=' + result.data[i]['url'] + ' alt="" data-preview-src="" data-preview-group="2" class="cover"/></a>' +
-										'</div>';
+						if(shouisvip == 0) {
+							if(result.data.length == 0) {
+								document.getElementById('sbxctishi').style.display = 'block';
+							} else {
+								result.data.sort(function(a, b) {
+									return a.is_vip - b.is_vip
+								})
+								//得到url循环显示到页面
+								for(var i = 0; i < result.data.length; i++) {
+									if(result.data[i].is_vip == 0) {
+										sz0.push(i);
+										sbpichtml += '<div class="sbpic">' +
+											'<a href="###" class="picsa"><img src=' + result.data[i]['url'] + ' alt="" data-preview-src="" data-preview-group="2" class="cover"/></a>' +
+											'</div>';
+									}
+									if(result.data[i].is_vip == 1) {
+										sz1.push(i);
+										sbpichtml += '<div class="sbpic">' +
+											'<a href="###" class="picsa"><img src=' + result.data[i]['url'] + ' alt="" data-preview-src="" data-preview-group="2" class="cover blur"/></a>' +
+											'</div>';
+									}
 								}
-								if(result.data[i].is_vip == 1) {
-									sz1.push(i);
-									sbpichtml += '<div class="sbpic">' +
-										'<a href="###" class="picsa"><img src=' + result.data[i]['url'] + ' alt="" data-preview-src="" data-preview-group="2" class="cover blur"/></a>' +
-										'</div>';
-								}
+								document.getElementById('sbxc').innerHTML = sbpichtml;
+								var picindex = '';
+								$('.sbpic').click(function() {
+									picindex = $(this).index();
+									if(picindex < sz0.length) {
+										window.location.href = 'swiper.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&dlidvip=' + dlidvip + '&sburl=' + picindex;
+									} else {
+										window.location.href = 'phone://ForVIP';
+//										window.location.href = 'https://www.baidu.com';
+									}
+								})
 							}
-							document.getElementById('sbxc').innerHTML = sbpichtml;
-							var picindex = '';
-							$('.sbpic').click(function() {
-								picindex = $(this).index();
-								if(picindex < sz0.length) {
-									window.location.href = 'swiper.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&sburl=' + picindex;
-								} else {
-									window.location.href = 'phone://ForVIP';
+						} else {
+							if(result.data.length == 0) {
+								document.getElementById('sbxctishi').style.display = 'block';
+							} else {
+								result.data.sort(function(a, b) {
+									return a.is_vip - b.is_vip
+								})
+								//得到url循环显示到页面
+								for(var i = 0; i < result.data.length; i++) {
+									sbpichtml += '<div class="sbpic">' +
+											'<a href="###" class="picsa"><img src=' + result.data[i]['url'] + ' alt="" data-preview-src="" data-preview-group="2" class="cover"/></a>' +
+											'</div>';
 								}
-							})
+								document.getElementById('sbxc').innerHTML = sbpichtml;
+								var picindex = '';
+								$('.sbpic').click(function() {
+									picindex = $(this).index();
+									window.location.href = 'swiper.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&dlidvip=' + dlidvip + '&sburl=' + picindex;
+//									if(picindex < sz0.length) {
+//										window.location.href = 'swiper.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&sburl=' + picindex;
+//									} else {
+//										window.location.href = 'phone://ForVIP';
+//									}
+								})
+							}
 						}
+
 					},
 					error: function() {
 						console.log('获取私播相册失败');
@@ -1708,7 +1774,7 @@
 			});
 
 			$('#tuhaocon').click(function() {
-				window.location.href = 'richlist.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice;
+				window.location.href = 'richlist.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&dlid=' + yzdlid;
 			})
 			var thuser = ''; //土豪前三个头像
 			function getrichlist() {
@@ -1725,18 +1791,18 @@
 						"id": yzid
 					},
 					success: function(result) {
-						//						console.log(JSON.stringify(result));
-						if(result.msg.length == 1) {
-							thuser += '<img src="' + result.msg[0].avatar + '" alt="" />';
+						console.log(JSON.stringify(result));
+						if(result.data.list.length == 1) {
+							thuser += '<img src="' + result.data.list[0]['avatar'] + '" alt="" />';
 							document.getElementById('thuser').innerHTML = thuser;
-						} else if(result.msg.length == 2) {
-							thuser += '<img src="' + result.msg[0].avatar + '" alt="" />' +
-								'<img src="' + result.msg[1].avatar + '" alt="" />';
+						} else if(result.data.list.length == 2) {
+							thuser += '<img src="' + result.data.list[0]['avatar'] + '" alt="" />' +
+								'<img src="' + result.data.list[1]['avatar'] + '" alt="" />';
 							document.getElementById('thuser').innerHTML = thuser;
-						} else if(result.msg.length == 2) {
-							thuser += '<img src="' + result.msg[0].avatar + '" alt="" />' +
-								'<img src="' + result.msg[1].avatar + '" alt="" />' +
-								'<img src="' + result.msg[2].avatar + '" alt="" />';
+						} else{
+							thuser += '<img src="' + result.data.list[0]['avatar'] + '" alt="" />' +
+								'<img src="' + result.data.list[1]['avatar'] + '" alt="" />' +
+								'<img src="' + result.data.list[2]['avatar'] + '" alt="" />';
 							document.getElementById('thuser').innerHTML = thuser;
 						}
 					},
@@ -1763,7 +1829,37 @@
 			var shouinfo = getxinxi();
 			var vzbname = shouinfo['name'];
 			var vzbhead = shouinfo['headimg'];
-			//获取视频
+			var idurl = '';
+//			var spurlid = '';
+
+			var idvideourl;
+			//通过id获取视频url
+			function getvideourl(delid) {
+				var getvideourl = geturl(oneurl, 'broadcast/public/getVideo');
+				$.ajax({
+					headers: {
+						'YZ-Token': yztoken,
+						'YZ-Device-Type': yzdevice
+					},
+					type: "post",
+					url: getvideourl,
+					async: false,
+					dataType: 'json',
+					data: {
+						"id": delid
+					},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						idvideourl = result.data.url;
+					},
+					error: function(data) {
+						console.log('获取视频url接口错误'+data.responseText);
+					}
+				});
+				return idvideourl;
+			}
+
+			//获取视频列表
 			function getvideo() {
 				var videolisturl = geturl(oneurl, 'broadcast/public/video');
 				//				var videolisturl = 'video.json';
@@ -1778,65 +1874,113 @@
 					data: {
 						"id": yzid
 					},
-					success: function(result) {
-						console.log(JSON.stringify(result));
-						if(result.data.length == 0) {
-							document.getElementById('sbsptishi').style.display = 'block';
-						} else {
-							result.data.sort(function(a, b) {
-								return a.is_vip - b.is_vip
-							})
-							//得到url循环显示到页面
-							for(var i = 0; i < result.data.length; i++) {
-								if(result.data[i].is_vip == 1) {
-									videos1.push(i);
-									videohtml += '<div class="zbvideo">' +
-										'<div class="videocover" style="background-image: url(img/zhanwei.png);"></div>' +
-										'<div class="videozhezhao"></div>' +
-										'<div class="videoxinxi">' +
-//										'<p class="sptitle">可爱吗</p>' +
-										'<div class="spuserxinxi">' +
-										'<img src="'+vzbhead+'" alt="" class="sphead" />' +
-										'<span class="spname">'+vzbname+'</span>' +
-										'</div>' +
-										'</div>' +
-										'<div class="videoseenum">'+result.data[i]['views']+'观看</div>' +
-										'<img src="img/vipsuo.png" alt="" class="suoimg" />' +
-										'<video src="' + result.data[i]['url'] + '" class="videoli"></video>' +
-										'</div>';
-								} else if(result.data[i].is_vip == 0) {
-									videos0.push(i);
-									videohtml += '<div class="zbvideo">' +
-										'<div class="videocover" style="background-image: url('+result.data[i]['pic']+');"></div>' +
-										'<div class="videozhezhao"></div>' +
-										'<div class="videoxinxi">' +
-//										'<p class="sptitle">可爱吗</p>' +
-										'<div class="spuserxinxi">' +
-										'<img src="'+vzbhead+'" alt="" class="sphead" />' +
-										'<span class="spname">'+vzbname+'</span>' +
-										'</div>' +
-										'</div>' +
-										'<div class="videoseenum">'+result.data[i]['views']+'观看</div>' +
-										'<video src="' + result.data[i]['url'] + '" class="videoli"></video>' +
-										'</div>';
+					success: function(result) {					
+						if(shouisvip == 0) {
+							console.log(JSON.stringify(result));
+							if(result.data.length == 0) {
+								document.getElementById('sbsptishi').style.display = 'block';
+							} else {
+								result.data.sort(function(a, b) {
+									return a.is_vip - b.is_vip
+								})
+								//得到url循环显示到页面
+								for(var i = 0; i < result.data.length; i++) {
+									idurl = result.data[i]['id'];
+									if(result.data[i].is_vip == 1) {
+										videos1.push(i);
+										videohtml += '<div class="zbvideo" id="'+idurl+'">' +
+											'<div class="videocover" style="background-image: url(img/zhanwei.png);"></div>' +
+											'<div class="videozhezhao"></div>' +
+											'<div class="videoxinxi">' +
+											'<div class="spuserxinxi">' +
+											'<img src="' + vzbhead + '" alt="" class="sphead" />' +
+											'<span class="spname">' + vzbname + '</span>' +
+											'</div>' +
+											'</div>' +
+											'<div class="videoseenum">' + result.data[i]['views'] + '观看</div>' +
+											'<img src="img/vipsuo.png" alt="" class="suoimg" />' +
+//											'<video src="" class="videoli"></video>' +
+											'</div>';
+									} else if(result.data[i].is_vip == 0) {
+										videos0.push(i);
+										videohtml += '<div class="zbvideo" id="'+idurl+'">' +
+											'<div class="videocover" style="background-image: url(' + result.data[i]['pic'] + ');"></div>' +
+											'<div class="videozhezhao"></div>' +
+											'<div class="videoxinxi">' +
+											//										'<p class="sptitle">可爱吗</p>' +
+											'<div class="spuserxinxi">' +
+											'<img src="' + vzbhead + '" alt="" class="sphead" />' +
+											'<span class="spname">' + vzbname + '</span>' +
+											'</div>' +
+											'</div>' +
+											'<div class="videoseenum">' + result.data[i]['views'] + '观看</div>' +
+//											'<video src="" class="videoli"></video>' +
+											'</div>';
+									}
 								}
-							}
-							document.getElementById('videos').innerHTML = videohtml;
+								document.getElementById('videos').innerHTML = videohtml;
 
-							$('.zbvideo').click(function() {
-								videoindex = $(this).index();
-								videourl = $(this).children(0).attr('src');
-								//								window.location.href = 'updownhua.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&sbindex=' + videoindex;
-								//								window.location.href = 'updownhuanew.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&sbindex=' + videoindex;
-								if(videoindex < videos0.length) {
-									window.location.href = 'updownhua.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&sbindex=' + videoindex;
-								} else {
-									window.location.href = 'phone://ForVIP';
-									//									alert('vip不能看');
-									//									window.location.href = 'http://www.baidu.com';
+								$('.zbvideo').click(function() {
+									console.log(idurl);
+									videoindex = $(this).index();
+									videourl = $(this).children(0).attr('src');
+									var spurlid = $(this).attr('id');
+									console.log(spurlid);
+									var getidurl = getvideourl(spurlid);
+									console.log(getidurl);
+									//								window.location.href = 'updownhua.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&sbindex=' + videoindex;
+									//								window.location.href = 'updownhuanew.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&sbindex=' + videoindex;
+									if(videoindex < videos0.length) {
+//										window.location.href = 'updownhua.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&dlidvip=' + dlidvip + '&sbindex=' + videoindex;
+										window.location.href = 'updownhua.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&getidurl=' + getidurl;
+									} else {
+										window.location.href = 'phone://ForVIP';
+										//									alert('vip不能看');
+//										window.location.href = 'http://www.baidu.com';
+									}
+								})
+							}
+						} else {
+							console.log(JSON.stringify(result));
+							if(result.data.length == 0) {
+								document.getElementById('sbsptishi').style.display = 'block';
+							} else {
+								result.data.sort(function(a, b) {
+									return a.is_vip - b.is_vip
+								})
+								//得到url循环显示到页面
+								for(var i = 0; i < result.data.length; i++) {
+									idurl = result.data[i]['id'];
+									videohtml += '<div class="zbvideo" id="'+idurl+'">' +
+										'<div class="videocover" style="background-image: url(' + result.data[i]['pic'] + ');"></div>' +
+										'<div class="videozhezhao"></div>' +
+										'<div class="videoxinxi">' +
+										'<div class="spuserxinxi">' +
+										'<img src="' + vzbhead + '" alt="" class="sphead" />' +
+										'<span class="spname">' + vzbname + '</span>' +
+										'</div>' +
+										'</div>' +
+										'<div class="videoseenum">' + result.data[i]['views'] + '观看</div>' +
+//										'<video src="" class="videoli"></video>' +
+										'</div>';
 								}
-							})
+								document.getElementById('videos').innerHTML = videohtml;
+
+								$('.zbvideo').click(function() {
+//									console.log(idurl);
+									videoindex = $(this).index();
+									videourl = $(this).children(0).attr('src');
+									var spurlid = $(this).attr('id');
+									console.log(spurlid);
+									var getidurl = getvideourl(spurlid);
+									console.log(getidurl);
+//									window.location.href = 'updownhua.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&dlidvip=' + dlidvip + '&sbindex=' + videoindex + '&spurlid=' + spurlid;
+//									window.location.href = 'playvideo.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&dlidvip=' + dlidvip + '&sbindex=' + videoindex + '&spurlid=' + spurlid;
+									window.location.href = 'updownhua.html?uid=' + yzid + '&token=' + yztoken + '&device=' + yzdevice + '&getidurl=' + getidurl;
+								})
+							}
 						}
+
 					},
 					error: function() {
 						console.log('获取视频列表失败');
