@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "23f98c78b20d7663ffae9c5ee13eef73",
+    "content-hash": "abb537f8b3ac4f4bb44d265b293d9cae",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -1475,16 +1475,16 @@
         },
         {
             "name": "qiniu/php-sdk",
-            "version": "v7.2.7",
+            "version": "v7.2.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/qiniu/php-sdk.git",
-                "reference": "88d11a5857ebc6871204e9be6ceec54bf5f381e6"
+                "reference": "afe7d8715d8a688b1d8d8cdf031240d2363dad90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/qiniu/php-sdk/zipball/88d11a5857ebc6871204e9be6ceec54bf5f381e6",
-                "reference": "88d11a5857ebc6871204e9be6ceec54bf5f381e6",
+                "url": "https://api.github.com/repos/qiniu/php-sdk/zipball/afe7d8715d8a688b1d8d8cdf031240d2363dad90",
+                "reference": "afe7d8715d8a688b1d8d8cdf031240d2363dad90",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -1528,7 +1528,7 @@
                 "sdk",
                 "storage"
             ],
-            "time": "2018-11-06T13:34:32+00:00"
+            "time": "2019-07-09T07:55:07+00:00"
         },
         {
             "name": "ralouphie/getallheaders",

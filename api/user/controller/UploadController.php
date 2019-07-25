@@ -8,6 +8,7 @@
 // +----------------------------------------------------------------------
 namespace api\user\controller;
 
+use api\user\service\QiNiuService;
 use cmf\controller\RestUserBaseController;
 use think\Log;
 use think\Validate;
@@ -247,6 +248,8 @@ class UploadController extends RestUserBaseController
             if ($act == 'head') {
                 $imgUrl = $imgSrc . '/' . $fileName;
                 Db::name('user')->where(['id'=>$userId])->update(['avatar'=>$imgUrl]);
+                $qiniu = new QiNiuService();
+                $qiniu->cdn_refresh('',0);
             }
 
             if ($checkFile) {//需要判断重复性的，讲文件信息入库

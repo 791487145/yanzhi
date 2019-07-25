@@ -12,10 +12,13 @@ use api\model\PayPaymentModel;
 use api\pay\controller\PublicController;
 use api\pay\service\WeChatPayService;
 use api\test\model\UserModel;
+use api\user\service\QiNiuService;
 use cmf\controller\RestBaseController;
 use think\Db;
 use think\Log;
 use think\Request;
+use Qiniu\Auth;
+use Qiniu\Cdn\CdnManager;
 
 class IndexController extends RestBaseController
 {  
@@ -26,6 +29,30 @@ class IndexController extends RestBaseController
         }
 
         return view('index');
+    }
+
+    public function qiniu()
+    {
+        $qiniu = new QiNiuService();
+        $qiniu->cdn_refresh('/upload/head/000/000/7346.jpg',0);
+        /*$accessKey = 'nhDhP4R-24sB2QZrBQ25smH1IpTu9fJy7yodm9l-';
+        $secretKey = 'i5PnhBL9UAeybhnGTK1ehRrsWGQPjg8yyjXXqPL-';
+
+        $auth = new Auth($accessKey, $secretKey);
+
+        $urls = array(
+            "http://img.miyueba.cn/upload/head/000/000/7346.jpg",
+        );
+
+        $cdnManager = new CdnManager($auth);
+
+        list($refreshResult, $refreshErr) = $cdnManager->refreshUrls($urls);
+        if ($refreshErr != null) {
+            var_dump($refreshErr);
+        } else {
+            echo "refresh request sent\n";
+            print_r($refreshResult);
+        }*/
     }
 
     public function test(WeChatPayService $weChatPayService)
